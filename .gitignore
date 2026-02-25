@@ -18,6 +18,7 @@ models/
 *.onnx
 
 # 原始数据与媒体（体积大，建议用网盘或 DVC 备份）
+data/raw/
 data/processed/
 data/processed_videos/
 data/ivcam/
