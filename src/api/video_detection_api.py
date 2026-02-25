@@ -280,7 +280,14 @@ class VideoDetectionAPI:
                 print(f"[WARN] 抻面模型应为 3 类 (hand/noodle_rope/noodle_bundle)，当前模型有 {n_cls} 类，hand/面条束可能为 0。请使用 datasets/stretch_detection 训练的 best.pt")
             print(f"[OK] 模型加载成功: {model_file} (使用 {device})")
         except Exception as e:
-            self._load_error = str(e)
+            err = str(e)
+            self._load_error = err
+            if "Conv" in err and "bn" in err:
+                self._load_error = (
+                    "模型与当前 ultralytics 版本不兼容（Conv.bn 结构变更）。"
+                    "请尝试：pip install ultralytics==8.0.200 后重启服务；"
+                    "或使用当前环境重新训练得到新的 best.pt。详见 docs/模型与ultralytics版本兼容说明.md"
+                )
             print(f"[ERROR] 模型加载失败: {e}")
             self.model = None
     

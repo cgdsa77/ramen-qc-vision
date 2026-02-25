@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>下面及捞面检测系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -277,6 +278,28 @@
         .legend-color.tools { background: #FFA500; }
         .legend-color.soup { background: #800080; }
         .legend-color.head { background: #AA00FF; }
+        /* 评分结果弹窗 */
+        .score-result-modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .score-result-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+        .score-result-modal-box { position: relative; background: #fff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-width: 560px; width: 100%; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; }
+        .score-result-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #eee; }
+        .score-result-modal-header h4 { margin: 0; color: #0d9488; font-size: 1.1em; }
+        .score-result-modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; line-height: 1; padding: 0 4px; }
+        .score-result-modal-close:hover { color: #333; }
+        .score-result-modal-body { padding: 20px; overflow-y: auto; }
+        .score-result-ai-wrap { margin-bottom: 20px; }
+        .score-result-ai-label { font-size: 12px; color: #666; margin-bottom: 8px; }
+        .score-result-ai-text { background: #f8f9fa; padding: 14px; border-radius: 8px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; min-height: 60px; }
+        .score-result-chart-wrap { }
+        .score-result-chart-label { font-size: 12px; color: #666; margin-bottom: 8px; }
+        .score-result-chart-inner { height: 200px; }
+        .score-result-modal-footer { padding: 12px 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; }
+        .local-saved-box { max-width: 720px; }
+        .local-saved-body { padding: 16px 20px; }
+        .local-saved-toolbar { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .local-saved-toolbar select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 13px; min-width: 240px; }
+        .local-saved-empty { padding: 24px; text-align: center; color: #666; }
+        .local-saved-iframe { width: 100%; height: 480px; border: 1px solid #eee; border-radius: 8px; background: #fff; }
     </style>
 </head>
 <body>
@@ -397,8 +420,10 @@
                     </div>
                 </div>
                 <div id="scoreResultWrap" style="display:none; margin-top: 16px;">
-                    <h4 style="color:#667eea; margin-bottom: 8px;">评分结果</h4>
-                    <pre id="scoreResult" style="background:#f0f2f5; padding: 12px; border-radius: 8px; white-space: pre-wrap; font-size: 13px; max-height: 280px; overflow: auto;"></pre>
+                    <button type="button" class="btn btn-primary" id="viewScoreResultBtn">查看评分结果</button>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button type="button" class="btn btn-secondary" id="viewLocalSavedResultsBtn">查看本地已保存结果</button>
                 </div>
             </div>
         </div>
@@ -409,6 +434,47 @@
             <div class="btns">
                 <button type="button" class="btn-ok" id="ivcamConfirmOk">确认</button>
                 <button type="button" class="btn-cancel" id="ivcamConfirmCancel">取消</button>
+            </div>
+        </div>
+    </div>
+    <!-- 评分结果弹窗：AI 分析 + 精简图表 -->
+    <div id="scoreResultModal" class="score-result-modal" style="display:none;">
+        <div class="score-result-modal-backdrop"></div>
+        <div class="score-result-modal-box">
+            <div class="score-result-modal-header">
+                <h4>评分结果</h4>
+                <button type="button" class="score-result-modal-close" id="scoreResultModalClose">&times;</button>
+            </div>
+            <div class="score-result-modal-body">
+                <div class="score-result-ai-wrap">
+                    <div class="score-result-ai-label">AI 分析</div>
+                    <div id="scoreResultAiText" class="score-result-ai-text">正在分析，请稍候…</div>
+                </div>
+                <div class="score-result-chart-wrap">
+                    <div class="score-result-chart-label">各维度得分（精简）</div>
+                    <div class="score-result-chart-inner"><canvas id="scoreResultChart"></canvas></div>
+                </div>
+            </div>
+            <div class="score-result-modal-footer" id="scoreResultModalFooter" style="display:none;">
+                <button type="button" class="btn btn-primary" id="scoreResultSaveLocalBtn">保存至本地</button>
+            </div>
+        </div>
+    </div>
+    <!-- 本地已保存结果弹窗：在 Web 内直接展示，与界面一致 -->
+    <div id="localSavedModal" class="score-result-modal" style="display:none;">
+        <div class="score-result-modal-backdrop"></div>
+        <div class="score-result-modal-box local-saved-box">
+            <div class="score-result-modal-header">
+                <h4>本地已保存结果</h4>
+                <button type="button" class="score-result-modal-close" id="localSavedModalClose">&times;</button>
+            </div>
+            <div class="local-saved-body">
+                <div class="local-saved-toolbar">
+                    <label>选择文件：</label>
+                    <select id="localSavedSelect"></select>
+                </div>
+                <div id="localSavedEmpty" class="local-saved-empty" style="display:none;">暂无已保存结果，请先完成评分并保存至本地。</div>
+                <iframe id="localSavedIframe" class="local-saved-iframe" title="已保存结果" style="display:none;"></iframe>
             </div>
         </div>
     </div>
@@ -434,6 +500,9 @@
         let isDetecting = false;
         /** 当前用于检测的视频文件（ivcam 拉取后无 fileInput，供「生成评分」使用） */
         let currentDetectionFile = null;
+        /** 最近一次生成评分的原始结果，供「查看评分结果」使用 */
+        let lastScoreData = null;
+        let scoreResultChartInstance = null;
         const stopDetectionBtn = document.getElementById('stopDetectionBtn');
         const cancelHint = document.getElementById('cancelHint');
         const newVideoBtn = document.getElementById('newVideoBtn');
@@ -714,7 +783,7 @@
                     if (data.success === false && data.error) throw new Error(data.error);
                     loading.classList.remove('active');
                     hideProgress();
-                    document.getElementById('scoreResult').textContent = JSON.stringify(data, null, 2);
+                    lastScoreData = data;
                     document.getElementById('scoreResultWrap').style.display = 'block';
                     return;
                 }
@@ -730,6 +799,159 @@
             error.classList.add('active');
         }
     });
+
+        // 将评分 API 原始结果转为 AI 分析接口需要的 data 格式（下面及捞面）
+        // 操作规范：优先用 noodle_bundle；若无则用 (tools_noodle + soup_noodle)/2，与后端口径一致
+        function buildSummaryDataFromResult(raw) {
+            if (!raw) return null;
+            const total = Number(raw.total_score ?? raw.average_overall_score ?? 0);
+            const scores = raw.class_average_scores || raw.scores || {};
+            const tn = scores.tools_noodle != null ? Number(scores.tools_noodle) : 0;
+            const sn = scores.soup_noodle != null ? Number(scores.soup_noodle) : 0;
+            const bundle = scores.noodle_bundle != null ? Number(scores.noodle_bundle) : (tn + sn) / 2;
+            return {
+                total_score: total,
+                hand_score: scores.hand != null ? Number(scores.hand) : 0,
+                noodle_rope_score: scores.noodle_rope != null ? Number(scores.noodle_rope) : 0,
+                noodle_bundle_score: bundle,
+                dtw_result: raw.dtw_result || {},
+                detection_quality: raw.detection_quality || { quality_score: total / 5, detection_rate: 1, both_hands_rate: 0.5 }
+            };
+        }
+
+        // 查看评分结果：打开弹窗，请求 AI 分析并绘制精简图表；AI 分析完成后再显示「保存至本地」
+        document.getElementById('viewScoreResultBtn').addEventListener('click', async () => {
+            if (!lastScoreData) return;
+            const modal = document.getElementById('scoreResultModal');
+            const footer = document.getElementById('scoreResultModalFooter');
+            const aiEl = document.getElementById('scoreResultAiText');
+            modal.style.display = 'flex';
+            if (footer) footer.style.display = 'none';
+            aiEl.textContent = '正在分析，请稍候…';
+            const videoName = (fileName && fileName.textContent) ? fileName.textContent.trim() : '本次检测';
+            const data = buildSummaryDataFromResult(lastScoreData);
+            try {
+                const r = await fetch('/api/ai-analyze-scoring', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video: videoName, data: data, stage: 'boiling' })
+                });
+                const res = await r.json();
+                aiEl.textContent = res.analysis || res.error || '分析失败';
+            } catch (e) {
+                aiEl.textContent = '请求失败: ' + e.message;
+            }
+            // 精简柱状图：总分、手部、面条/汤面、操作规范（操作规范 = noodle_bundle 或 (tools_noodle+soup_noodle)/2）
+            const canvas = document.getElementById('scoreResultChart');
+            const total = Number(lastScoreData.total_score ?? lastScoreData.average_overall_score ?? 0);
+            const scores = lastScoreData.class_average_scores || lastScoreData.scores || {};
+            const tn = scores.tools_noodle != null ? Number(scores.tools_noodle) : 0;
+            const sn = scores.soup_noodle != null ? Number(scores.soup_noodle) : 0;
+            const bundle = scores.noodle_bundle != null ? Number(scores.noodle_bundle) : (tn + sn) / 2;
+            const labels = ['总分', '手部', '面条/汤面', '操作规范'];
+            const values = [
+                total,
+                scores.hand != null ? Number(scores.hand) : 0,
+                scores.noodle_rope != null ? Number(scores.noodle_rope) : 0,
+                bundle
+            ];
+            if (scoreResultChartInstance) scoreResultChartInstance.destroy();
+            scoreResultChartInstance = new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ label: '得分', data: values, backgroundColor: ['rgba(13,148,136,0.8)', 'rgba(255,99,132,0.8)', 'rgba(54,162,235,0.8)', 'rgba(245,87,108,0.8)'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 5 } }, plugins: { legend: { display: false } } }
+            });
+            if (footer) footer.style.display = 'flex';
+        });
+
+        document.getElementById('scoreResultModalClose').addEventListener('click', () => {
+            document.getElementById('scoreResultModal').style.display = 'none';
+        });
+        document.querySelector('.score-result-modal-backdrop').addEventListener('click', () => {
+            document.getElementById('scoreResultModal').style.display = 'none';
+        });
+
+        document.getElementById('viewLocalSavedResultsBtn').addEventListener('click', async () => {
+            const modal = document.getElementById('localSavedModal');
+            const sel = document.getElementById('localSavedSelect');
+            const empty = document.getElementById('localSavedEmpty');
+            const iframe = document.getElementById('localSavedIframe');
+            modal.style.display = 'flex';
+            sel.innerHTML = '';
+            iframe.style.display = 'none';
+            empty.style.display = 'none';
+            try {
+                const r = await fetch('/api/list_saved_score_results?stage=boiling');
+                const res = await r.json().catch(() => ({}));
+                if (!res.success || !res.files || !res.files.length) {
+                    empty.style.display = 'block';
+                    return;
+                }
+                res.files.forEach(function (f) {
+                    const opt = document.createElement('option');
+                    opt.value = f.filename;
+                    opt.textContent = f.filename;
+                    sel.appendChild(opt);
+                });
+                iframe.style.display = 'block';
+                var loadContent = function () {
+                    var fn = sel.value;
+                    if (!fn) return;
+                    fetch('/api/saved_score_result_content?stage=boiling&filename=' + encodeURIComponent(fn))
+                        .then(function (resp) { return resp.json(); })
+                        .then(function (data) {
+                            if (data.success && data.content) {
+                                iframe.srcdoc = data.content;
+                            }
+                        })
+                        .catch(function () {});
+                };
+                loadContent();
+                sel.onchange = loadContent;
+            } catch (e) {
+                empty.textContent = '加载失败：' + (e.message || String(e));
+                empty.style.display = 'block';
+            }
+        });
+        document.getElementById('localSavedModalClose').addEventListener('click', function () {
+            document.getElementById('localSavedModal').style.display = 'none';
+        });
+        document.querySelector('#localSavedModal .score-result-modal-backdrop').addEventListener('click', function () {
+            document.getElementById('localSavedModal').style.display = 'none';
+        });
+
+        document.getElementById('scoreResultSaveLocalBtn').addEventListener('click', async () => {
+            if (!lastScoreData) return;
+            if (!confirm('是否保存至本地？')) return;
+            const videoName = (fileName && fileName.textContent) ? fileName.textContent.trim() : '本次检测';
+            const scoreData = buildSummaryDataFromResult(lastScoreData);
+            const aiAnalysis = (document.getElementById('scoreResultAiText') || {}).textContent || '';
+            try {
+                const r = await fetch('/api/save_score_result', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stage: 'boiling', video_name: videoName, score_data: scoreData, ai_analysis: aiAnalysis })
+                });
+                let res;
+                try {
+                    res = await r.json();
+                } catch (_) {
+                    alert('保存失败：服务器返回格式错误 ' + (r.status ? '(' + r.status + ')' : ''));
+                    return;
+                }
+                if (res.success) {
+                    alert('已保存至：' + (res.path || res.filename || 'data/Scoring_results_and_suggestions'));
+                } else {
+                    const errMsg = res.error || (res.detail && (Array.isArray(res.detail) ? res.detail.map(function(d) { return d.msg || d.loc || JSON.stringify(d); }).join('; ') : res.detail)) || '未知错误';
+                    alert('保存失败：' + errMsg);
+                }
+            } catch (e) {
+                alert('保存失败：' + (e.message || String(e)));
+            }
+        });
         
         function drawCurrentFrame() {
             if (!detectionData || !detectionData.success || !detectionData.detections?.length) return;

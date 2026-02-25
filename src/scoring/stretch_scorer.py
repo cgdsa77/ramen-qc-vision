@@ -385,17 +385,30 @@ class StretchScorer:
         # 计算视频总体评分
         if frame_scores_list:
             overall_scores = [fs['overall_score'] for fs in frame_scores_list if fs['overall_score'] > 0]
-            avg_overall = sum(overall_scores) / len(overall_scores) if overall_scores else 0.0
+            avg_overall_fallback = sum(overall_scores) / len(overall_scores) if overall_scores else 0.0
             
-            # 计算各类别平均分
+            # 计算各类别平均分（仅对出现过的类别有值）
+            stretch_classes = ['noodle_rope', 'hand', 'noodle_bundle']
             class_avg_scores = {}
-            for class_name in ['noodle_rope', 'hand', 'noodle_bundle']:
+            for class_name in stretch_classes:
                 class_scores = []
                 for fs in frame_scores_list:
                     if class_name in fs['class_scores']:
                         class_scores.append(fs['class_scores'][class_name])
                 if class_scores:
                     class_avg_scores[class_name] = sum(class_scores) / len(class_scores)
+                else:
+                    class_avg_scores[class_name] = 0.0
+            
+            # 仅用「有检测到的类别」计算总分，权重按现有类别重新归一化
+            overall_weights = self.rules.get('overall_weights', {})
+            present_classes = [c for c in stretch_classes if class_avg_scores.get(c, 0) > 0]
+            total_weight = sum(overall_weights.get(c, 0) for c in present_classes)
+            if total_weight > 0:
+                total_score_sum = sum(class_avg_scores[c] * overall_weights.get(c, 0) for c in present_classes)
+                avg_overall = round(total_score_sum / total_weight, 2)
+            else:
+                avg_overall = avg_overall_fallback
             
             return {
                 'total_frames': len(frame_scores_list),

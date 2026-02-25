@@ -255,11 +255,32 @@ class BoilingScoopingScorer:
             }
 
         overall_scores = [f["overall_score"] for f in frame_scores_list if f.get("overall_score", 0) > 0]
-        avg_overall = sum(overall_scores) / len(overall_scores) if overall_scores else 0.0
+        avg_overall_fallback = sum(overall_scores) / len(overall_scores) if overall_scores else 0.0
         class_avg: Dict[str, float] = {}
         for cls in CLASSES:
             vals = [f["class_scores"][cls] for f in frame_scores_list if cls in f.get("class_scores", {})]
             class_avg[cls] = sum(vals) / len(vals) if vals else 0.0
+        # 操作规范：仅基于「有检测到的」工具/汤面；若只出现一类则用该类，两类都有则取平均
+        t = class_avg.get("tools_noodle", 0.0)
+        s = class_avg.get("soup_noodle", 0.0)
+        if t > 0 and s > 0:
+            class_avg["noodle_bundle"] = round((t + s) / 2.0, 2)
+        elif t > 0:
+            class_avg["noodle_bundle"] = round(t, 2)
+        elif s > 0:
+            class_avg["noodle_bundle"] = round(s, 2)
+        else:
+            class_avg["noodle_bundle"] = 0.0
+
+        # 仅用「有检测到的类别」计算总分，权重按现有类别重新归一化，不因缺失类别惩罚
+        overall_weights = self.rules.get("overall_weights", {})
+        present_classes = [c for c in CLASSES if class_avg.get(c, 0) > 0]
+        total_weight = sum(overall_weights.get(c, 0) for c in present_classes)
+        if total_weight > 0:
+            total_score_sum = sum(class_avg[c] * overall_weights.get(c, 0) for c in present_classes)
+            avg_overall = round(total_score_sum / total_weight, 2)
+        else:
+            avg_overall = avg_overall_fallback
 
         return {
             "total_frames": len(frame_scores_list),

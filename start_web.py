@@ -822,7 +822,9 @@ try:
                             scores[cls] = score
                             details[cls] = {"frame_coverage": round(coverage, 3), "avg_objects_per_frame": round(density, 3),
                                             "frames_with_class": class_frame_presence[cls], "total_objects": class_object_counts[cls]}
-                        total_score_raw = round(sum(scores.values()) / len(scores), 3) if scores else 0.0
+                        # 仅用有检测到的类别求平均，不因缺失类别惩罚
+                        present = [c for c in classes if scores.get(c, 0) > 0]
+                        total_score_raw = round(sum(scores[c] for c in present) / len(present), 3) if present else 0.0
                         # 下面及捞面：占位规则为 0~1，统一换算为与抻面一致的 5 分制（1 + raw*4）
                         if stage == "boiling_scooping":
                             total_score = round(1.0 + total_score_raw * 4, 2)
@@ -831,6 +833,9 @@ try:
                                     details[cls]["raw_score_0_1"] = scores.get(cls, 0)
                             details["_raw_total_0_1"] = total_score_raw
                             scores = {k: round(1.0 + v * 4, 2) for k, v in scores.items()}
+                            # 操作规范：仅基于有检测到的工具/汤面；若只一类有则用该类
+                            tn, sn = scores.get("tools_noodle", 0), scores.get("soup_noodle", 0)
+                            scores["noodle_bundle"] = round((tn + sn) / 2.0, 2) if (tn and sn) else round(tn or sn, 2)
                             rules_used = "占位规则（覆盖率+密度线性加权），已换算为 5 分制；正式评分建议后续接入专用规则或模型"
                         else:
                             total_score = total_score_raw
@@ -1012,7 +1017,9 @@ try:
                     "total_objects": class_object_counts[cls]
                 }
 
-            total_score_raw = round(sum(scores.values()) / len(scores), 3) if scores else 0.0
+            # 仅用有检测到的类别求平均，不因缺失类别惩罚
+            present = [c for c in classes if scores.get(c, 0) > 0]
+            total_score_raw = round(sum(scores[c] for c in present) / len(present), 3) if present else 0.0
             # 下面及捞面：占位规则为 0~1，统一换算为与抻面一致的 5 分制
             if stage == "boiling_scooping":
                 total_score = round(1.0 + total_score_raw * 4, 2)
@@ -1021,6 +1028,9 @@ try:
                         details[cls]["raw_score_0_1"] = scores.get(cls, 0)
                 details["_raw_total_0_1"] = total_score_raw
                 scores = {k: round(1.0 + v * 4, 2) for k, v in scores.items()}
+                # 操作规范：仅基于有检测到的工具/汤面；若只一类有则用该类
+                tn, sn = scores.get("tools_noodle", 0), scores.get("soup_noodle", 0)
+                scores["noodle_bundle"] = round((tn + sn) / 2.0, 2) if (tn and sn) else round(tn or sn, 2)
                 rules_used = "占位规则（覆盖率+密度线性加权），已换算为 5 分制；正式评分建议后续接入专用规则或模型"
             else:
                 total_score = total_score_raw
@@ -1097,6 +1107,164 @@ try:
         if _upload_score_result is None:
             return JSONResponse(status_code=404, content={"error": "暂无上传评分结果"})
         return {"success": True, "stage": _upload_score_stage, "result": _upload_score_result}
+
+    def _make_score_result_html(stage: str, video_name: str, total: float, hand: float, rope: float, bundle: float, ai_analysis: str, save_time: str) -> str:
+        """生成与界面一致的 HTML（文字+表格+柱状图），用于保存与在 Web 内展示。"""
+        stage_label = "抻面" if stage == "stretch" else "下面及捞面"
+        dim1 = "面条/汤面" if stage == "boiling" else "面条"
+        dim2 = "操作规范" if stage == "boiling" else "面条束"
+        labels = ["总分", "手部", dim1, dim2]
+        values = [total, hand, rope, bundle]
+        max_val = 5.0
+        bar_colors = ["rgba(102,126,234,0.8)", "rgba(255,99,132,0.8)", "rgba(54,162,235,0.8)", "rgba(75,192,192,0.8)"]
+        if stage == "boiling":
+            bar_colors = ["rgba(13,148,136,0.8)", "rgba(255,99,132,0.8)", "rgba(54,162,235,0.8)", "rgba(245,87,108,0.8)"]
+        bar_rows = "".join(
+            f'<div class="bar-row"><span class="bar-label">{labels[i]}</span><div class="bar-track"><div class="bar-fill" style="width:{100 * values[i] / max_val}%;background:{bar_colors[i]}"></div></div><span class="bar-value">{values[i]:.2f}</span></div>'
+            for i in range(4)
+        )
+        ai_escaped = (ai_analysis or "（无分析内容）").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
+        return f"""<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>评分结果 - {stage_label}</title>
+<style>
+* {{ margin:0; padding:0; box-sizing:border-box; }}
+body {{ font-family: 'Microsoft YaHei', sans-serif; padding: 20px; background: #f5f5f5; color: #333; }}
+.card {{ background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }}
+h1 {{ font-size: 1.2em; color: #667eea; margin-bottom: 12px; }}
+.meta {{ font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.8; }}
+table {{ border-collapse: collapse; width: 100%; max-width: 320px; margin-bottom: 16px; }}
+th, td {{ border: 1px solid #ddd; padding: 8px 12px; text-align: left; }}
+th {{ background: #f8f9fa; }}
+.section-title {{ font-size: 12px; color: #666; margin-bottom: 8px; }}
+.ai-text {{ background: #f8f9fa; padding: 14px; border-radius: 8px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; min-height: 60px; }}
+.chart-title {{ font-size: 12px; color: #666; margin: 16px 0 8px; }}
+.bar-row {{ display: flex; align-items: center; margin-bottom: 10px; gap: 10px; }}
+.bar-label {{ width: 90px; font-size: 13px; }}
+.bar-track {{ flex: 1; height: 24px; background: #eee; border-radius: 4px; overflow: hidden; }}
+.bar-fill {{ height: 100%; border-radius: 4px; transition: width 0.3s; }}
+.bar-value {{ width: 44px; font-size: 13px; font-weight: bold; }}
+</style></head><body>
+<div class="card"><h1>评分结果</h1>
+<div class="meta">视频/样本：{video_name}<br>阶段：{stage_label}<br>保存时间：{save_time}</div>
+<div class="section-title">评分汇总</div>
+<table><tr><th>维度</th><th>得分</th></tr>
+<tr><td>总分</td><td>{total:.2f}</td></tr>
+<tr><td>手部</td><td>{hand:.2f}</td></tr>
+<tr><td>{dim1}</td><td>{rope:.2f}</td></tr>
+<tr><td>{dim2}</td><td>{bundle:.2f}</td></tr>
+</table>
+<div class="section-title">AI 分析</div>
+<div class="ai-text">{ai_escaped}</div>
+<div class="chart-title">各维度得分（精简）</div>
+<div class="chart-bars">{bar_rows}</div>
+</div></body></html>"""
+
+    @app.post("/api/save_score_result")
+    async def save_score_result(request: Request):
+        """将当前评分结果与 AI 分析保存为 HTML（与界面一致：文字+表格+图表）"""
+        import re
+        from datetime import datetime
+        try:
+            try:
+                body = await request.json()
+            except Exception as e:
+                return JSONResponse({"success": False, "error": "请求体不是有效 JSON: " + str(e)}, status_code=400)
+            if not isinstance(body, dict):
+                body = {}
+            stage = (body.get("stage") or "stretch").strip().lower()
+            video_name = (body.get("video_name") or body.get("videoName") or "未命名").strip()
+            score_data = body.get("score_data") or body.get("scoreData") or {}
+            if not isinstance(score_data, dict):
+                score_data = {}
+            ai_analysis = (body.get("ai_analysis") or body.get("aiAnalysis") or "").strip()
+            if not isinstance(ai_analysis, str):
+                ai_analysis = str(ai_analysis) if ai_analysis is not None else ""
+            subdir = "cm_scoring_ras" if stage == "stretch" else "xl_scoring_ras"
+            save_dir = project_root / "data" / "Scoring_results_and_suggestions" / subdir
+            try:
+                save_dir.mkdir(parents=True, exist_ok=True)
+            except Exception as e:
+                return JSONResponse({"success": False, "error": "创建目录失败: " + str(e)}, status_code=500)
+            safe_name = re.sub(r"[^\w\u4e00-\u9fa5\-.]", "_", video_name)[:80]
+            if not safe_name:
+                safe_name = "未命名"
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            save_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            filename = f"{stage}_{ts}_{safe_name}.html"
+            filepath = save_dir / filename
+            try:
+                total = float(score_data.get("total_score") or 0)
+                hand = float(score_data.get("hand_score") or 0)
+                rope = float(score_data.get("noodle_rope_score") or 0)
+                bundle = float(score_data.get("noodle_bundle_score") or 0)
+            except (TypeError, ValueError):
+                total = hand = rope = bundle = 0.0
+            html_content = _make_score_result_html(stage, video_name, total, hand, rope, bundle, ai_analysis, save_time)
+            try:
+                filepath.write_text(html_content, encoding="utf-8")
+            except Exception as e:
+                return JSONResponse({"success": False, "error": "写入文件失败: " + str(e)}, status_code=500)
+            rel_path = f"data/Scoring_results_and_suggestions/{subdir}/{filename}"
+            return JSONResponse({"success": True, "path": rel_path, "filename": filename})
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return JSONResponse({"success": False, "error": str(e)}, status_code=500)
+
+    @app.get("/api/list_saved_score_results")
+    async def list_saved_score_results(stage: str = "stretch"):
+        """列出已保存的评分结果文件（HTML），按修改时间倒序。"""
+        subdir = "cm_scoring_ras" if stage.strip().lower() == "stretch" else "xl_scoring_ras"
+        folder = project_root / "data" / "Scoring_results_and_suggestions" / subdir
+        if not folder.exists():
+            return JSONResponse({"success": True, "files": []})
+        files = []
+        for f in folder.iterdir():
+            if f.is_file() and f.suffix.lower() == ".html":
+                try:
+                    mtime = f.stat().st_mtime
+                    files.append({"filename": f.name, "mtime": mtime})
+                except Exception:
+                    pass
+        files.sort(key=lambda x: x["mtime"], reverse=True)
+        return JSONResponse({"success": True, "files": files})
+
+    @app.get("/api/saved_score_result_content")
+    async def saved_score_result_content(stage: str = "stretch", filename: str = ""):
+        """获取已保存的评分结果 HTML 内容，用于在 Web 内展示。"""
+        import urllib.parse
+        if not filename or ".." in filename or "/" in filename or "\\" in filename:
+            return JSONResponse({"success": False, "error": "无效文件名"}, status_code=400)
+        subdir = "cm_scoring_ras" if stage.strip().lower() == "stretch" else "xl_scoring_ras"
+        folder = project_root / "data" / "Scoring_results_and_suggestions" / subdir
+        filepath = folder / filename
+        if not filepath.is_file() or filepath.suffix.lower() != ".html":
+            return JSONResponse({"success": False, "error": "文件不存在"}, status_code=404)
+        try:
+            content = filepath.read_text(encoding="utf-8")
+            return JSONResponse({"success": True, "content": content})
+        except Exception as e:
+            return JSONResponse({"success": False, "error": str(e)}, status_code=500)
+
+    @app.get("/api/open_score_result_folder")
+    async def open_score_result_folder(stage: str = "stretch"):
+        """在服务器本机打开已保存评分结果所在文件夹。stage=stretch 打开 cm_scoring_ras，stage=boiling 打开 xl_scoring_ras。"""
+        import subprocess
+        import sys
+        subdir = "cm_scoring_ras" if stage.strip().lower() == "stretch" else "xl_scoring_ras"
+        folder = project_root / "data" / "Scoring_results_and_suggestions" / subdir
+        try:
+            folder.mkdir(parents=True, exist_ok=True)
+            path_str = str(folder.resolve())
+            if sys.platform == "win32":
+                os.startfile(path_str)
+            elif sys.platform == "darwin":
+                subprocess.run(["open", path_str], check=False)
+            else:
+                subprocess.run(["xdg-open", path_str], check=False)
+            return JSONResponse({"success": True, "path": path_str})
+        except Exception as e:
+            return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
     # ========== MediaPipe单例（优化性能） ==========
     _mediapipe_landmarker = None
