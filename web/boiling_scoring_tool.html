@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下面及捞面评分标注工具</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1600px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); text-align: left; }
+        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .nav-home:hover { text-decoration: underline; }
+        .content { display: grid; grid-template-columns: 1fr 420px; gap: 20px; padding: 20px; }
+        .main-panel { display: flex; flex-direction: column; gap: 20px; }
+        .video-selector { background: #f8f9fa; padding: 15px; border-radius: 8px; }
+        .video-selector select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .image-viewer { background: #1a1a1a; border-radius: 8px; overflow: hidden; position: relative; min-height: 240px; max-height: 70vh; display: flex; align-items: center; justify-content: center; }
+        .image-viewer .placeholder-text { padding: 20px; text-align: center; color: #999; }
+        .image-viewer img.loader { display: none; }
+        .image-viewer canvas { display: block; max-width: 100%; max-height: 70vh; object-fit: contain; }
+        .frame-controls { display: flex; gap: 10px; align-items: center; background: #f8f9fa; padding: 15px; border-radius: 8px; }
+        .frame-controls button { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; background: #667eea; color: white; font-size: 14px; }
+        .frame-controls button:hover { background: #5568d3; }
+        .frame-controls input { width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; }
+        .scoring-panel { background: #f8f9fa; padding: 20px; border-radius: 8px; max-height: calc(100vh - 200px); overflow-y: auto; }
+        .detection-item { background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px; border: 2px solid #ddd; }
+        .detection-item.active { border-color: #667eea; }
+        .detection-header { font-weight: bold; margin-bottom: 10px; color: #667eea; }
+        .attribute-group { margin-bottom: 15px; }
+        .attribute-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #333; }
+        .attribute-group .score-buttons { display: flex; gap: 5px; }
+        .score-btn { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; background: white; font-size: 12px; transition: all 0.2s; }
+        .score-btn:hover { background: #f0f0f0; }
+        .score-btn.selected { background: #667eea; color: white; border-color: #667eea; }
+        .score-btn.score-5 { border-color: #28a745; }
+        .score-btn.score-4 { border-color: #17a2b8; }
+        .score-btn.score-3 { border-color: #ffc107; }
+        .score-btn.score-2 { border-color: #fd7e14; }
+        .score-btn.score-1 { border-color: #dc3545; }
+        .notes { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; resize: vertical; min-height: 60px; }
+        .save-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid #ddd; }
+        .save-btn { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        .save-btn:hover { background: #218838; }
+        .progress-info { background: #e9ecef; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 12px; }
+        .legend { background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 12px; }
+        .legend-item { display: inline-block; margin-right: 15px; }
+        .legend-color { display: inline-block; width: 20px; height: 20px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+    <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
+    <div class="container">
+        <div class="header">
+            <h1>🍜 下面及捞面评分标注工具</h1>
+            <p>对 xl 标注视频中的 noodle_rope、hand、tools_noodle、soup_noodle 进行手动评分</p>
+        </div>
+        <div class="content">
+            <div class="main-panel">
+                <div class="video-selector">
+                    <label>选择视频：</label>
+                    <select id="videoSelect">
+                        <option value="">请选择视频...</option>
+                    </select>
+                    <label style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="keyframesOnly" checked style="width: auto;">
+                        <span>仅显示关键帧（推荐）</span>
+                    </label>
+                </div>
+                <div class="image-viewer" id="imageViewer">
+                    <img id="currentImage" class="loader" alt="">
+                    <canvas id="annotationCanvas" style="display: none;"></canvas>
+                    <div id="placeholderText" class="placeholder-text">请选择视频和帧开始评分</div>
+                </div>
+                <div class="frame-controls">
+                    <button onclick="previousFrame()">◀ 上一帧</button>
+                    <button onclick="nextFrame()">下一帧 ▶</button>
+                    <span>帧号：</span>
+                    <input type="number" id="frameInput" min="1" value="1" onchange="goToFrame()">
+                    <span id="frameInfo">/ 0</span>
+                    <button onclick="loadFrame()" style="margin-left: auto;">加载帧</button>
+                </div>
+            </div>
+            <div class="scoring-panel">
+                <div class="progress-info">
+                    <div>当前视频：<span id="currentVideo">-</span></div>
+                    <div>当前帧：<span id="currentFrameNum">-</span></div>
+                    <div>已评分：<span id="scoredCount">0</span> / <span id="totalDetections">0</span></div>
+                </div>
+                <div class="legend">
+                    <span class="legend-item"><span class="legend-color" style="background:#0000FF;"></span>面条</span>
+                    <span class="legend-item"><span class="legend-color" style="background:#FF0000;"></span>手部</span>
+                    <span class="legend-item"><span class="legend-color" style="background:#00AA66;"></span>面条工具</span>
+                    <span class="legend-item"><span class="legend-color" style="background:#9933FF;"></span>汤面</span>
+                    <span class="legend-item">5优 4良 3一般 2较差 1差</span>
+                </div>
+                <div id="detectionsList">
+                    <div style="text-align: center; color: #999; padding: 20px;">请先选择视频并加载帧</div>
+                </div>
+                <div class="save-section">
+                    <button class="save-btn" onclick="saveScores()">💾 保存当前帧评分</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const STAGE = 'boiling_scooping';
+        let currentVideo = '';
+        let currentFrameIndex = 0;
+        let frames = [];
+        let detections = [];
+        let scores = {};
+
+        async function initVideoList() {
+            try {
+                const response = await fetch('/api/get_scoring_videos?stage=' + STAGE);
+                const data = await response.json();
+                const select = document.getElementById('videoSelect');
+                (data.videos || []).forEach(video => {
+                    const option = document.createElement('option');
+                    option.value = video;
+                    option.textContent = video;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('加载视频列表失败:', error);
+            }
+        }
+
+        document.getElementById('videoSelect').addEventListener('change', async (e) => {
+            currentVideo = e.target.value;
+            if (currentVideo) await loadVideoFrames();
+        });
+
+        document.getElementById('keyframesOnly').addEventListener('change', () => {
+            if (currentVideo) loadVideoFrames();
+        });
+
+        async function loadVideoFrames() {
+            try {
+                const keyframesOnly = document.getElementById('keyframesOnly').checked;
+                const response = await fetch(`/api/get_video_frames?video=${encodeURIComponent(currentVideo)}&keyframes_only=${keyframesOnly}&include_additional=false&stage=${STAGE}&only_with_labels=true`);
+                const data = await response.json();
+                frames = data.frames || [];
+                document.getElementById('frameInfo').textContent = data.is_keyframes ? `关键帧: ${frames.length}` : `总帧数: ${frames.length}`;
+                document.getElementById('currentVideo').textContent = currentVideo;
+                if (frames.length > 0) {
+                    currentFrameIndex = 0;
+                    loadFrame();
+                } else {
+                    alert('未找到帧数据，请检查 data/processed/下面及捞面/' + currentVideo);
+                }
+            } catch (error) {
+                console.error('加载帧列表失败:', error);
+                alert('加载帧列表失败: ' + error.message);
+            }
+        }
+
+        async function loadFrame() {
+            if (frames.length === 0) return;
+            const frameName = frames[currentFrameIndex];
+            document.getElementById('currentFrameNum').textContent = `${currentFrameIndex + 1}`;
+            document.getElementById('frameInput').value = currentFrameIndex + 1;
+            try {
+                const img = document.getElementById('currentImage');
+                const canvas = document.getElementById('annotationCanvas');
+                const placeholder = document.getElementById('placeholderText');
+                placeholder.style.display = 'block';
+                canvas.style.display = 'none';
+                img.src = `/api/get_frame_image?video=${encodeURIComponent(currentVideo)}&frame=${encodeURIComponent(frameName)}&stage=${STAGE}`;
+                img.onload = async () => {
+                    const w = img.naturalWidth || img.width;
+                    const h = img.naturalHeight || img.height;
+                    canvas.width = w;
+                    canvas.height = h;
+                    await loadDetections(frameName);
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0);
+                    drawAnnotations();
+                    placeholder.style.display = 'none';
+                    canvas.style.display = 'block';
+                    var viewer = document.getElementById('imageViewer');
+                    var maxW = viewer.clientWidth || 800;
+                    var maxH = Math.min(window.innerHeight * 0.7, viewer.clientHeight || 500);
+                    var scale = Math.min(maxW / w, maxH / h, 1);
+                    canvas.style.width = (w * scale) + 'px';
+                    canvas.style.height = (h * scale) + 'px';
+                };
+            } catch (error) {
+                console.error('加载帧失败:', error);
+            }
+        }
+
+        async function loadDetections(frameName) {
+            try {
+                const response = await fetch(`/api/get_frame_detections?video=${encodeURIComponent(currentVideo)}&frame=${encodeURIComponent(frameName)}&stage=${STAGE}`);
+                const data = await response.json();
+                detections = data.detections || [];
+                renderDetections();
+            } catch (error) {
+                console.error('加载检测数据失败:', error);
+                detections = [];
+                renderDetections();
+            }
+        }
+
+        function drawAnnotations() {
+            const canvas = document.getElementById('annotationCanvas');
+            const ctx = canvas.getContext('2d');
+            const img = document.getElementById('currentImage');
+            if (!img.complete || !canvas.width) return;
+            ctx.drawImage(img, 0, 0);
+            const colors = { 'noodle_rope': '#0000FF', 'hand': '#FF0000', 'tools_noodle': '#00AA66', 'soup_noodle': '#9933FF' };
+            detections.forEach((det, idx) => {
+                const [x1, y1, x2, y2] = det.xyxy || [0,0,0,0];
+                const color = colors[det.class] || '#FFFF00';
+                ctx.strokeStyle = color;
+                ctx.lineWidth = Math.max(2, Math.min(canvas.width, canvas.height) / 300);
+                ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                ctx.fillStyle = color;
+                ctx.font = `bold ${Math.max(12, Math.min(canvas.width, canvas.height) / 40)}px Arial`;
+                ctx.fillText(`${det.class} #${idx + 1}`, x1, Math.max(y1 - 2, 12));
+            });
+        }
+
+        function renderDetections() {
+            const container = document.getElementById('detectionsList');
+            container.innerHTML = '';
+            if (detections.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">当前帧无检测结果</div>';
+                document.getElementById('totalDetections').textContent = '0';
+                return;
+            }
+            document.getElementById('totalDetections').textContent = detections.length;
+            detections.forEach((det, idx) => {
+                const item = createDetectionItem(det, idx);
+                container.appendChild(item);
+            });
+        }
+
+        function createDetectionItem(det, idx) {
+            const div = document.createElement('div');
+            div.className = 'detection-item';
+            div.id = `detection_${idx}`;
+            const scoreKey = `${currentVideo}_${frames[currentFrameIndex]}_${idx}`;
+            const savedScores = scores[scoreKey] || {};
+            let html = `<div class="detection-header">${det.class} #${idx + 1}</div>`;
+            if (det.class === 'noodle_rope') {
+                html += createNoodleRopeScoring(savedScores, scoreKey);
+            } else if (det.class === 'hand') {
+                html += createHandScoring(savedScores, scoreKey);
+            } else if (det.class === 'tools_noodle') {
+                html += createToolsNoodleScoring(savedScores, scoreKey);
+            } else if (det.class === 'soup_noodle') {
+                html += createSoupNoodleScoring(savedScores, scoreKey);
+            } else {
+                html += '<p style="color:#666;">未知类别，无需评分</p>';
+            }
+            html += `
+                <div class="attribute-group">
+                    <label>备注：</label>
+                    <textarea class="notes" id="notes_${scoreKey}" placeholder="记录评分依据或特殊情况...">${savedScores.notes || ''}</textarea>
+                </div>
+            `;
+            div.innerHTML = html;
+            return div;
+        }
+
+        function createNoodleRopeScoring(savedScores, scoreKey) {
+            const attributes = [
+                { key: 'thickness', label: '粗细' },
+                { key: 'elasticity', label: '弹性' },
+                { key: 'integrity', label: '完整程度' },
+                { key: 'ripeness', label: '熟度' }
+            ];
+            return createScoreButtons(attributes, savedScores, scoreKey);
+        }
+
+        function createHandScoring(savedScores, scoreKey) {
+            const attributes = [
+                { key: 'position', label: '位置' },
+                { key: 'action', label: '动作' },
+                { key: 'coordination', label: '协调性' },
+                { key: 'tool_coordination', label: '工具配合度' }
+            ];
+            return createScoreButtons(attributes, savedScores, scoreKey);
+        }
+
+        function createToolsNoodleScoring(savedScores, scoreKey) {
+            const attributes = [
+                { key: 'operation_standardization', label: '操作规范性' },
+                { key: 'cleanliness', label: '清洁度' },
+                { key: 'drainage_effect', label: '沥汤效果' }
+            ];
+            return createScoreButtons(attributes, savedScores, scoreKey);
+        }
+
+        function createSoupNoodleScoring(savedScores, scoreKey) {
+            const attributes = [
+                { key: 'soup_adhesion', label: '挂汤度' },
+                { key: 'noodle_soup_ratio', label: '面汤比例' },
+                { key: 'distribution_state', label: '分布状态' }
+            ];
+            return createScoreButtons(attributes, savedScores, scoreKey);
+        }
+
+        function createScoreButtons(attributes, savedScores, scoreKey) {
+            let html = '';
+            attributes.forEach(attr => {
+                const saved = savedScores[attr.key] || 0;
+                html += `
+                    <div class="attribute-group">
+                        <label>${attr.label}：</label>
+                        <div class="score-buttons">
+                            ${[5,4,3,2,1].map(score => `
+                                <button class="score-btn score-${score} ${saved === score ? 'selected' : ''}"
+                                        onclick="setScore('${scoreKey}', '${attr.key}', ${score})">${score}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        function setScore(scoreKey, attribute, score) {
+            if (!scores[scoreKey]) scores[scoreKey] = {};
+            scores[scoreKey][attribute] = score;
+            const buttons = document.querySelectorAll(`[onclick*="${scoreKey}"][onclick*="${attribute}"]`);
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent.trim() == score) btn.classList.add('selected');
+            });
+            updateScoredCount();
+        }
+
+        function updateScoredCount() {
+            const frameName = frames[currentFrameIndex];
+            let scored = 0;
+            detections.forEach((det, idx) => {
+                const scoreKey = `${currentVideo}_${frameName}_${idx}`;
+                if (scores[scoreKey] && Object.keys(scores[scoreKey]).filter(k => k !== 'notes').length > 0) scored++;
+            });
+            document.getElementById('scoredCount').textContent = scored;
+        }
+
+        async function saveScores() {
+            const frameName = frames[currentFrameIndex];
+            const frameScores = {};
+            detections.forEach((det, idx) => {
+                const scoreKey = `${currentVideo}_${frameName}_${idx}`;
+                if (scores[scoreKey]) {
+                    frameScores[`detection_${idx}`] = {
+                        ...scores[scoreKey],
+                        notes: document.getElementById(`notes_${scoreKey}`)?.value || ''
+                    };
+                }
+            });
+            try {
+                const response = await fetch('/api/save_frame_scores', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        video: currentVideo,
+                        frame: frameName,
+                        scores: frameScores,
+                        stage: STAGE
+                    })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('✅ 评分已保存！');
+                    updateScoredCount();
+                } else {
+                    alert('❌ 保存失败：' + result.message);
+                }
+            } catch (error) {
+                console.error('保存失败:', error);
+                alert('❌ 保存失败：' + error.message);
+            }
+        }
+
+        function previousFrame() {
+            if (currentFrameIndex > 0) { currentFrameIndex--; loadFrame(); }
+        }
+        function nextFrame() {
+            if (currentFrameIndex < frames.length - 1) { currentFrameIndex++; loadFrame(); }
+        }
+        function goToFrame() {
+            const frameNum = parseInt(document.getElementById('frameInput').value);
+            if (frameNum >= 1 && frameNum <= frames.length) {
+                currentFrameIndex = frameNum - 1;
+                loadFrame();
+            }
+        }
+
+        initVideoList();
+    </script>
+</body>
+</html>

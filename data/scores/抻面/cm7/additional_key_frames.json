@@ -1,0 +1,32 @@
+[
+  {
+    "frame": "cm7_00009.jpg",
+    "index": 9,
+    "detections": 4,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm7_00010.jpg",
+    "index": 10,
+    "detections": 4,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm7_00011.jpg",
+    "index": 11,
+    "detections": 4,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm7_00021.jpg",
+    "index": 21,
+    "detections": 4,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm7_00039.jpg",
+    "index": 39,
+    "detections": 3,
+    "has_noodle_bundle": false
+  }
+]

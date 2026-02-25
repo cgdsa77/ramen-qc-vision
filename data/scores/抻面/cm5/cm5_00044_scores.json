@@ -1,0 +1,28 @@
+{
+  "video": "cm5",
+  "frame": "cm5_00044.jpg",
+  "scores": {
+    "detection_0": {
+      "thickness": 5,
+      "elasticity": 4,
+      "gloss": 4,
+      "integrity": 5,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 5,
+      "action": 4,
+      "angle": 4,
+      "coordination": 5,
+      "notes": ""
+    },
+    "detection_2": {
+      "position": 3,
+      "action": 3,
+      "angle": 2,
+      "coordination": 2,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768832562.2648523
+}

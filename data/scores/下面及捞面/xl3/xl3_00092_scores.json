@@ -1,0 +1,33 @@
+{
+  "video": "xl3",
+  "frame": "xl3_00092.jpg",
+  "scores": {
+    "detection_0": {
+      "operation_standardization": 3,
+      "cleanliness": 4,
+      "drainage_effect": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 4,
+      "coordination": 5,
+      "tool_coordination": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "action": 5,
+      "position": 4,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_3": {
+      "operation_standardization": 3,
+      "cleanliness": 4,
+      "drainage_effect": 3,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770691551.557193
+}

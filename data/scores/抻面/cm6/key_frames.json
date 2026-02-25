@@ -1,0 +1,52 @@
+[
+  {
+    "frame": "cm6_00001.jpg",
+    "index": 1,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00015.jpg",
+    "index": 15,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00032.jpg",
+    "index": 32,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00048.jpg",
+    "index": 48,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00062.jpg",
+    "index": 62,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00077.jpg",
+    "index": 77,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00092.jpg",
+    "index": 92,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00106.jpg",
+    "index": 106,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00121.jpg",
+    "index": 121,
+    "detections": 3
+  },
+  {
+    "frame": "cm6_00136.jpg",
+    "index": 136,
+    "detections": 3
+  }
+]

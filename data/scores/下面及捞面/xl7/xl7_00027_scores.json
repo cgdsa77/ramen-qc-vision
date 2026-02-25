@@ -1,0 +1,28 @@
+{
+  "video": "xl7",
+  "frame": "xl7_00027.jpg",
+  "scores": {
+    "detection_0": {
+      "soup_adhesion": 4,
+      "noodle_soup_ratio": 3,
+      "distribution_state": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 5,
+      "coordination": 4,
+      "tool_coordination": 3,
+      "notes": ""
+    },
+    "detection_2": {
+      "position": 4,
+      "action": 3,
+      "coordination": 4,
+      "tool_coordination": 5,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770692284.4868164
+}

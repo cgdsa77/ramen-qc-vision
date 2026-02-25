@@ -1,0 +1,36 @@
+# 默认配置，可根据需要调整
+input:
+  source: data/raw/sample.mp4   # 输入视频或摄像头ID
+  frame_rate: 15
+  segment_seconds: 5
+  output_dir: data/processed
+
+models:
+  pose:
+    backend: movenet            # 可选: movenet, rtmpose
+    weight: weights/movenet.pth
+    conf: 0.3
+  detect:
+    backend: yolov8n            # 可选: yolov8n/s/m
+    weight: weights/yolov8n.pt
+    conf: 0.25
+  thickness:
+    backend: classifier         # 可选: classifier, regression
+    weight: weights/noodle_thickness.pth
+
+scoring:
+  stretch:
+    posture_weight: 0.4
+    continuity_weight: 0.2
+  boiling:
+    timing_weight: 0.2
+  scooping:
+    cleanliness_weight: 0.2
+  thresholds:
+    posture_angle: 15           # 容许偏差角度
+    thickness_std: 0.15         # 粗细均匀度容忍比例
+
+report:
+  save_html: true
+  save_pdf: false
+  save_json: true

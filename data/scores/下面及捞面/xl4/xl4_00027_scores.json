@@ -1,0 +1,19 @@
+{
+  "video": "xl4",
+  "frame": "xl4_00027.jpg",
+  "scores": {
+    "detection_0": {
+      "action": 4.42,
+      "thickness": 4.25,
+      "elasticity": 4.75,
+      "ripeness": 4.25,
+      "position": 3.75,
+      "tool_coordination": 3.67,
+      "integrity": 4.75,
+      "coordination": 4.0,
+      "notes": "关键帧时间线性插值"
+    }
+  },
+  "stage": "boiling_scooping",
+  "interpolated": true
+}

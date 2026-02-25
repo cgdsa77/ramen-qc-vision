@@ -1,0 +1,126 @@
+{
+  "total_videos": 12,
+  "success_count": 12,
+  "results": {
+    "cm1": {
+      "total_frames": 2798,
+      "scored_frames": 2798,
+      "dtw_distance": 0.0,
+      "dtw_score": 5.0,
+      "hand_score": 2.083485709155401,
+      "noodle_rope_score": 2.8430341411257527,
+      "noodle_bundle_score": 2.378269298550456,
+      "total_score": 2.5283254645083155
+    },
+    "cm10": {
+      "total_frames": 1576,
+      "scored_frames": 1576,
+      "dtw_distance": 5.314840967896556,
+      "dtw_score": 4.5272004093060705,
+      "hand_score": 2.309071064217589,
+      "noodle_rope_score": 2.937867146027322,
+      "noodle_bundle_score": 2.6315369233641874,
+      "total_score": 2.6557156910371154
+    },
+    "cm11": {
+      "total_frames": 1768,
+      "scored_frames": 1768,
+      "dtw_distance": 5.085535649004916,
+      "dtw_score": 5.0,
+      "hand_score": 1.9963637410864836,
+      "noodle_rope_score": 2.945297286009916,
+      "noodle_bundle_score": 2.589975429463975,
+      "total_score": 2.576611503368511
+    },
+    "cm12": {
+      "total_frames": 1396,
+      "scored_frames": 1396,
+      "dtw_distance": 6.205622589798357,
+      "dtw_score": 2.16336529379821,
+      "hand_score": 2.2181924212812545,
+      "noodle_rope_score": 2.834110806520261,
+      "noodle_bundle_score": 2.244095333562719,
+      "total_score": 2.5557462080721782
+    },
+    "cm2": {
+      "total_frames": 1148,
+      "scored_frames": 1148,
+      "dtw_distance": 0.0,
+      "dtw_score": 5.0,
+      "hand_score": 2.0541614960067007,
+      "noodle_rope_score": 3.198374911191233,
+      "noodle_bundle_score": 2.6645115490731985,
+      "total_score": 2.7423590100272617
+    },
+    "cm3": {
+      "total_frames": 2729,
+      "scored_frames": 2729,
+      "dtw_distance": 0.0,
+      "dtw_score": 5.0,
+      "hand_score": 2.2384178335397555,
+      "noodle_rope_score": 2.902517480272935,
+      "noodle_bundle_score": 2.6978353458749345,
+      "total_score": 2.6164094081398632
+    },
+    "cm4": {
+      "total_frames": 3022,
+      "scored_frames": 3022,
+      "dtw_distance": 0.0,
+      "dtw_score": 5.0,
+      "hand_score": 1.9333013545400386,
+      "noodle_rope_score": 2.9719975141790504,
+      "noodle_bundle_score": 2.452555312616721,
+      "total_score": 2.5542507845695757
+    },
+    "cm5": {
+      "total_frames": 2203,
+      "scored_frames": 2203,
+      "dtw_distance": 0.0,
+      "dtw_score": 5.0,
+      "hand_score": 2.2606446324148184,
+      "noodle_rope_score": 3.1185403635780053,
+      "noodle_bundle_score": 2.5639612212849907,
+      "total_score": 2.719924156883429
+    },
+    "cm6": {
+      "total_frames": 2330,
+      "scored_frames": 2330,
+      "dtw_distance": 6.108530957383601,
+      "dtw_score": 2.4210138627414994,
+      "hand_score": 2.4965982288103907,
+      "noodle_rope_score": 2.9950880097892676,
+      "noodle_bundle_score": 2.404004603368199,
+      "total_score": 2.73658375675561
+    },
+    "cm7": {
+      "total_frames": 849,
+      "scored_frames": 849,
+      "dtw_distance": 5.632574189113362,
+      "dtw_score": 3.6840432008398727,
+      "hand_score": 2.0344081975839616,
+      "noodle_rope_score": 2.8750971835392307,
+      "noodle_bundle_score": 2.573866259401496,
+      "total_score": 2.5086984967433494
+    },
+    "cm9": {
+      "total_frames": 1393,
+      "scored_frames": 1393,
+      "dtw_distance": 5.209288988455334,
+      "dtw_score": 4.807299896520265,
+      "hand_score": 2.3075718991992544,
+      "noodle_rope_score": 3.0444343553162874,
+      "noodle_bundle_score": 2.551144995605644,
+      "total_score": 2.7345159619157275
+    },
+    "cm8": {
+      "total_frames": 1888,
+      "scored_frames": 1888,
+      "dtw_distance": 5.668326929538397,
+      "dtw_score": 3.5891674409292684,
+      "hand_score": 2.3703283538698434,
+      "noodle_rope_score": 2.905868002765445,
+      "noodle_bundle_score": 2.397767548731143,
+      "total_score": 2.6643650320588987
+    }
+  }
+}

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>面向兰州拉面制作的标准化流程视觉质检系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-dark: #2c1810;
+            --warm-mid: #8b5a2b;
+            --warm-accent: #c45c26;
+            --warm-gold: #d4a574;
+            --warm-cream: #faf5ef;
+            --warm-white: #fffbf7;
+            --shadow: 0 8px 32px rgba(44, 24, 16, 0.12);
+            --radius: 16px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            background: var(--warm-cream);
+            min-height: 100vh;
+            color: var(--warm-dark);
+            line-height: 1.6;
+        }
+        /* 顶部装饰条 */
+        .top-bar {
+            height: 4px;
+            background: linear-gradient(90deg, var(--warm-accent), var(--warm-gold), var(--warm-mid));
+        }
+        .hero {
+            background: linear-gradient(165deg, var(--warm-dark) 0%, #3d2318 40%, var(--warm-mid) 100%);
+            color: var(--warm-white);
+            padding: 48px 24px 56px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        .hero h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 700;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            max-width: 900px;
+            margin: 0 auto 16px;
+            position: relative;
+            letter-spacing: 0.02em;
+        }
+        .hero .subtitle {
+            font-size: 15px;
+            opacity: 0.92;
+            font-weight: 400;
+            position: relative;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+        .section {
+            margin-bottom: 48px;
+        }
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.35rem;
+            color: var(--warm-mid);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--warm-gold);
+            display: inline-block;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--warm-white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            border: 1px solid rgba(196, 92, 38, 0.12);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(44, 24, 16, 0.15);
+        }
+        .card h3 {
+            font-size: 1.1rem;
+            color: var(--warm-dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .card p {
+            font-size: 13px;
+            color: #5c4a3a;
+            margin-bottom: 16px;
+        }
+        .card .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--warm-accent), var(--warm-mid));
+            color: var(--warm-white);
+            text-decoration: none;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        .card .btn:hover {
+            opacity: 0.92;
+        }
+        .footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            color: #7d6b5a;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar"></div>
+    <header class="hero">
+        <h1>面向兰州拉面制作的标准化流程视觉质检系统</h1>
+        <p class="subtitle">抻面 · 下面 · 捞面 全流程检测与评分 · 手部姿态与骨架可视化</p>
+    </header>
+    <main class="container">
+        <section class="section">
+            <h2 class="section-title">流程检测</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>抻面动作检测</h3>
+                    <p>上传抻面视频，进行动作与类别检测，输出检测结果与可视化。</p>
+                    <a href="/stretch-detection" class="btn">进入</a>
+                </div>
+                <div class="card">
+                    <h3>下面及捞面检测</h3>
+                    <p>针对下面、捞面环节的视频检测，识别关键动作与状态。</p>
+                    <a href="/boiling-detection" class="btn">进入</a>
+                </div>
+                <div class="card">
+                    <h3>实时监测</h3>
+                    <p>使用电脑摄像头或外接设备（如手机 USB）进行视频流实时解析与检测。</p>
+                    <a href="/realtime-monitor" class="btn">进入</a>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <h2 class="section-title">标注工具</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>抻面评分标注工具</h3>
+                    <p>对关键帧进行手部、面条等维度的人工标注与评分，支撑模型训练与评估。</p>
+                    <a href="/scoring-tool" class="btn">进入</a>
+                </div>
+                <div class="card">
+                    <h3>下面及捞面评分标注工具</h3>
+                    <p>对 xl 标注视频中的面条、手部、面条工具、汤面四类目标进行手动评分（粗细/弹性/熟度等）。</p>
+                    <a href="/scoring-tool-boiling" class="btn">进入</a>
+                </div>
+                <div class="card">
+                    <h3>兰州拉面成品评估标注</h3>
+                    <p>对成品图片标注面条质感、红汤/清汤、辣椒、辅料（牛肉/鸡蛋/蒜苗碎），构建标准数据集。</p>
+                    <a href="/product-annotation" class="btn">进入</a>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <h2 class="section-title">综合评分</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>抻面综合评分可视化</h3>
+                    <p>多维度图表展示抻面评分结果，支持 AI 智能分析报告与问答。</p>
+                    <a href="/scoring-visualization" class="btn">进入</a>
+                </div>
+                <div class="card">
+                    <h3>下面及捞面综合评分可视化</h3>
+                    <p>骨架线与标注融合，多维度展示 xl 视频的手部/面条/操作规范得分。</p>
+                    <a href="/web/scoring_visualization_boiling.html" class="btn">进入</a>
+                </div>
+                <div class="card">
+                    <h3>兰州拉面成品综合评分</h3>
+                    <p>上传成品图评分、多维度报告与图表，代表样本展示，支持 AI 智能分析。</p>
+                    <a href="/product-scoring-visualization" class="btn">进入</a>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <h2 class="section-title">姿态与视频展示</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>抻面手部姿态视频（预处理）</h3>
+                    <p>浏览已预处理的带骨架线抻面视频列表并播放。</p>
+                    <a href="/video-skeleton" class="btn">进入</a>
+                </div>
+                <div class="card">
+                    <h3>下面及捞面手部姿态视频（预处理）</h3>
+                    <p>浏览已预处理的带骨架线 xl 视频列表并播放，视频比例适配界面。</p>
+                    <a href="/video-skeleton-boiling" class="btn">进入</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        兰州拉面标准化流程视觉质检系统 · 流程检测 · 评分分析 · 姿态可视化
+    </footer>
+</body>
+</html>

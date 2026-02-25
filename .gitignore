@@ -1,0 +1,33 @@
+# AI API 密钥（勿提交到仓库）
+configs/ai_api_secret.json
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# 大文件/训练产物（可选：若希望备份权重可注释掉 models/ 下一行）
+models/
+*.pt
+*.pth
+*.onnx
+
+# 原始数据与媒体（体积大，建议用网盘或 DVC 备份）
+data/processed/
+data/processed_videos/
+data/ivcam/
+data/images/
+datasets/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

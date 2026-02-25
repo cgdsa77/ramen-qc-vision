@@ -1,0 +1,25 @@
+{
+  "video": "xl5",
+  "frame": "xl5_00017.jpg",
+  "scores": {
+    "detection_0": {
+      "drainage_effect": 4.0,
+      "distribution_state": 4.0,
+      "action": 4.23,
+      "thickness": 4.43,
+      "elasticity": 4.43,
+      "ripeness": 4.43,
+      "cleanliness": 4.29,
+      "position": 3.82,
+      "operation_standardization": 4.0,
+      "tool_coordination": 3.64,
+      "soup_adhesion": 4.0,
+      "noodle_soup_ratio": 4.17,
+      "integrity": 4.13,
+      "coordination": 4.23,
+      "notes": "关键帧时间线性插值"
+    }
+  },
+  "stage": "boiling_scooping",
+  "interpolated": true
+}

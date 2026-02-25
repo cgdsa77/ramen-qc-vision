@@ -1,0 +1,310 @@
+{
+  "version": "1.0",
+  "stage": "下面及捞面",
+  "thresholds": {
+    "position": {
+      "excellent": 4.0,
+      "good": 4.0,
+      "fair": 3.83,
+      "poor": 3.4926,
+      "mean": 3.708,
+      "std": 0.4308
+    },
+    "action": {
+      "excellent": 4.5,
+      "good": 4.33,
+      "fair": 4.0,
+      "poor": 3.4,
+      "mean": 3.8935,
+      "std": 0.6456
+    },
+    "coordination": {
+      "excellent": 4.21,
+      "good": 4.0,
+      "fair": 4.0,
+      "poor": 3.38,
+      "mean": 3.7428,
+      "std": 0.496
+    },
+    "tool_coordination": {
+      "excellent": 4.188,
+      "good": 4.0,
+      "fair": 3.62,
+      "poor": 3.0,
+      "mean": 3.5724,
+      "std": 0.6092
+    },
+    "thickness": {
+      "excellent": 4.0,
+      "good": 4.0,
+      "fair": 4.0,
+      "poor": 3.5073,
+      "mean": 3.7335,
+      "std": 0.4524
+    },
+    "elasticity": {
+      "excellent": 4.5,
+      "good": 4.0,
+      "fair": 3.39,
+      "poor": 3.0,
+      "mean": 3.5101,
+      "std": 0.6757
+    },
+    "integrity": {
+      "excellent": 4.166,
+      "good": 4.0,
+      "fair": 3.6,
+      "poor": 3.0,
+      "mean": 3.4786,
+      "std": 0.6305
+    },
+    "ripeness": {
+      "excellent": 4.5,
+      "good": 4.0,
+      "fair": 3.6,
+      "poor": 3.0,
+      "mean": 3.5087,
+      "std": 0.6773
+    },
+    "distribution_state": {
+      "excellent": 4.0,
+      "good": 3.86,
+      "fair": 3.6,
+      "poor": 3.3545,
+      "mean": 3.6102,
+      "std": 0.5113
+    },
+    "drainage_effect": {
+      "excellent": 4.0,
+      "good": 3.76,
+      "fair": 3.33,
+      "poor": 3.0,
+      "mean": 3.3788,
+      "std": 0.4166
+    },
+    "cleanliness": {
+      "excellent": 4.42,
+      "good": 4.0,
+      "fair": 3.6,
+      "poor": 3.09,
+      "mean": 3.6231,
+      "std": 0.5627
+    },
+    "operation_standardization": {
+      "excellent": 4.0,
+      "good": 4.0,
+      "fair": 3.65,
+      "poor": 3.25,
+      "mean": 3.6114,
+      "std": 0.4525
+    },
+    "soup_adhesion": {
+      "excellent": 4.0,
+      "good": 4.0,
+      "fair": 3.6,
+      "poor": 3.4776,
+      "mean": 3.6746,
+      "std": 0.3941
+    },
+    "noodle_soup_ratio": {
+      "excellent": 4.5,
+      "good": 4.05,
+      "fair": 3.6,
+      "poor": 3.3843,
+      "mean": 3.7432,
+      "std": 0.7179
+    },
+    "angle": {
+      "excellent": 4.5,
+      "good": 3.5,
+      "fair": 2.5,
+      "poor": 2.0,
+      "mean": 3.0,
+      "std": 0.8
+    }
+  },
+  "statistics": {
+    "position": {
+      "mean": 3.708,
+      "std": 0.4308,
+      "min": 2.0,
+      "max": 5.0,
+      "median": 3.83,
+      "q25": 3.52,
+      "q75": 4.0,
+      "count": 523
+    },
+    "action": {
+      "mean": 3.8935,
+      "std": 0.6456,
+      "min": 2.0,
+      "max": 5.0,
+      "median": 4.0,
+      "q25": 3.4,
+      "q75": 4.33,
+      "count": 523
+    },
+    "coordination": {
+      "mean": 3.7428,
+      "std": 0.496,
+      "min": 2.0,
+      "max": 5.0,
+      "median": 4.0,
+      "q25": 3.38,
+      "q75": 4.0,
+      "count": 523
+    },
+    "tool_coordination": {
+      "mean": 3.5724,
+      "std": 0.6092,
+      "min": 2.0,
+      "max": 5.0,
+      "median": 3.62,
+      "q25": 3.0,
+      "q75": 4.0,
+      "count": 477
+    },
+    "thickness": {
+      "mean": 3.7335,
+      "std": 0.4524,
+      "min": 2.7,
+      "max": 5.0,
+      "median": 4.0,
+      "q25": 3.6,
+      "q75": 4.0,
+      "count": 425
+    },
+    "elasticity": {
+      "mean": 3.5101,
+      "std": 0.6757,
+      "min": 2.7,
+      "max": 5.0,
+      "median": 3.39,
+      "q25": 3.0,
+      "q75": 4.0,
+      "count": 425
+    },
+    "integrity": {
+      "mean": 3.4786,
+      "std": 0.6305,
+      "min": 1.8,
+      "max": 5.0,
+      "median": 3.6,
+      "q25": 3.0,
+      "q75": 4.0,
+      "count": 425
+    },
+    "ripeness": {
+      "mean": 3.5087,
+      "std": 0.6773,
+      "min": 2.7,
+      "max": 5.0,
+      "median": 3.6,
+      "q25": 3.0,
+      "q75": 4.0,
+      "count": 425
+    },
+    "distribution_state": {
+      "mean": 3.6102,
+      "std": 0.5113,
+      "min": 1.8,
+      "max": 5.0,
+      "median": 3.6,
+      "q25": 3.6,
+      "q75": 3.86,
+      "count": 353
+    },
+    "drainage_effect": {
+      "mean": 3.3788,
+      "std": 0.4166,
+      "min": 2.7,
+      "max": 4.0,
+      "median": 3.33,
+      "q25": 3.0,
+      "q75": 3.76,
+      "count": 441
+    },
+    "cleanliness": {
+      "mean": 3.6231,
+      "std": 0.5627,
+      "min": 2.7,
+      "max": 5.0,
+      "median": 3.6,
+      "q25": 3.09,
+      "q75": 4.0,
+      "count": 441
+    },
+    "operation_standardization": {
+      "mean": 3.6114,
+      "std": 0.4525,
+      "min": 2.7,
+      "max": 5.0,
+      "median": 3.65,
+      "q25": 3.25,
+      "q75": 4.0,
+      "count": 441
+    },
+    "soup_adhesion": {
+      "mean": 3.6746,
+      "std": 0.3941,
+      "min": 2.0,
+      "max": 5.0,
+      "median": 3.6,
+      "q25": 3.6,
+      "q75": 4.0,
+      "count": 353
+    },
+    "noodle_soup_ratio": {
+      "mean": 3.7432,
+      "std": 0.7179,
+      "min": 1.8,
+      "max": 5.0,
+      "median": 3.6,
+      "q25": 3.6,
+      "q75": 4.05,
+      "count": 353
+    },
+    "angle": {
+      "mean": 3.0,
+      "std": 0.8,
+      "min": 1,
+      "max": 5,
+      "median": 3,
+      "q25": 2.5,
+      "q75": 3.5,
+      "count": 0
+    }
+  },
+  "weights": {
+    "hand": {
+      "position": 0.25,
+      "action": 0.25,
+      "angle": 0.2,
+      "coordination": 0.15,
+      "tool_coordination": 0.15
+    },
+    "noodle_rope": {
+      "thickness": 0.15,
+      "elasticity": 0.15,
+      "integrity": 0.15,
+      "ripeness": 0.15,
+      "soup_adhesion": 0.15,
+      "noodle_soup_ratio": 0.15,
+      "distribution_state": 0.1
+    },
+    "tools_noodle": {
+      "operation_standardization": 0.5,
+      "tool_coordination": 0.5
+    },
+    "soup_noodle": {
+      "ripeness": 0.5,
+      "distribution_state": 0.5
+    }
+  },
+  "overall_weights": {
+    "noodle_rope": 0.35,
+    "hand": 0.35,
+    "tools_noodle": 0.15,
+    "soup_noodle": 0.15
+  }
+}

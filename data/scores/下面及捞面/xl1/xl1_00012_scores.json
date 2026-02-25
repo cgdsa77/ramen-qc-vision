@@ -1,0 +1,27 @@
+{
+  "video": "xl1",
+  "frame": "xl1_00012.jpg",
+  "scores": {
+    "detection_0": {
+      "soup_adhesion": 3,
+      "noodle_soup_ratio": 4,
+      "distribution_state": 4,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 3,
+      "tool_coordination": 3,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "operation_standardization": 4,
+      "cleanliness": 4,
+      "drainage_effect": 3,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770690719.7457426
+}

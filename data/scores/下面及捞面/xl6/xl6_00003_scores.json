@@ -1,0 +1,22 @@
+{
+  "video": "xl6",
+  "frame": "xl6_00003.jpg",
+  "scores": {
+    "detection_0": {
+      "position": 3,
+      "action": 3,
+      "coordination": 4,
+      "tool_coordination": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "thickness": 3,
+      "integrity": 3,
+      "elasticity": 3,
+      "ripeness": 3,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770692012.6766531
+}

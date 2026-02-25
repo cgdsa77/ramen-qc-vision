@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下面及捞面检测系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); text-align: left; }
+        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .nav-home:hover { text-decoration: underline; }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .upload-section {
+            background: #f8f9fa;
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f0f2f5;
+        }
+        
+        .upload-section.dragover {
+            border-color: #764ba2;
+            background: #e8ebf0;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+        
+        .upload-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .confirm-overlay { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; }
+        .confirm-overlay.show { display: flex; }
+        .confirm-box { background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); max-width: 360px; text-align: center; }
+        .confirm-box p { margin-bottom: 20px; font-size: 16px; color: #333; }
+        .confirm-box .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .confirm-box .btns button { padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; }
+        .confirm-box .btns .btn-ok { background: #667eea; color: #fff; }
+        .confirm-box .btns .btn-cancel { background: #e9ecef; color: #333; }
+        
+        .video-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .video-container {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            max-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        video, canvas {
+            max-width: 100%;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+        
+        .video-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .detection-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .detection-info h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .detection-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .error.active {
+            display: block;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        
+        .legend-color.hand { background: #FF0000; }
+        .legend-color.noodle { background: #0000FF; }
+        .legend-color.tools { background: #FFA500; }
+        .legend-color.soup { background: #800080; }
+        .legend-color.head { background: #AA00FF; }
+    </style>
+</head>
+<body>
+    <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
+    <div class="container">
+        <div class="header">
+            <h1>🍜 下面及捞面检测系统</h1>
+            <p>上传视频进行实时检测 - 识别面条、手部、工具等目标</p>
+        </div>
+        
+        <div class="content">
+            <!-- 上传区域 -->
+            <div class="upload-section" id="uploadSection">
+                <h2>📤 上传视频文件</h2>
+                <p style="margin: 20px 0; color: #6c757d;">支持 MP4, AVI, MOV 格式</p>
+                <div style="margin-bottom: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <label for="modelTypeSelect" style="color: #495057;">检测使用模型：</label>
+                    <select id="modelTypeSelect" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #dee2e6; background: #fff;">
+                        <option value="cpu">CPU 训练模型</option>
+                        <option value="gpu">GPU 训练模型（预留）</option>
+                    </select>
+                </div>
+                <input type="file" id="fileInput" accept="video/*">
+                <label for="fileInput" class="upload-btn">选择视频文件</label>
+                <p id="fileName" style="margin-top: 15px; color: #667eea; font-weight: bold;"></p>
+            </div>
+            
+            <!-- 加载提示与进度 -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 15px;" id="loadingText">正在处理视频，请稍候...</p>
+                <div id="progressWrap" style="display:none; margin-top: 15px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                    <div style="background:#e9ecef; border-radius: 8px; height: 24px; overflow: hidden;">
+                        <div id="progressBar" style="height:100%; width:0%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.2s;"></div>
+                    </div>
+                    <p id="progressText" style="margin-top: 8px; font-size: 14px; color: #666;"></p>
+                </div>
+                <p style="margin-top: 20px; font-size: 14px; color: #333; font-weight: bold;">可随时停止检测：</p>
+                <div style="margin-top: 10px;">
+                    <button type="button" class="btn btn-danger" id="stopDetectionBtn">停止检测</button>
+                </div>
+            </div>
+            <p id="cancelHint" style="display:none; margin-top: 12px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; text-align: center;">检测已取消。请重新选择视频或点击上方返回首页。</p>
+            
+            <!-- 错误提示 -->
+            <div class="error" id="error"></div>
+            
+            <!-- 视频显示区域 -->
+            <div class="video-section" id="videoSection" style="display: none;">
+                <div>
+                    <h3 style="margin-bottom: 15px;">原始视频</h3>
+                    <div class="video-container">
+                        <video id="originalVideo" controls></video>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 15px;">检测结果</h3>
+                    <div class="video-container">
+                        <canvas id="detectionCanvas"></canvas>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color hand"></div>
+                            <span>手部 (hand)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color noodle"></div>
+                            <span>面条 (noodle_rope)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color tools"></div>
+                            <span>工具 (tools_noodle)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color soup"></div>
+                            <span>汤中面条 (soup_noodle)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color head"></div>
+                            <span>头部 (head)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 控制按钮 -->
+            <div class="controls" id="controls" style="display: none;">
+                <button class="btn btn-primary" id="startBtn">开始检测</button>
+                <button class="btn btn-secondary" id="stopBtn">停止</button>
+                <button class="btn btn-primary" id="scoreBtn">生成评分</button>
+                <button class="btn btn-secondary" id="newVideoBtn">选择新视频</button>
+                <a href="/" class="btn btn-secondary">返回首页</a>
+            </div>
+            
+            <!-- 检测统计信息 -->
+            <div class="detection-info" id="detectionInfo" style="display: none;">
+                <h3>检测统计</h3>
+                <div class="detection-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">总帧数</div>
+                        <div class="stat-value" id="totalFrames">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">手部检测</div>
+                        <div class="stat-value" id="handCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">面条检测</div>
+                        <div class="stat-value" id="noodleCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">工具检测</div>
+                        <div class="stat-value" id="toolsCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">汤中面条检测</div>
+                        <div class="stat-value" id="soupCount">0</div>
+                    </div>
+                </div>
+                <div id="scoreResultWrap" style="display:none; margin-top: 16px;">
+                    <h4 style="color:#667eea; margin-bottom: 8px;">评分结果</h4>
+                    <pre id="scoreResult" style="background:#f0f2f5; padding: 12px; border-radius: 8px; white-space: pre-wrap; font-size: 13px; max-height: 280px; overflow: auto;"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ivcamConfirmOverlay" class="confirm-overlay">
+        <div class="confirm-box">
+            <p>确认对其进行检测吗？</p>
+            <div class="btns">
+                <button type="button" class="btn-ok" id="ivcamConfirmOk">确认</button>
+                <button type="button" class="btn-cancel" id="ivcamConfirmCancel">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadSection = document.getElementById('uploadSection');
+        const originalVideo = document.getElementById('originalVideo');
+        const detectionCanvas = document.getElementById('detectionCanvas');
+        const ctx = detectionCanvas.getContext('2d');
+        const videoSection = document.getElementById('videoSection');
+        const controls = document.getElementById('controls');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const detectionInfo = document.getElementById('detectionInfo');
+        const fileName = document.getElementById('fileName');
+        
+        let detectionData = null;
+        let isPlaying = false;
+        let animationId = null;
+        let detectionAbortController = null;
+        let currentDetectJobId = null;
+        let isDetecting = false;
+        /** 当前用于检测的视频文件（ivcam 拉取后无 fileInput，供「生成评分」使用） */
+        let currentDetectionFile = null;
+        const stopDetectionBtn = document.getElementById('stopDetectionBtn');
+        const cancelHint = document.getElementById('cancelHint');
+        const newVideoBtn = document.getElementById('newVideoBtn');
+        
+        // 文件选择
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        // 拖拽上传
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+        
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+        
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('video/')) {
+                fileInput.files = files;
+                handleFileSelect();
+            }
+        });
+        
+        function showProgress(percent, text) {
+            const wrap = document.getElementById('progressWrap');
+            const bar = document.getElementById('progressBar');
+            const pt = document.getElementById('progressText');
+            const lt = document.getElementById('loadingText');
+            if (wrap && bar && pt) {
+                wrap.style.display = 'block';
+                bar.style.width = (percent || 0) + '%';
+                pt.textContent = text || '';
+                if (lt) lt.style.display = percent >= 100 ? 'none' : 'block';
+            }
+        }
+        function hideProgress() {
+            const wrap = document.getElementById('progressWrap');
+            const lt = document.getElementById('loadingText');
+            if (wrap) wrap.style.display = 'none';
+            if (lt) lt.style.display = 'block';
+        }
+
+        function showUploadStateAfterCancel() {
+            loading.classList.remove('active');
+            if (stopDetectionBtn) stopDetectionBtn.style.display = 'none';
+            uploadSection.style.display = 'block';
+            cancelHint.style.display = 'block';
+            error.classList.remove('active');
+            videoSection.style.display = 'none';
+            controls.style.display = 'none';
+            detectionInfo.style.display = 'none';
+        }
+        
+        async function runDetectionWithFile(file) {
+            if (!file || isDetecting) return;
+            currentDetectionFile = file;
+            isDetecting = true;
+            
+            if (currentDetectJobId) {
+                fetch('/api/detect_cancel?job_id=' + encodeURIComponent(currentDetectJobId), { method: 'POST' }).catch(function(){});
+                currentDetectJobId = null;
+            }
+            if (detectionAbortController) detectionAbortController.abort();
+            detectionAbortController = new AbortController();
+            const signal = detectionAbortController.signal;
+            
+            fileName.textContent = `已选择: ${file.name}`;
+            cancelHint.style.display = 'none';
+            const url = URL.createObjectURL(file);
+            originalVideo.src = url;
+            
+            uploadSection.style.display = 'none';
+            loading.classList.add('active');
+            error.classList.remove('active');
+            videoSection.style.display = 'none';
+            controls.style.display = 'none';
+            detectionInfo.style.display = 'none';
+            if (stopDetectionBtn) stopDetectionBtn.style.display = 'inline-block';
+            showProgress(0, '正在上传并开始检测…');
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                const modelType = (document.getElementById('modelTypeSelect') || {}).value || 'cpu';
+                const response = await fetch('/api/detect_boiling_scooping?async_mode=1&model_type=' + encodeURIComponent(modelType), { method: 'POST', body: formData, signal });
+                const first = await response.json();
+                if (signal.aborted) throw new DOMException('', 'AbortError');
+                if (!response.ok || !first.success) {
+                    throw new Error(first.message || first.error || '检测请求失败');
+                }
+                const jobId = first.job_id;
+                if (!jobId) throw new Error('未返回 job_id');
+                currentDetectJobId = jobId;
+                
+                const poll = async () => {
+                    if (signal.aborted) throw new DOMException('', 'AbortError');
+                    const pr = await fetch('/api/detect_progress?job_id=' + encodeURIComponent(jobId), { signal });
+                    const prog = await pr.json();
+                    if (signal.aborted) throw new DOMException('', 'AbortError');
+                    if (prog.percent != null) showProgress(prog.percent, prog.message || prog.current + '/' + prog.total);
+                    if (prog.phase === 'done') {
+                        const res = await fetch('/api/detect_result?job_id=' + encodeURIComponent(jobId), { signal });
+                        const data = await res.json();
+                        if (signal.aborted) throw new DOMException('', 'AbortError');
+                        if (data.success === false && data.error) throw new Error(data.error);
+                        return data;
+                    }
+                    if (prog.phase === 'error') throw new Error(prog.message || '检测失败');
+                    await new Promise(r => setTimeout(r, 500));
+                    return poll();
+                };
+                detectionData = await poll();
+                
+                if (!detectionData.success) {
+                    throw new Error(detectionData.message || detectionData.error || '检测失败');
+                }
+                
+                function ensureCanvasAndDraw() {
+                    if (detectionCanvas.width !== originalVideo.videoWidth || detectionCanvas.height !== originalVideo.videoHeight) {
+                        detectionCanvas.width = originalVideo.videoWidth;
+                        detectionCanvas.height = originalVideo.videoHeight;
+                    }
+                    drawCurrentFrame();
+                }
+                originalVideo.addEventListener('loadedmetadata', ensureCanvasAndDraw, { once: true });
+                originalVideo.addEventListener('loadeddata', ensureCanvasAndDraw, { once: true });
+                if (originalVideo.readyState >= 2) ensureCanvasAndDraw();
+                updateStats();
+                videoSection.style.display = 'grid';
+                controls.style.display = 'flex';
+                detectionInfo.style.display = 'block';
+                loading.classList.remove('active');
+                hideProgress();
+                if (stopDetectionBtn) stopDetectionBtn.style.display = 'none';
+                uploadSection.style.display = 'block';
+                currentDetectJobId = null;
+                isDetecting = false;
+            } catch (err) {
+                loading.classList.remove('active');
+                hideProgress();
+                if (stopDetectionBtn) stopDetectionBtn.style.display = 'none';
+                if (err.name === 'AbortError') {
+                    showUploadStateAfterCancel();
+                    currentDetectJobId = null;
+                    isDetecting = false;
+                    return;
+                }
+                currentDetectJobId = null;
+                uploadSection.style.display = 'block';
+                error.textContent = '错误: ' + err.message;
+                error.classList.add('active');
+            }
+            isDetecting = false;
+        }
+        
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (!file) return;
+            runDetectionWithFile(file);
+        }
+        
+        function onStopDetectionClick() {
+            if (currentDetectJobId) {
+                fetch('/api/detect_cancel?job_id=' + encodeURIComponent(currentDetectJobId), { method: 'POST' }).catch(function(){});
+                currentDetectJobId = null;
+            }
+            if (detectionAbortController) detectionAbortController.abort();
+        }
+        if (stopDetectionBtn) stopDetectionBtn.addEventListener('click', onStopDetectionClick);
+        if (newVideoBtn) {
+            newVideoBtn.addEventListener('click', () => {
+                if (animationId) cancelAnimationFrame(animationId);
+                isPlaying = false;
+                originalVideo.pause();
+                detectionData = null;
+                currentDetectionFile = null;
+                fileInput.value = '';
+                fileName.textContent = '';
+                videoSection.style.display = 'none';
+                controls.style.display = 'none';
+                detectionInfo.style.display = 'none';
+                cancelHint.style.display = 'none';
+                error.classList.remove('active');
+                uploadSection.style.display = 'block';
+            });
+        }
+        
+        function updateStats() {
+            if (!detectionData) return;
+            document.getElementById('totalFrames').textContent = detectionData.total_frames || 0;
+            let noodleCount = 0, handCount = 0, toolsCount = 0, soupCount = 0;
+            detectionData.detections?.forEach(frame => {
+                frame.detections?.forEach(det => {
+                    const cls = String(det.class ?? det.class_id ?? '');
+                    if (cls === 'noodle_rope' || cls === '0') noodleCount++;
+                    if (cls === 'hand' || cls === '1') handCount++;
+                    if (cls === 'tools_noodle' || cls === '2') toolsCount++;
+                    if (cls === 'soup_noodle' || cls === '3') soupCount++;
+                });
+            });
+            document.getElementById('noodleCount').textContent = noodleCount;
+            document.getElementById('handCount').textContent = handCount;
+            document.getElementById('toolsCount').textContent = toolsCount;
+            document.getElementById('soupCount').textContent = soupCount;
+        }
+        
+        // 开始检测
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (!detectionData || !detectionData.success) {
+                error.textContent = '检测数据无效，请重新上传视频';
+                error.classList.add('active');
+                return;
+            }
+            
+            // 确保canvas尺寸正确
+            if (detectionCanvas.width === 0 || detectionCanvas.height === 0) {
+                detectionCanvas.width = originalVideo.videoWidth;
+                detectionCanvas.height = originalVideo.videoHeight;
+            }
+            
+            originalVideo.play();
+            isPlaying = true;
+            drawDetections();
+        });
+        
+        // 停止
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            originalVideo.pause();
+            isPlaying = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        });
+
+    // 生成评分：异步带进度，完成后跳转下面及捞面综合评分页（支持 ivcam：无 fileInput 时用 currentDetectionFile）
+    document.getElementById('scoreBtn').addEventListener('click', async () => {
+        const file = fileInput.files[0] || currentDetectionFile;
+        if (!file) {
+            error.textContent = '请先选择视频文件';
+            error.classList.add('active');
+            return;
+        }
+        loading.classList.add('active');
+        error.classList.remove('active');
+        showProgress(0, '正在提交评分任务…');
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('stage', 'boiling_scooping');
+        try {
+            const modelType = (document.getElementById('modelTypeSelect') || {}).value || 'cpu';
+            const resp = await fetch('/api/score_video?async_mode=1&stage=boiling_scooping&model_type=' + encodeURIComponent(modelType), { method: 'POST', body: formData });
+            const text = await resp.text();
+            let first;
+            try { first = JSON.parse(text); } catch (_) {
+                throw new Error(resp.ok ? '服务器返回格式错误' : (text || '请求失败 ' + resp.status));
+            }
+            if (!first.success || !first.job_id) throw new Error(first.message || first.error || '评分请求失败');
+            const jobId = first.job_id;
+            const poll = async () => {
+                const pr = await fetch('/api/score_progress?job_id=' + encodeURIComponent(jobId));
+                const pt = await pr.text();
+                let prog;
+                try { prog = JSON.parse(pt); } catch (_) {
+                    throw new Error(pr.ok ? '进度格式错误' : (pt || '请求失败 ' + pr.status));
+                }
+                if (prog.percent != null) showProgress(prog.percent, prog.message || '');
+                if (prog.phase === 'done') {
+                    const res = await fetch('/api/score_result?job_id=' + encodeURIComponent(jobId));
+                    const rt = await res.text();
+                    let data;
+                    try { data = JSON.parse(rt); } catch (_) {
+                        throw new Error(res.ok ? '结果格式错误' : (rt || '请求失败 ' + res.status));
+                    }
+                    if (data.success === false && data.error) throw new Error(data.error);
+                    loading.classList.remove('active');
+                    hideProgress();
+                    document.getElementById('scoreResult').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('scoreResultWrap').style.display = 'block';
+                    return;
+                }
+                if (prog.phase === 'error') throw new Error(prog.message || prog.error || '评分失败');
+                await new Promise(r => setTimeout(r, 500));
+                return poll();
+            };
+            await poll();
+        } catch (e) {
+            loading.classList.remove('active');
+            hideProgress();
+            error.textContent = '评分失败: ' + e.message;
+            error.classList.add('active');
+        }
+    });
+        
+        function drawCurrentFrame() {
+            if (!detectionData || !detectionData.success || !detectionData.detections?.length) return;
+            const currentTime = originalVideo.currentTime;
+            const fps = Math.max(0.001, detectionData.fps || 30);
+            let frameIndex = Math.floor(currentTime * fps);
+            const totalFrames = detectionData.detections.length;
+            frameIndex = Math.max(0, Math.min(frameIndex, totalFrames - 1));
+            if (detectionCanvas.width !== originalVideo.videoWidth || detectionCanvas.height !== originalVideo.videoHeight) {
+                detectionCanvas.width = originalVideo.videoWidth;
+                detectionCanvas.height = originalVideo.videoHeight;
+            }
+            ctx.clearRect(0, 0, detectionCanvas.width, detectionCanvas.height);
+            ctx.drawImage(originalVideo, 0, 0, detectionCanvas.width, detectionCanvas.height);
+            const frame = detectionData.detections[frameIndex];
+            if (frame && frame.detections && frame.detections.length) {
+                frame.detections.forEach((det, idx) => {
+                    const xy = det.xyxy;
+                    if (!xy || xy.length < 4) return;
+                    const x1 = xy[0], y1 = xy[1], x2 = xy[2], y2 = xy[3];
+                    const cls = String(det.class ?? det.class_id ?? '');
+                    let color = '#0000FF', label = cls;
+                    if (cls === 'noodle_rope' || cls === '0') { color = '#0000FF'; label = 'noodle_rope'; }
+                    else if (cls === 'hand' || cls === '1') { color = '#FF0000'; label = 'hand'; }
+                    else if (cls === 'tools_noodle' || cls === '2') { color = '#FFA500'; label = 'tools_noodle'; }
+                    else if (cls === 'soup_noodle' || cls === '3') { color = '#800080'; label = 'soup_noodle'; }
+                    else if (cls === 'head') { color = '#AA00FF'; label = 'head'; }
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                    const labelText = `${label} ${((det.conf || 0) * 100).toFixed(0)}%`;
+                    ctx.font = 'bold 18px Arial';
+                    const labelWidth = ctx.measureText(labelText).width + 10;
+                    const labelHeight = 25;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    ctx.fillRect(x1, y1 - labelHeight, labelWidth, labelHeight);
+                    ctx.fillStyle = color;
+                    ctx.fillText(labelText, x1 + 5, y1 - 8);
+                    ctx.font = 'bold 16px Arial';
+                    ctx.fillText(String(idx + 1), x1 + 5, y1 + 20);
+                });
+            }
+        }
+        function drawDetections() {
+            if (!isPlaying || !detectionData || !detectionData.success) return;
+            drawCurrentFrame();
+            animationId = requestAnimationFrame(drawDetections);
+        }
+        originalVideo.addEventListener('play', () => {
+            if (!isPlaying) { isPlaying = true; drawDetections(); }
+        });
+        originalVideo.addEventListener('pause', () => {
+            isPlaying = false;
+            if (animationId) cancelAnimationFrame(animationId);
+        });
+        originalVideo.addEventListener('seeked', drawCurrentFrame);
+        originalVideo.addEventListener('timeupdate', () => { if (!isPlaying) drawCurrentFrame(); });
+
+        (function initIvcamConfirm() {
+            var params = new URLSearchParams(location.search);
+            var ivcam = params.get('ivcam');
+            if (!ivcam) return;
+            var overlay = document.getElementById('ivcamConfirmOverlay');
+            var btnOk = document.getElementById('ivcamConfirmOk');
+            var btnCancel = document.getElementById('ivcamConfirmCancel');
+            function clearIvcamUrl() {
+                params.delete('ivcam');
+                var q = params.toString();
+                history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
+            }
+            overlay.classList.add('show');
+            btnCancel.onclick = function() {
+                overlay.classList.remove('show');
+                location.href = '/realtime-monitor';
+            };
+            btnOk.onclick = async function() {
+                overlay.classList.remove('show');
+                clearIvcamUrl();
+                try {
+                    var r = await fetch('/api/ivcam/file/' + encodeURIComponent(ivcam));
+                    if (!r.ok) throw new Error('无法获取文件');
+                    var blob = await r.blob();
+                    var file = new File([blob], ivcam, { type: blob.type || 'video/mp4' });
+                    runDetectionWithFile(file);
+                } catch (e) {
+                    error.textContent = '错误: ' + e.message;
+                    error.classList.add('active');
+                    uploadSection.style.display = 'block';
+                }
+            };
+        })();
+    </script>
+</body>
+</html>
+

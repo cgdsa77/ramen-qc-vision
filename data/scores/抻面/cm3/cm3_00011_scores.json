@@ -1,0 +1,26 @@
+{
+  "video": "cm3",
+  "frame": "cm3_00011.jpg",
+  "scores": {
+    "detection_0": {
+      "tightness": 4,
+      "uniformity": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 3,
+      "angle": 4,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "action": 5,
+      "position": 4,
+      "angle": 3,
+      "coordination": 4,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768831965.258398
+}

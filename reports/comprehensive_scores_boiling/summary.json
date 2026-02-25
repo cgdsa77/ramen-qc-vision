@@ -1,0 +1,86 @@
+{
+  "total_videos": 10,
+  "success_count": 10,
+  "results": {
+    "xl1": {
+      "total_frames": 755,
+      "scored_frames": 25,
+      "hand_score": 3.1754312523277695,
+      "noodle_rope_score": 3.6597938144329913,
+      "noodle_bundle_score": 3.6412941176470586,
+      "total_score": 3.4847170086603834
+    },
+    "xl10": {
+      "total_frames": 2148,
+      "scored_frames": 72,
+      "hand_score": 2.7466216662143657,
+      "noodle_rope_score": 4.102971976401194,
+      "noodle_bundle_score": 3.8455805243445718,
+      "total_score": 3.551031932218817
+    },
+    "xl2": {
+      "total_frames": 1095,
+      "scored_frames": 73,
+      "hand_score": 2.9401168236282555,
+      "noodle_rope_score": 3.1875974025974223,
+      "noodle_bundle_score": 3.2841232227488177,
+      "total_score": 3.129936946003632
+    },
+    "xl3": {
+      "total_frames": 1853,
+      "scored_frames": 154,
+      "hand_score": 3.180377551769959,
+      "noodle_rope_score": 3.4345729303547716,
+      "noodle_bundle_score": 3.5893155258764486,
+      "total_score": 3.3920273265065903
+    },
+    "xl4": {
+      "total_frames": 977,
+      "scored_frames": 33,
+      "hand_score": 3.121588538257139,
+      "noodle_rope_score": 3.825675675675681,
+      "noodle_bundle_score": 3.7744623655913965,
+      "total_score": 3.563881184553906
+    },
+    "xl5": {
+      "total_frames": 1196,
+      "scored_frames": 40,
+      "hand_score": 2.7619743307327775,
+      "noodle_rope_score": 3.784385245901657,
+      "noodle_bundle_score": 3.6068045977011534,
+      "total_score": 3.373267231132398
+    },
+    "xl6": {
+      "total_frames": 160,
+      "scored_frames": 13,
+      "hand_score": 2.734298406038463,
+      "noodle_rope_score": 3.205434782608693,
+      "noodle_bundle_score": 2.9529411764705884,
+      "total_score": 2.9647889689676807
+    },
+    "xl7": {
+      "total_frames": 528,
+      "scored_frames": 44,
+      "hand_score": 3.1692005056077694,
+      "noodle_rope_score": 3.109291237113408,
+      "noodle_bundle_score": 3.3842976939203333,
+      "total_score": 3.212761418128512
+    },
+    "xl8": {
+      "total_frames": 279,
+      "scored_frames": 23,
+      "hand_score": 2.65079306431028,
+      "noodle_rope_score": 3.608434065934064,
+      "noodle_bundle_score": 3.3971830985915483,
+      "total_score": 3.2098844251629846
+    },
+    "xl9": {
+      "total_frames": 112,
+      "scored_frames": 9,
+      "hand_score": 0.6188679245283017,
+      "noodle_rope_score": 4.052083333333331,
+      "noodle_bundle_score": 3.933333333333333,
+      "total_score": 2.8148329402515713
+    }
+  }
+}

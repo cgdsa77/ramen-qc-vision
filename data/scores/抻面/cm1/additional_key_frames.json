@@ -1,0 +1,50 @@
+[
+  {
+    "frame": "cm1_00009.jpg",
+    "index": 9,
+    "detections": 2,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm1_00010.jpg",
+    "index": 10,
+    "detections": 3,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm1_00011.jpg",
+    "index": 11,
+    "detections": 3,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm1_00012.jpg",
+    "index": 12,
+    "detections": 3,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm1_00040.jpg",
+    "index": 40,
+    "detections": 3,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm1_00041.jpg",
+    "index": 41,
+    "detections": 3,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm1_00051.jpg",
+    "index": 51,
+    "detections": 3,
+    "has_noodle_bundle": true
+  },
+  {
+    "frame": "cm1_00076.jpg",
+    "index": 76,
+    "detections": 3,
+    "has_noodle_bundle": true
+  }
+]

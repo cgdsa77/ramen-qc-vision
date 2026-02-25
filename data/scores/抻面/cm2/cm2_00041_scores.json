@@ -1,0 +1,28 @@
+{
+  "video": "cm2",
+  "frame": "cm2_00041.jpg",
+  "scores": {
+    "detection_0": {
+      "position": 4,
+      "action": 3,
+      "angle": 4,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "angle": 4,
+      "action": 4,
+      "coordination": 3,
+      "notes": ""
+    },
+    "detection_2": {
+      "thickness": 4,
+      "elasticity": 3,
+      "gloss": 4,
+      "integrity": 4,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768831840.2190802
+}

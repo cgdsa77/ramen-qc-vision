@@ -1,0 +1,35 @@
+{
+  "video": "cm7",
+  "frame": "cm7_00026.jpg",
+  "scores": {
+    "detection_0": {
+      "position": 5,
+      "action": 4,
+      "angle": 3,
+      "coordination": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "thickness": 4,
+      "elasticity": 3,
+      "gloss": 4,
+      "integrity": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "position": 4,
+      "action": 3,
+      "angle": 3,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_3": {
+      "position": 4,
+      "action": 4,
+      "angle": 3,
+      "coordination": 4,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768832922.2614026
+}

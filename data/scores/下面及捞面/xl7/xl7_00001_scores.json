@@ -1,0 +1,15 @@
+{
+  "video": "xl7",
+  "frame": "xl7_00001.jpg",
+  "scores": {
+    "detection_0": {
+      "position": 3,
+      "action": 4,
+      "coordination": 3,
+      "tool_coordination": 4,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770692157.357741
+}

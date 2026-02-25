@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兰州拉面成品评估 - 标注工具</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f5f5f5; padding: 16px; }
+        .container { max-width: 1400px; margin: 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #c45c26 0%, #8b4513 100%); color: #fff; padding: 16px 20px; }
+        .header h1 { font-size: 22px; margin-bottom: 4px; }
+        .header p { font-size: 13px; opacity: 0.95; }
+        .nav-home { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 13px; }
+        .nav-home:hover { text-decoration: underline; }
+        .content { display: grid; grid-template-columns: 220px 1fr 320px; gap: 0; min-height: 75vh; }
+        .list-panel { background: #f8f9fa; border-right: 1px solid #eee; overflow-y: auto; max-height: 78vh; }
+        .list-panel h3 { padding: 12px 14px; font-size: 14px; color: #333; border-bottom: 1px solid #eee; }
+        .img-item { padding: 8px 14px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; }
+        .img-item:hover { background: #e9ecef; }
+        .img-item.current { background: #c45c26; color: #fff; }
+        .img-item.done { color: #0d6efd; }
+        .img-item.current.done { color: #fff; }
+        .main-panel { padding: 16px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; min-height: 0; }
+        .main-panel .placeholder { color: #999; padding: 40px; text-align: center; }
+        .main-panel .img-wrap { width: 100%; height: 65vh; min-height: 320px; display: flex; align-items: center; justify-content: center; }
+        .main-panel .img-wrap img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .form-panel { background: #f8f9fa; padding: 16px; overflow-y: auto; max-height: 78vh; }
+        .form-panel h3 { font-size: 14px; margin-bottom: 12px; color: #333; }
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; }
+        .field select, .field input, .field textarea { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
+        .field textarea { resize: vertical; min-height: 56px; }
+        .btn-save { width: 100%; padding: 12px; background: #c45c26; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 8px; }
+        .btn-save:hover { background: #a84d1f; }
+        .btn-save:disabled { background: #ccc; cursor: not-allowed; }
+        .status { font-size: 12px; color: #666; margin-top: 10px; }
+        .status.err { color: #c00; }
+        .status.ok { color: #0a0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a class="nav-home" href="/web/index.html">← 返回首页</a>
+            <h1>兰州拉面成品分析评估</h1>
+            <p>主评：面条质感 | 汤型：红汤/清汤 | 面条辣椒 | 辅料：牛肉、鸡蛋、蒜苗碎</p>
+        </div>
+        <div class="content">
+            <div class="list-panel">
+                <h3>图片列表</h3>
+                <div id="imageList"></div>
+            </div>
+            <div class="main-panel">
+                <div id="imagePlaceholder" class="placeholder">左侧选择一张图片开始标注</div>
+                <div class="img-wrap" id="imageWrap" style="display:none;">
+                    <img id="currentImage" alt="当前图片" />
+                </div>
+            </div>
+            <div class="form-panel">
+                <h3>标注</h3>
+                <div class="field">
+                    <label>面条质感（必填）</label>
+                    <select id="noodle_quality">
+                        <option value="">-- 选择 --</option>
+                        <option value="excellent">优秀</option>
+                        <option value="good">良好</option>
+                        <option value="fair">一般</option>
+                        <option value="poor">较差</option>
+                        <option value="bad">差</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>汤型（必填）</label>
+                    <select id="soup_type">
+                        <option value="">-- 选择 --</option>
+                        <option value="red">红汤（有辣椒）</option>
+                        <option value="clear">清汤（无辣椒）</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>面条裹辣椒情况（必填）</label>
+                    <select id="noodle_chili">
+                        <option value="">-- 选择 --</option>
+                        <option value="all">所有</option>
+                        <option value="partial">部分</option>
+                        <option value="none">无</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>牛肉</label>
+                    <select id="beef">
+                        <option value="">-- 选择 --</option>
+                        <option value="none">无</option>
+                        <option value="little">少量</option>
+                        <option value="more">较多</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>鸡蛋</label>
+                    <select id="egg">
+                        <option value="">-- 选择 --</option>
+                        <option value="none">无</option>
+                        <option value="yes">有</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>蒜苗碎</label>
+                    <select id="scallion">
+                        <option value="">-- 选择 --</option>
+                        <option value="none">无</option>
+                        <option value="little">少量</option>
+                        <option value="more">较多</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>备注</label>
+                    <input type="text" id="notes" placeholder="可选" />
+                </div>
+                <button type="button" class="btn-save" id="btnSave" disabled>保存当前标注</button>
+                <div id="saveStatus" class="status"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            const API = { base: '' };
+            let imageList = [];
+            let annotations = [];
+            let currentImage = null;
+            let byImage = {};
+
+            function getSelected(name) {
+                const el = document.getElementById(name);
+                return el ? (el.value || '').trim() : '';
+            }
+            function setSelected(name, value) {
+                const el = document.getElementById(name);
+                if (el) el.value = value || '';
+            }
+
+            function loadImageList() {
+                return fetch(API.base + '/api/product-images/list')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success && Array.isArray(data.images)) {
+                            imageList = data.images;
+                            return data.images;
+                        }
+                        return [];
+                    });
+            }
+
+            function loadAnnotations() {
+                return fetch(API.base + '/api/product-annotations')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success && Array.isArray(data.items)) {
+                            annotations = data.items;
+                            byImage = {};
+                            data.items.forEach(item => {
+                                if (item.image) byImage[item.image] = item;
+                            });
+                        }
+                        return annotations;
+                    });
+            }
+
+            function renderList() {
+                const container = document.getElementById('imageList');
+                container.innerHTML = imageList.map(name => {
+                    const done = byImage[name];
+                    const cls = name === currentImage ? 'current' : '';
+                    const doneCls = done ? 'done' : '';
+                    return '<div class="img-item ' + cls + ' ' + doneCls + '" data-name="' + name.replace(/"/g, '&quot;') + '">' + name + (done ? ' ✓' : '') + '</div>';
+                }).join('');
+                container.querySelectorAll('.img-item').forEach(el => {
+                    el.addEventListener('click', function () {
+                        selectImage(this.getAttribute('data-name'));
+                    });
+                });
+            }
+
+            function selectImage(name) {
+                currentImage = name;
+                document.getElementById('imagePlaceholder').style.display = 'none';
+                const wrap = document.getElementById('imageWrap');
+                const img = document.getElementById('currentImage');
+                wrap.style.display = 'flex';
+                img.src = API.base + '/api/product-image/' + encodeURIComponent(name) + '?t=' + Date.now();
+                document.getElementById('btnSave').disabled = false;
+                const rec = byImage[name] || {};
+                setSelected('noodle_quality', rec.noodle_quality);
+                setSelected('soup_type', rec.soup_type);
+                setSelected('noodle_chili', rec.noodle_chili);
+                setSelected('beef', rec.beef);
+                setSelected('egg', rec.egg);
+                setSelected('scallion', rec.scallion);
+                document.getElementById('notes').value = rec.notes || '';
+                renderList();
+            }
+
+            function collectForm() {
+                return {
+                    image: currentImage,
+                    noodle_quality: getSelected('noodle_quality'),
+                    soup_type: getSelected('soup_type'),
+                    noodle_chili: getSelected('noodle_chili'),
+                    beef: getSelected('beef') || '',
+                    egg: getSelected('egg') || '',
+                    scallion: getSelected('scallion') || '',
+                    notes: (document.getElementById('notes').value || '').trim()
+                };
+            }
+
+            function saveAnnotation() {
+                if (!currentImage) return;
+                const rec = collectForm();
+                if (!rec.noodle_quality || !rec.soup_type || !rec.noodle_chili) {
+                    document.getElementById('saveStatus').textContent = '请至少填写：面条质感、汤型、面条辣椒';
+                    document.getElementById('saveStatus').className = 'status err';
+                    return;
+                }
+                byImage[currentImage] = rec;
+                const items = imageList.map(name => byImage[name] || null).filter(Boolean);
+                document.getElementById('saveStatus').textContent = '保存中…';
+                document.getElementById('saveStatus').className = 'status';
+                fetch(API.base + '/api/product-annotations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items: items })
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('saveStatus').textContent = '已保存（' + data.count + ' 条）';
+                            document.getElementById('saveStatus').className = 'status ok';
+                            annotations = items;
+                            renderList();
+                        } else {
+                            document.getElementById('saveStatus').textContent = '保存失败: ' + (data.message || '');
+                            document.getElementById('saveStatus').className = 'status err';
+                        }
+                    })
+                    .catch(e => {
+                        document.getElementById('saveStatus').textContent = '请求失败: ' + e.message;
+                        document.getElementById('saveStatus').className = 'status err';
+                    });
+            }
+
+            document.getElementById('btnSave').addEventListener('click', saveAnnotation);
+
+            Promise.all([loadImageList(), loadAnnotations()]).then(() => {
+                renderList();
+                if (imageList.length === 0) {
+                    document.getElementById('imageList').innerHTML = '<div class="placeholder" style="padding:12px;">未找到 lmcp.*.jpg 图片</div>';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

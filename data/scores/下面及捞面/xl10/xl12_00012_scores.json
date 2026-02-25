@@ -1,0 +1,28 @@
+{
+  "video": "xl10",
+  "frame": "xl12_00012.jpg",
+  "scores": {
+    "detection_0": {
+      "thickness": 4,
+      "elasticity": 5,
+      "integrity": 4,
+      "ripeness": 5,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 5,
+      "coordination": 4,
+      "tool_coordination": 5,
+      "notes": ""
+    },
+    "detection_2": {
+      "action": 5,
+      "position": 4,
+      "coordination": 4,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770690906.2542431
+}

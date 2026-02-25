@@ -1,0 +1,21 @@
+{
+  "video": "xl2",
+  "frame": "xl2_00017.jpg",
+  "scores": {
+    "detection_0": {
+      "position": 4,
+      "action": 5,
+      "coordination": 4,
+      "tool_coordination": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "operation_standardization": 3,
+      "cleanliness": 3,
+      "drainage_effect": 3,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770691093.0883424
+}

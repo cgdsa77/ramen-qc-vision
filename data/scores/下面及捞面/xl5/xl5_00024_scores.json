@@ -1,0 +1,46 @@
+{
+  "video": "xl5",
+  "frame": "xl5_00024.jpg",
+  "scores": {
+    "detection_0": {
+      "operation_standardization": 3,
+      "cleanliness": 4,
+      "drainage_effect": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 3,
+      "coordination": 3,
+      "tool_coordination": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "soup_adhesion": 4,
+      "noodle_soup_ratio": 3,
+      "distribution_state": 4,
+      "notes": ""
+    },
+    "detection_3": {
+      "thickness": 4,
+      "elasticity": 4,
+      "integrity": 3,
+      "ripeness": 4,
+      "notes": ""
+    },
+    "detection_4": {
+      "operation_standardization": 4,
+      "cleanliness": 4,
+      "drainage_effect": 3,
+      "notes": ""
+    },
+    "detection_5": {
+      "operation_standardization": 4,
+      "cleanliness": 3,
+      "drainage_effect": 4,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770691939.8108945
+}

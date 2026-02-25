@@ -1,0 +1,12 @@
+{
+  "video": "cm3",
+  "frame": "cm3_00161.jpg",
+  "scores": {
+    "detection_0": {
+      "tightness": 4,
+      "uniformity": 3,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768832156.3645546
+}

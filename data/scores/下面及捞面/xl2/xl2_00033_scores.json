@@ -1,0 +1,22 @@
+{
+  "video": "xl2",
+  "frame": "xl2_00033.jpg",
+  "scores": {
+    "detection_0": {
+      "drainage_effect": 3.0,
+      "action": 3.56,
+      "thickness": 4.0,
+      "cleanliness": 3.0,
+      "elasticity": 3.33,
+      "ripeness": 3.67,
+      "operation_standardization": 4.0,
+      "position": 3.72,
+      "tool_coordination": 3.83,
+      "integrity": 3.33,
+      "coordination": 3.72,
+      "notes": "关键帧时间线性插值"
+    }
+  },
+  "stage": "boiling_scooping",
+  "interpolated": true
+}

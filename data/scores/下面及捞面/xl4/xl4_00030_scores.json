@@ -1,0 +1,21 @@
+{
+  "video": "xl4",
+  "frame": "xl4_00030.jpg",
+  "scores": {
+    "detection_0": {
+      "thickness": 4,
+      "elasticity": 5,
+      "integrity": 5,
+      "ripeness": 4,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 3,
+      "coordination": 3,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770691758.0808263
+}

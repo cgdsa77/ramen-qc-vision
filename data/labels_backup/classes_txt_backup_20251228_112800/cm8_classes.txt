@@ -1,0 +1,4 @@
+hand
+noodle_rope
+noodle_bundle
+pot_or_table

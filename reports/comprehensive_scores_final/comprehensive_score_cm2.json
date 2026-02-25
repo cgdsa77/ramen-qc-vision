@@ -1,0 +1,6611 @@
+{
+  "video": "cm2",
+  "total_frames": 1148,
+  "scored_frames": 1148,
+  "detection_quality": {
+    "detection_rate": 0.6428571428571429,
+    "both_hands_rate": 0.18902439024390244,
+    "quality_score": 0.4613240418118467
+  },
+  "dtw_result": {
+    "score": 5.0,
+    "distance": 0.0,
+    "matched_sequence": 1,
+    "all_distances": [
+      7.06723276947104,
+      0.0,
+      6.208065863708229,
+      5.560448257947186,
+      6.964181444392905
+    ]
+  },
+  "dtw_window_results": [
+    {
+      "start": 0,
+      "end": 50,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 10,
+      "end": 60,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 20,
+      "end": 70,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 30,
+      "end": 80,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 40,
+      "end": 90,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 50,
+      "end": 100,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 60,
+      "end": 110,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 70,
+      "end": 120,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 80,
+      "end": 130,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 90,
+      "end": 140,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 100,
+      "end": 150,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 110,
+      "end": 160,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 120,
+      "end": 170,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 130,
+      "end": 180,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 140,
+      "end": 190,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 150,
+      "end": 200,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 160,
+      "end": 210,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 170,
+      "end": 220,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 180,
+      "end": 230,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 190,
+      "end": 240,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 200,
+      "end": 250,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 210,
+      "end": 260,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 220,
+      "end": 270,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 230,
+      "end": 280,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 240,
+      "end": 290,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 250,
+      "end": 300,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 260,
+      "end": 310,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 270,
+      "end": 320,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 280,
+      "end": 330,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 290,
+      "end": 340,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 300,
+      "end": 350,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 310,
+      "end": 360,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 320,
+      "end": 370,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 330,
+      "end": 380,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 340,
+      "end": 390,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 350,
+      "end": 400,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 360,
+      "end": 410,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 370,
+      "end": 420,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 380,
+      "end": 430,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 390,
+      "end": 440,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 400,
+      "end": 450,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 410,
+      "end": 460,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 420,
+      "end": 470,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 430,
+      "end": 480,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 440,
+      "end": 490,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 450,
+      "end": 500,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 460,
+      "end": 510,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 470,
+      "end": 520,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 480,
+      "end": 530,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    },
+    {
+      "start": 490,
+      "end": 540,
+      "score": 0.0,
+      "distance": null,
+      "matched_sequence": 0
+    }
+  ],
+  "angle_changes": {
+    "finger_spread_middle_ring": {
+      "mean": 0.019444618329525532,
+      "std": 4.563507050831792,
+      "count": 669
+    },
+    "pinky_tip_angle": {
+      "mean": 0.040927788585120854,
+      "std": 18.98147194148281,
+      "count": 669
+    },
+    "palm_direction_angle": {
+      "mean": 0.004205997253258749,
+      "std": 12.187691078772,
+      "count": 669
+    },
+    "thumb_angle": {
+      "mean": 0.056076545692617684,
+      "std": 8.887235661450298,
+      "count": 669
+    },
+    "palm_base_angle": {
+      "mean": -0.14982447172594782,
+      "std": 22.077073876150717,
+      "count": 669
+    },
+    "finger_spread_ring_pinky": {
+      "mean": -0.041511658955363955,
+      "std": 4.256700143187399,
+      "count": 669
+    },
+    "ring_angle": {
+      "mean": 0.6429326856690368,
+      "std": 30.89900174921029,
+      "count": 669
+    },
+    "index_angle": {
+      "mean": 0.15202770565384738,
+      "std": 23.41000266373228,
+      "count": 669
+    },
+    "ring_tip_angle": {
+      "mean": 0.06015007563717962,
+      "std": 17.511492424932605,
+      "count": 669
+    },
+    "pinky_angle": {
+      "mean": 0.43039501317990886,
+      "std": 30.390397268558793,
+      "count": 669
+    },
+    "index_tip_angle": {
+      "mean": -0.21234834169301742,
+      "std": 15.779381853018185,
+      "count": 669
+    },
+    "middle_tip_angle": {
+      "mean": 0.2773152821284302,
+      "std": 17.573144475112155,
+      "count": 669
+    },
+    "thumb_tip_angle": {
+      "mean": -0.1916312296224691,
+      "std": 12.960870679123602,
+      "count": 669
+    },
+    "middle_angle": {
+      "mean": 0.5137989382190984,
+      "std": 26.153340198356883,
+      "count": 669
+    },
+    "finger_spread_index_middle": {
+      "mean": 0.010747100047861462,
+      "std": 4.467069560107112,
+      "count": 669
+    },
+    "wrist_connection_angle": {
+      "mean": -4.14063089591833,
+      "std": 71.4399553680505,
+      "count": 168
+    },
+    "palm_angle_difference": {
+      "mean": -4.065673315672148,
+      "std": 43.713258411791216,
+      "count": 168
+    }
+  },
+  "class_average_scores": {
+    "hand": 2.0541614960067007,
+    "noodle_rope": 3.198374911191233,
+    "noodle_bundle": 2.6645115490731985
+  },
+  "class_confidence": {
+    "hand": 0.4613240418118466,
+    "noodle_rope": 0.7646293840259357,
+    "noodle_bundle": 0.7646293840259357
+  },
+  "available_classes": [
+    "hand",
+    "noodle_rope",
+    "noodle_bundle"
+  ],
+  "dynamic_weights": {
+    "hand": 0.3478260869565218,
+    "noodle_rope": 0.5434782608695652,
+    "noodle_bundle": 0.10869565217391304
+  },
+  "hand_score": 2.0541614960067007,
+  "noodle_rope_score": 3.198374911191233,
+  "noodle_bundle_score": 2.6645115490731985,
+  "total_score": 2.7423590100272617,
+  "total_confidence": 0.6591318736906004,
+  "keypoint_weights": {
+    "finger_spread_index_middle": 0.12244556365692655,
+    "finger_spread_middle_ring": 0.24459721440122015,
+    "finger_spread_ring_pinky": 0.2443390790386985,
+    "index_angle": 1.4321054665989583,
+    "index_tip_angle": 1.3953440243524309,
+    "middle_angle": 1.4594079348440347,
+    "middle_tip_angle": 1.4088669396693525,
+    "palm_angle_difference": 1.4781531751144044,
+    "palm_base_angle": 1.4170661489106522,
+    "palm_direction_angle": 1.39307675870409,
+    "pinky_angle": 1.4664326701080097,
+    "pinky_tip_angle": 1.415027245263797,
+    "ring_angle": 1.4711023119092186,
+    "ring_tip_angle": 1.4058851683442064,
+    "thumb_angle": 0.24859820466316637,
+    "thumb_tip_angle": 0.2493329651217073,
+    "wrist_connection_angle": 0.14821912929912456
+  },
+  "frame_scores": [
+    {
+      "frame_index": 0,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.0814372249577124,
+        "action": 1.2903225806451613,
+        "coordination": 2.7482803355888707
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2118014241953,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 1,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.103222337898628,
+        "action": 1.2903225806451613,
+        "coordination": 2.7713102076793055
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2546369862835087,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 2,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.0858643309466376,
+        "action": 1.2903225806451613,
+        "coordination": 2.7535926232188412
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2216822791870454,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 3,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.0772271649961036,
+        "action": 1.2903225806451613,
+        "coordination": 2.7428265913004184
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2016574598187786,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 4,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.1039175859333057,
+        "action": 1.2903225806451613,
+        "coordination": 2.771938440065259
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.255805498521382,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 5,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.1809199370871193,
+        "action": 1.9328358208955225,
+        "coordination": 3.454123712576755
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.557788662279277,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 6,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.2827689219135965,
+        "action": 1.9328358208955225,
+        "coordination": 3.471156813653726
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.592025195443989,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 7,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.249083811452249,
+        "action": 1.9328358208955225,
+        "coordination": 3.4657305495237445
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5811184045427265,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 8,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.204726756888344,
+        "action": 1.9328358208955225,
+        "coordination": 3.4582819758918806
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5661467715426802,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 9,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.633956350054008,
+        "action": 1.2903225806451613,
+        "coordination": 2.9404148534329004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5691716273851952,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 10,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.6416838261031956,
+        "action": 1.2903225806451613,
+        "coordination": 2.9417264854990464
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.571611263028226,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 11,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.638960114409322,
+        "action": 1.2903225806451613,
+        "coordination": 2.9412653921460308
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5707536293916182,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 12,
+      "hand": {
+        "position": 1.5638297872340425,
+        "angle": 1.803864193494745,
+        "action": 1.3031914893617023,
+        "coordination": 2.918681188596282
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5371206345610107,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 13,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.698543147799777,
+        "action": 1.2903225806451613,
+        "coordination": 2.951069714925328
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5889896697611112,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 14,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.7005927844049173,
+        "action": 1.2903225806451613,
+        "coordination": 2.951397101515825
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.589598608819435,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 15,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.7050465820792646,
+        "action": 1.2903225806451613,
+        "coordination": 2.9521063938587915
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.590917892577353,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 16,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.4513147741587198,
+        "action": 1.2903225806451613,
+        "coordination": 2.905458844043009
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.504153449919997,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 17,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.6126316243482721,
+        "action": 1.2903225806451613,
+        "coordination": 2.936738170894661
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.56233299786407,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 18,
+      "hand": {
+        "position": 1.5657370517928286,
+        "angle": 1.8165101910653294,
+        "action": 1.3047808764940239,
+        "coordination": 2.9630963839832143
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6217789428484006,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.53235578856968,
+        "uniformity": 2.53235578856968
+      }
+    },
+    {
+      "frame_index": 19,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.7568750804364335,
+        "action": 1.6189258312020463,
+        "coordination": 3.2671640020341846
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.7223056239768315,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 20,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.2429290253514904,
+        "action": 1.6189258312020463,
+        "coordination": 3.1973804562662016
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.585878792000425,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 21,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.1229361321650857,
+        "action": 1.6189258312020463,
+        "coordination": 3.1766820586031685
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5454134245691944,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 22,
+      "hand": {
+        "position": 1.8000000000000003,
+        "angle": 3.4070344330668245,
+        "action": 2.4000000000000004,
+        "coordination": 3.8343331809085157
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.727249657044161,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5534499314088324,
+        "uniformity": 2.5534499314088324
+      }
+    },
+    {
+      "frame_index": 23,
+      "hand": {
+        "position": 1.2804878048780488,
+        "angle": 2.594345511074624,
+        "action": 1.2804878048780488,
+        "coordination": 3.039870568168592
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.7460611982710517,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 24,
+      "hand": {
+        "position": 1.2804878048780488,
+        "angle": 2.5259421996490596,
+        "action": 1.2804878048780488,
+        "coordination": 3.0618316042253753
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.7865793097958176,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5653158619591636,
+        "uniformity": 2.5653158619591636
+      }
+    },
+    {
+      "frame_index": 25,
+      "hand": {
+        "position": 1.4285714285714288,
+        "angle": 3.3393174629486344,
+        "action": 2.0000000000000004,
+        "coordination": 3.5673819676030103
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.791502131966321,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5663004263932643,
+        "uniformity": 2.5663004263932643
+      }
+    },
+    {
+      "frame_index": 26,
+      "hand": {
+        "position": 1.3778054862842892,
+        "angle": 3.3402844815566644,
+        "action": 1.928927680798005,
+        "coordination": 3.571576101090476
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.793510082686405,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 27,
+      "hand": {
+        "position": 1.4285714285714288,
+        "angle": 4.069426813358642,
+        "action": 2.285714285714286,
+        "coordination": 3.8717843600334962
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8307471560703426,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 28,
+      "hand": {
+        "position": 1.2738419618528614,
+        "angle": 2.815503438367549,
+        "action": 1.2738419618528614,
+        "coordination": 3.098884676974422
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8489533822480637,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 29,
+      "hand": {
+        "position": 1.2359550561797756,
+        "angle": 2.9487357405699726,
+        "action": 0.9887640449438204,
+        "coordination": 2.883690375068224
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8729688676214398,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 30,
+      "hand": {
+        "position": 1.2359550561797756,
+        "angle": 2.958338265562707,
+        "action": 0.9887640449438204,
+        "coordination": 2.8849208236461976
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8751590660902315,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 31,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.4406834055726376,
+        "action": 1.3,
+        "coordination": 3.101489197341495
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.877792245015303,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 32,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.505785651271564,
+        "action": 1.3,
+        "coordination": 3.110069806229773
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8938808866808245,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 33,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.545452059799646,
+        "action": 1.3,
+        "coordination": 3.1154905094949523
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.9040447053030354,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 34,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.5515396799661207,
+        "action": 1.3,
+        "coordination": 3.116337587811216
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.9056329771460296,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 35,
+      "hand": {
+        "position": 1.3888888888888888,
+        "angle": 4.293228267715854,
+        "action": 1.9444444444444446,
+        "coordination": 3.6632293602600154
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.9805394545265314,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 36,
+      "hand": {
+        "position": 1.399755501222494,
+        "angle": 4.719671910829543,
+        "action": 1.9596577017114918,
+        "coordination": 3.717168568086728
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.094109721737358,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 37,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.9221883376903977,
+        "action": 1.3,
+        "coordination": 3.1897559181566777
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.043292346543771,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 38,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.4000000000000004,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 39,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.9172140797934136,
+        "action": 1.3,
+        "coordination": 3.187811096311623
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.039645805584293,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 40,
+      "hand": {
+        "position": 1.3341968911917101,
+        "angle": 3.9042547784245447,
+        "action": 1.6010362694300522,
+        "coordination": 3.4405151997372836
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.050194335492957,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 41,
+      "hand": {
+        "position": 1.6699507389162562,
+        "angle": 3.9998413082221633,
+        "action": 1.9482758620689655,
+        "coordination": 3.659987705394256
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.974775041950339,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 42,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 3.098760405058492,
+        "action": 1.2903225806451613,
+        "coordination": 3.1297475767070173
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.921330492675053,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 43,
+      "hand": {
+        "position": 1.6046511627906979,
+        "angle": 2.9533243669403166,
+        "action": 1.6046511627906979,
+        "coordination": 3.324818961040611
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.828524689613583,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 44,
+      "hand": {
+        "position": 1.5900783289817233,
+        "angle": 2.7313476306872753,
+        "action": 1.5900783289817233,
+        "coordination": 3.332800927216795
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8373137756201623,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 45,
+      "hand": {
+        "position": 1.2378727016120683,
+        "angle": 2.9854290395656804,
+        "action": 1.2035928143712575,
+        "coordination": 1.2036910310991407
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5001476197420083,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 46,
+      "hand": {
+        "position": 1.6046511627906979,
+        "angle": 2.514561366588995,
+        "action": 1.6046511627906979,
+        "coordination": 3.2732449380497712
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.7287289551263068,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 47,
+      "hand": {
+        "position": 1.2205591180430537,
+        "angle": 2.7015711256428228,
+        "action": 1.1873111782477341,
+        "coordination": 4.00902719281529
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.702946003698374,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.5
+      }
+    },
+    {
+      "frame_index": 48,
+      "hand": {
+        "position": 1.2207951939497792,
+        "angle": 2.730922160589971,
+        "action": 1.1873111782477341,
+        "coordination": 3.996347812491004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.684060066705351,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.5
+      }
+    },
+    {
+      "frame_index": 49,
+      "hand": {
+        "position": 1.5798816568047338,
+        "angle": 2.2074004372546794,
+        "action": 1.8431952662721893,
+        "coordination": 3.4128838591764543
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4843704372592343,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 50,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 3.6,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 51,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 3.2,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 52,
+      "hand": {
+        "position": 1.909090909090909,
+        "angle": 1.9067647160420234,
+        "action": 1.6363636363636362,
+        "coordination": 3.1229429799825463
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.443427100365442,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 53,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.3086311633044292,
+        "action": 1.306366047745358,
+        "coordination": 2.8617932007498412
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.431980183413451,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 54,
+      "hand": {
+        "position": 2.021126760563381,
+        "angle": 2.6102319958791487,
+        "action": 2.309859154929578,
+        "coordination": 3.704928941236475
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4714986448336913,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 55,
+      "hand": {
+        "position": 1.952088452088452,
+        "angle": 1.7465427591053375,
+        "action": 1.952088452088452,
+        "coordination": 3.312999803574157
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2694546002734093,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 56,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.1398815916064138,
+        "action": 1.2903225806451613,
+        "coordination": 2.7989691105150616
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.3060825455580143,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 57,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 1.7051997104839687,
+        "action": 1.9328358208955225,
+        "coordination": 3.285595875872791
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2190477105043103,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 58,
+      "hand": {
+        "position": 1.6046511627906979,
+        "angle": 1.4091678302663704,
+        "action": 1.6046511627906979,
+        "coordination": 3.031556835535019
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2610624767602623,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 59,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 60,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 61,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.7367637614951248,
+        "action": 1.2903225806451613,
+        "coordination": 2.9570772437254638
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6001636733293627,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 62,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.22813291034087,
+        "action": 1.6189258312020463,
+        "coordination": 3.194974090247228
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.581174346433331,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.7521240982775135,
+        "action": 1.2903225806451613,
+        "coordination": 2.959436576257448
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.604552031838854,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 64,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.4000000000000004,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 65,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 66,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.291294287239791,
+        "action": 1.6189258312020463,
+        "coordination": 3.205011174476296
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.600796846101159,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 67,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.286439791536672,
+        "action": 1.6189258312020463,
+        "coordination": 3.2042605160105584
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5993293088006415,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 68,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.3250651786342713,
+        "action": 1.9328358208955225,
+        "coordination": 3.477725146151368
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.605227543764249,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 69,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.262023279101441,
+        "action": 1.9328358208955225,
+        "coordination": 3.4678369003775957
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.585352169758967,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 70,
+      "hand": {
+        "position": 1.9819277108433742,
+        "angle": 3.0977616058253434,
+        "action": 1.9819277108433742,
+        "coordination": 3.5046921076425663
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6597361233583245,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 71,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.9438377114755505,
+        "action": 1.306366047745358,
+        "coordination": 2.98022630297739
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.65522658111238,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 72,
+      "hand": {
+        "position": 1.8464566929133857,
+        "angle": 2.1775856539121237,
+        "action": 1.3188976377952755,
+        "coordination": 2.9710343055763317
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6473203521229127,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 73,
+      "hand": {
+        "position": 1.7505966324152693,
+        "angle": 2.350264919545587,
+        "action": 1.5075901328273242,
+        "coordination": 1.507590972832036
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5000013280474495,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 74,
+      "hand": {
+        "position": 1.7645175516737155,
+        "angle": 1.6234846026147556,
+        "action": 1.785977859778598,
+        "coordination": 1.7859992284722213
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5000347454958313,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 75,
+      "hand": {
+        "position": 1.830980041557531,
+        "angle": 1.8579646259808913,
+        "action": 1.8021978021978025,
+        "coordination": 1.80554813894716
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5054878515954474,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 76,
+      "hand": {
+        "position": 1.8561262875623,
+        "angle": 2.1164313748497303,
+        "action": 1.818181818181818,
+        "coordination": 1.846091393258708
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5460507988768686,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 77,
+      "hand": {
+        "position": 1.9032383475624708,
+        "angle": 1.3757387398237704,
+        "action": 1.5446927374301673,
+        "coordination": 1.566172676901272
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5346041824879497,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 3.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 78,
+      "hand": {
+        "position": 2.0364875304566934,
+        "angle": 1.5852475551292702,
+        "action": 1.5225988700564974,
+        "coordination": 1.5226000601414773
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5000018958053729,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 79,
+      "hand": {
+        "position": 2.2251824324659726,
+        "angle": 0.8782997846630758,
+        "action": 1.2283464566929132,
+        "coordination": 1.2283610681696784
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5000222678905901,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 80,
+      "hand": {
+        "position": 2.3212877977802178,
+        "angle": 1.779510471786451,
+        "action": 1.5075901328273242,
+        "coordination": 1.5106643245054676
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5048602970431447,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 81,
+      "hand": {
+        "position": 2.3015250523341098,
+        "angle": 2.361448883895507,
+        "action": 1.5373831775700937,
+        "coordination": 1.5386961162011155
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5021072665027898,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 82,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 3.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 83,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 3.2,
+        "action": 3.2,
+        "coordination": 3.4000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 84,
+      "hand": {
+        "position": 1.952088452088452,
+        "angle": 2.1356040515784684,
+        "action": 1.952088452088452,
+        "coordination": 3.444501868332149
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5370613020559243,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 85,
+      "hand": {
+        "position": 1.952088452088452,
+        "angle": 2.063784486917082,
+        "action": 1.952088452088452,
+        "coordination": 3.429964576294119
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.507477912758533,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 86,
+      "hand": {
+        "position": 2.9333333333333336,
+        "angle": 1.6,
+        "action": 2.1333333333333333,
+        "coordination": 2.3333333333333335
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 87,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.0,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 88,
+      "hand": {
+        "position": 2.16793893129771,
+        "angle": 1.778093337081737,
+        "action": 1.6259541984732824,
+        "coordination": 3.2078104100112137
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6083474556720345,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 89,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 90,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 91,
+      "hand": {
+        "position": 3.2,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.5
+      }
+    },
+    {
+      "frame_index": 92,
+      "hand": {
+        "position": 1.8464566929133857,
+        "angle": 2.533283368452599,
+        "action": 1.8464566929133857,
+        "coordination": 3.5108494561759063
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.670668214015102,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 93,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.99616290976014,
+        "action": 1.306366047745358,
+        "coordination": 2.9871622182173443
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.668300781339694,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 94,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.8303037135592086,
+        "action": 1.306366047745358,
+        "coordination": 2.964444975261971
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.625478778368816,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 95,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.8196165371106499,
+        "action": 1.306366047745358,
+        "coordination": 2.96289849223787
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.622563657868385,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 96,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 1.95865615213368,
+        "action": 1.6189258312020463,
+        "coordination": 3.1419704213088258
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4775521736587542,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 97,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 98,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 99,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    }
+  ],
+  "scoring_log": [
+    {
+      "frame_index": 0,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.0814372249577124,
+        "action": 1.2903225806451613,
+        "coordination": 2.7482803355888707
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2118014241953,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 1,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.103222337898628,
+        "action": 1.2903225806451613,
+        "coordination": 2.7713102076793055
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2546369862835087,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 2,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.0858643309466376,
+        "action": 1.2903225806451613,
+        "coordination": 2.7535926232188412
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2216822791870454,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 3,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.0772271649961036,
+        "action": 1.2903225806451613,
+        "coordination": 2.7428265913004184
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2016574598187786,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 4,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.1039175859333057,
+        "action": 1.2903225806451613,
+        "coordination": 2.771938440065259
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.255805498521382,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 5,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.1809199370871193,
+        "action": 1.9328358208955225,
+        "coordination": 3.454123712576755
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.557788662279277,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 6,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.2827689219135965,
+        "action": 1.9328358208955225,
+        "coordination": 3.471156813653726
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.592025195443989,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 7,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.249083811452249,
+        "action": 1.9328358208955225,
+        "coordination": 3.4657305495237445
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5811184045427265,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 8,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.204726756888344,
+        "action": 1.9328358208955225,
+        "coordination": 3.4582819758918806
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5661467715426802,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 9,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.633956350054008,
+        "action": 1.2903225806451613,
+        "coordination": 2.9404148534329004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5691716273851952,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 10,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.6416838261031956,
+        "action": 1.2903225806451613,
+        "coordination": 2.9417264854990464
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.571611263028226,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 11,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.638960114409322,
+        "action": 1.2903225806451613,
+        "coordination": 2.9412653921460308
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5707536293916182,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 12,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6433333333333334,
+      "hand": {
+        "position": 1.5638297872340425,
+        "angle": 1.803864193494745,
+        "action": 1.3031914893617023,
+        "coordination": 2.918681188596282
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5371206345610107,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 13,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.698543147799777,
+        "action": 1.2903225806451613,
+        "coordination": 2.951069714925328
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5889896697611112,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 14,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.7005927844049173,
+        "action": 1.2903225806451613,
+        "coordination": 2.951397101515825
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.589598608819435,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 15,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.7050465820792646,
+        "action": 1.2903225806451613,
+        "coordination": 2.9521063938587915
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.590917892577353,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 16,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.4513147741587198,
+        "action": 1.2903225806451613,
+        "coordination": 2.905458844043009
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.504153449919997,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 17,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.6126316243482721,
+        "action": 1.2903225806451613,
+        "coordination": 2.936738170894661
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.56233299786407,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 18,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.645,
+      "hand": {
+        "position": 1.5657370517928286,
+        "angle": 1.8165101910653294,
+        "action": 1.3047808764940239,
+        "coordination": 2.9630963839832143
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6217789428484006,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.53235578856968,
+        "uniformity": 2.53235578856968
+      }
+    },
+    {
+      "frame_index": 19,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.7568750804364335,
+        "action": 1.6189258312020463,
+        "coordination": 3.2671640020341846
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.7223056239768315,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 20,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.2429290253514904,
+        "action": 1.6189258312020463,
+        "coordination": 3.1973804562662016
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.585878792000425,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 21,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.1229361321650857,
+        "action": 1.6189258312020463,
+        "coordination": 3.1766820586031685
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5454134245691944,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 22,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.8900000000000001,
+      "hand": {
+        "position": 1.8000000000000003,
+        "angle": 3.4070344330668245,
+        "action": 2.4000000000000004,
+        "coordination": 3.8343331809085157
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.727249657044161,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5534499314088324,
+        "uniformity": 2.5534499314088324
+      }
+    },
+    {
+      "frame_index": 23,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.62,
+      "hand": {
+        "position": 1.2804878048780488,
+        "angle": 2.594345511074624,
+        "action": 1.2804878048780488,
+        "coordination": 3.039870568168592
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.7460611982710517,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 24,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.62,
+      "hand": {
+        "position": 1.2804878048780488,
+        "angle": 2.5259421996490596,
+        "action": 1.2804878048780488,
+        "coordination": 3.0618316042253753
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.7865793097958176,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5653158619591636,
+        "uniformity": 2.5653158619591636
+      }
+    },
+    {
+      "frame_index": 25,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.79,
+      "hand": {
+        "position": 1.4285714285714288,
+        "angle": 3.3393174629486344,
+        "action": 2.0000000000000004,
+        "coordination": 3.5673819676030103
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.791502131966321,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5663004263932643,
+        "uniformity": 2.5663004263932643
+      }
+    },
+    {
+      "frame_index": 26,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7266666666666667,
+      "hand": {
+        "position": 1.3778054862842892,
+        "angle": 3.3402844815566644,
+        "action": 1.928927680798005,
+        "coordination": 3.571576101090476
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.793510082686405,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 27,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.79,
+      "hand": {
+        "position": 1.4285714285714288,
+        "angle": 4.069426813358642,
+        "action": 2.285714285714286,
+        "coordination": 3.8717843600334962
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8307471560703426,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 28,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6133333333333333,
+      "hand": {
+        "position": 1.2738419618528614,
+        "angle": 2.815503438367549,
+        "action": 1.2738419618528614,
+        "coordination": 3.098884676974422
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8489533822480637,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 29,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.5766666666666667,
+      "hand": {
+        "position": 1.2359550561797756,
+        "angle": 2.9487357405699726,
+        "action": 0.9887640449438204,
+        "coordination": 2.883690375068224
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8729688676214398,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 30,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.5766666666666667,
+      "hand": {
+        "position": 1.2359550561797756,
+        "angle": 2.958338265562707,
+        "action": 0.9887640449438204,
+        "coordination": 2.8849208236461976
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8751590660902315,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 31,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.64,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.4406834055726376,
+        "action": 1.3,
+        "coordination": 3.101489197341495
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.877792245015303,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 32,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.64,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.505785651271564,
+        "action": 1.3,
+        "coordination": 3.110069806229773
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8938808866808245,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 33,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.64,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.545452059799646,
+        "action": 1.3,
+        "coordination": 3.1154905094949523
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.9040447053030354,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 34,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.64,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.5515396799661207,
+        "action": 1.3,
+        "coordination": 3.116337587811216
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.9056329771460296,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 35,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7400000000000001,
+      "hand": {
+        "position": 1.3888888888888888,
+        "angle": 4.293228267715854,
+        "action": 1.9444444444444446,
+        "coordination": 3.6632293602600154
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.9805394545265314,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 36,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7533333333333334,
+      "hand": {
+        "position": 1.399755501222494,
+        "angle": 4.719671910829543,
+        "action": 1.9596577017114918,
+        "coordination": 3.717168568086728
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.094109721737358,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 37,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.64,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.9221883376903977,
+        "action": 1.3,
+        "coordination": 3.1897559181566777
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.043292346543771,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 38,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.64,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.4000000000000004,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 39,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.64,
+      "hand": {
+        "position": 1.3,
+        "angle": 3.9172140797934136,
+        "action": 1.3,
+        "coordination": 3.187811096311623
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.039645805584293,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 40,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6766666666666667,
+      "hand": {
+        "position": 1.3341968911917101,
+        "angle": 3.9042547784245447,
+        "action": 1.6010362694300522,
+        "coordination": 3.4405151997372836
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.050194335492957,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 41,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7433333333333333,
+      "hand": {
+        "position": 1.6699507389162562,
+        "angle": 3.9998413082221633,
+        "action": 1.9482758620689655,
+        "coordination": 3.659987705394256
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.974775041950339,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 42,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 3.098760405058492,
+        "action": 1.2903225806451613,
+        "coordination": 3.1297475767070173
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.921330492675053,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 43,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.68,
+      "hand": {
+        "position": 1.6046511627906979,
+        "angle": 2.9533243669403166,
+        "action": 1.6046511627906979,
+        "coordination": 3.324818961040611
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.828524689613583,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 44,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6666666666666666,
+      "hand": {
+        "position": 1.5900783289817233,
+        "angle": 2.7313476306872753,
+        "action": 1.5900783289817233,
+        "coordination": 3.332800927216795
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.8373137756201623,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 45,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.66,
+      "hand": {
+        "position": 1.2378727016120683,
+        "angle": 2.9854290395656804,
+        "action": 1.2035928143712575,
+        "coordination": 1.2036910310991407
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5001476197420083,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 46,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.68,
+      "hand": {
+        "position": 1.6046511627906979,
+        "angle": 2.514561366588995,
+        "action": 1.6046511627906979,
+        "coordination": 3.2732449380497712
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.7287289551263068,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 47,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.645,
+      "hand": {
+        "position": 1.2205591180430537,
+        "angle": 2.7015711256428228,
+        "action": 1.1873111782477341,
+        "coordination": 4.00902719281529
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.702946003698374,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.5
+      }
+    },
+    {
+      "frame_index": 48,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.645,
+      "hand": {
+        "position": 1.2207951939497792,
+        "angle": 2.730922160589971,
+        "action": 1.1873111782477341,
+        "coordination": 3.996347812491004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 4.684060066705351,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.5
+      }
+    },
+    {
+      "frame_index": 49,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6575,
+      "hand": {
+        "position": 1.5798816568047338,
+        "angle": 2.2074004372546794,
+        "action": 1.8431952662721893,
+        "coordination": 3.4128838591764543
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4843704372592343,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 50,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6775,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 3.6,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 51,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7566666666666667,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 3.2,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 52,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.71,
+      "hand": {
+        "position": 1.909090909090909,
+        "angle": 1.9067647160420234,
+        "action": 1.6363636363636362,
+        "coordination": 3.1229429799825463
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.443427100365442,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 53,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6466666666666667,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.3086311633044292,
+        "action": 1.306366047745358,
+        "coordination": 2.8617932007498412
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.431980183413451,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 54,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.81,
+      "hand": {
+        "position": 2.021126760563381,
+        "angle": 2.6102319958791487,
+        "action": 2.309859154929578,
+        "coordination": 3.704928941236475
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4714986448336913,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 55,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7466666666666667,
+      "hand": {
+        "position": 1.952088452088452,
+        "angle": 1.7465427591053375,
+        "action": 1.952088452088452,
+        "coordination": 3.312999803574157
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2694546002734093,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 56,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.1398815916064138,
+        "action": 1.2903225806451613,
+        "coordination": 2.7989691105150616
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.3060825455580143,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 57,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 1.7051997104839687,
+        "action": 1.9328358208955225,
+        "coordination": 3.285595875872791
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2190477105043103,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 58,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.68,
+      "hand": {
+        "position": 1.6046511627906979,
+        "angle": 1.4091678302663704,
+        "action": 1.6046511627906979,
+        "coordination": 3.031556835535019
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.2610624767602623,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 59,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6666666666666666,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 60,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 61,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.7367637614951248,
+        "action": 1.2903225806451613,
+        "coordination": 2.9570772437254638
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6001636733293627,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 62,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.22813291034087,
+        "action": 1.6189258312020463,
+        "coordination": 3.194974090247228
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.581174346433331,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 63,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.7521240982775135,
+        "action": 1.2903225806451613,
+        "coordination": 2.959436576257448
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.604552031838854,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 64,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6566666666666666,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.4000000000000004,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 65,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 66,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.291294287239791,
+        "action": 1.6189258312020463,
+        "coordination": 3.205011174476296
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.600796846101159,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 67,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 2.286439791536672,
+        "action": 1.6189258312020463,
+        "coordination": 3.2042605160105584
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5993293088006415,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 68,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.3250651786342713,
+        "action": 1.9328358208955225,
+        "coordination": 3.477725146151368
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.605227543764249,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 69,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 1.6567164179104479,
+        "angle": 2.262023279101441,
+        "action": 1.9328358208955225,
+        "coordination": 3.4678369003775957
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.585352169758967,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 70,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7733333333333334,
+      "hand": {
+        "position": 1.9819277108433742,
+        "angle": 3.0977616058253434,
+        "action": 1.9819277108433742,
+        "coordination": 3.5046921076425663
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6597361233583245,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 71,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6466666666666667,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.9438377114755505,
+        "action": 1.306366047745358,
+        "coordination": 2.98022630297739
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.65522658111238,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 72,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.66,
+      "hand": {
+        "position": 1.8464566929133857,
+        "angle": 2.1775856539121237,
+        "action": 1.3188976377952755,
+        "coordination": 2.9710343055763317
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6473203521229127,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 73,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7466666666666667,
+      "hand": {
+        "position": 1.7505966324152693,
+        "angle": 2.350264919545587,
+        "action": 1.5075901328273242,
+        "coordination": 1.507590972832036
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5000013280474495,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 74,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7966666666666667,
+      "hand": {
+        "position": 1.7645175516737155,
+        "angle": 1.6234846026147556,
+        "action": 1.785977859778598,
+        "coordination": 1.7859992284722213
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5000347454958313,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 75,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.81,
+      "hand": {
+        "position": 1.830980041557531,
+        "angle": 1.8579646259808913,
+        "action": 1.8021978021978025,
+        "coordination": 1.80554813894716
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5054878515954474,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 76,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.8233333333333334,
+      "hand": {
+        "position": 1.8561262875623,
+        "angle": 2.1164313748497303,
+        "action": 1.818181818181818,
+        "coordination": 1.846091393258708
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5460507988768686,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 77,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7799999999999999,
+      "hand": {
+        "position": 1.9032383475624708,
+        "angle": 1.3757387398237704,
+        "action": 1.5446927374301673,
+        "coordination": 1.566172676901272
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5346041824879497,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 3.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 78,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7600000000000001,
+      "hand": {
+        "position": 2.0364875304566934,
+        "angle": 1.5852475551292702,
+        "action": 1.5225988700564974,
+        "coordination": 1.5226000601414773
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5000018958053729,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 79,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.6833333333333332,
+      "hand": {
+        "position": 2.2251824324659726,
+        "angle": 0.8782997846630758,
+        "action": 1.2283464566929132,
+        "coordination": 1.2283610681696784
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5000222678905901,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 80,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7466666666666667,
+      "hand": {
+        "position": 2.3212877977802178,
+        "angle": 1.779510471786451,
+        "action": 1.5075901328273242,
+        "coordination": 1.5106643245054676
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5048602970431447,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 81,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7733333333333334,
+      "hand": {
+        "position": 2.3015250523341098,
+        "angle": 2.361448883895507,
+        "action": 1.5373831775700937,
+        "coordination": 1.5386961162011155
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5021072665027898,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 82,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7166666666666667,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 3.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 83,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.81,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 3.2,
+        "action": 3.2,
+        "coordination": 3.4000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 84,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7466666666666667,
+      "hand": {
+        "position": 1.952088452088452,
+        "angle": 2.1356040515784684,
+        "action": 1.952088452088452,
+        "coordination": 3.444501868332149
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5370613020559243,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 85,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7466666666666667,
+      "hand": {
+        "position": 1.952088452088452,
+        "angle": 2.063784486917082,
+        "action": 1.952088452088452,
+        "coordination": 3.429964576294119
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.507477912758533,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 86,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6725,
+      "hand": {
+        "position": 2.9333333333333336,
+        "angle": 1.6,
+        "action": 2.1333333333333333,
+        "coordination": 2.3333333333333335
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 87,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7133333333333334,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.0,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 88,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7000000000000001,
+      "hand": {
+        "position": 2.16793893129771,
+        "angle": 1.778093337081737,
+        "action": 1.6259541984732824,
+        "coordination": 3.2078104100112137
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6083474556720345,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 89,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7633333333333333,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 90,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7225,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 91,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6166666666666667,
+      "hand": {
+        "position": 3.2,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.5
+      }
+    },
+    {
+      "frame_index": 92,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.66,
+      "hand": {
+        "position": 1.8464566929133857,
+        "angle": 2.533283368452599,
+        "action": 1.8464566929133857,
+        "coordination": 3.5108494561759063
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.670668214015102,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 93,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6466666666666666,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.99616290976014,
+        "action": 1.306366047745358,
+        "coordination": 2.9871622182173443
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.668300781339694,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 94,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6466666666666666,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.8303037135592086,
+        "action": 1.306366047745358,
+        "coordination": 2.964444975261971
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.625478778368816,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 95,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6466666666666666,
+      "hand": {
+        "position": 1.8289124668435015,
+        "angle": 1.8196165371106499,
+        "action": 1.306366047745358,
+        "coordination": 2.96289849223787
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.622563657868385,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 96,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 1.6189258312020463,
+        "angle": 1.95865615213368,
+        "action": 1.6189258312020463,
+        "coordination": 3.1419704213088258
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4775521736587542,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 97,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 98,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 99,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 100,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.675,
+      "hand": {
+        "position": 3.2,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 101,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 102,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6900000000000001,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 103,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7399999999999999,
+      "hand": {
+        "position": 3.2,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 104,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7399999999999999,
+      "hand": {
+        "position": 3.2,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 105,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6133333333333333,
+      "hand": {
+        "position": 2.0,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 106,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.62,
+      "hand": {
+        "position": 2.0,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.088,
+        "uniformity": 2.088
+      }
+    },
+    {
+      "frame_index": 107,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.79,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.8000000000000003,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.088,
+        "uniformity": 2.088
+      }
+    },
+    {
+      "frame_index": 108,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.54,
+      "hand": {
+        "position": 0.956521739130435,
+        "angle": 1.1155329417363145,
+        "action": 0.956521739130435,
+        "coordination": 2.607144690477862
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.347324591074312,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.4774649182148627,
+        "uniformity": 2.4774649182148627
+      }
+    },
+    {
+      "frame_index": 109,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.5900000000000001,
+      "hand": {
+        "position": 1.5,
+        "angle": 1.6625121205528215,
+        "action": 1.0,
+        "coordination": 2.711902017753812
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.581423631956861,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5242847263913726,
+        "uniformity": 2.5242847263913726
+      }
+    },
+    {
+      "frame_index": 110,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.75,
+      "hand": {
+        "position": 2.235294117647059,
+        "angle": 1.5187577000197054,
+        "action": 1.6764705882352942,
+        "coordination": 3.1531718914719375
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5124706586027536,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.510494131720551,
+        "uniformity": 2.510494131720551
+      }
+    },
+    {
+      "frame_index": 111,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.75,
+      "hand": {
+        "position": 2.235294117647059,
+        "angle": 1.4938200581711119,
+        "action": 1.6764705882352942,
+        "coordination": 3.1477996136892292
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5015112119260285,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5083022423852057,
+        "uniformity": 2.5083022423852057
+      }
+    },
+    {
+      "frame_index": 112,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6666666666666666,
+      "hand": {
+        "position": 1.5900783289817233,
+        "angle": 1.3925618035685217,
+        "action": 1.5900783289817233,
+        "coordination": 3.1413745478692237
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4707322591695635,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 113,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7133333333333334,
+      "hand": {
+        "position": 1.6397984886649875,
+        "angle": 2.231872675499462,
+        "action": 1.9130982367758187,
+        "coordination": 3.4091798619645646
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4697220259996615,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 114,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6166666666666667,
+      "hand": {
+        "position": 1.7880434782608696,
+        "angle": 1.3975393869762875,
+        "action": 1.532608695652174,
+        "coordination": 3.1544235377126446
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.484139309391266,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 2.0
+      }
+    },
+    {
+      "frame_index": 115,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.895,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.8000000000000003,
+        "action": 3.2,
+        "coordination": 3.4000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.088,
+        "uniformity": 2.088
+      }
+    },
+    {
+      "frame_index": 116,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.8900000000000001,
+      "hand": {
+        "position": 1.8000000000000003,
+        "angle": 2.6769806303195205,
+        "action": 2.4000000000000004,
+        "coordination": 3.7187915447612534
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.46728097571282,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.5014561951425645,
+        "uniformity": 2.5014561951425645
+      }
+    },
+    {
+      "frame_index": 117,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6266666666666666,
+      "hand": {
+        "position": 1.5444743935309972,
+        "angle": 1.8430600864579034,
+        "action": 1.5444743935309972,
+        "coordination": 3.134060256386042
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.448681775596108,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 2.0
+      }
+    },
+    {
+      "frame_index": 118,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7400000000000001,
+      "hand": {
+        "position": 1.6666666666666667,
+        "angle": 2.819899827569363,
+        "action": 2.2222222222222223,
+        "coordination": 3.6906194905658785
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4735044683959035,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 2.0
+      }
+    },
+    {
+      "frame_index": 119,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.72,
+      "hand": {
+        "position": 1.6466165413533835,
+        "angle": 2.3544529793779128,
+        "action": 1.6466165413533835,
+        "coordination": 3.2454659950291953
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6897046600832444,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.545940932016649,
+        "uniformity": 2.545940932016649
+      }
+    },
+    {
+      "frame_index": 120,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6266666666666666,
+      "hand": {
+        "position": 1.5444743935309972,
+        "angle": 1.8045235956705763,
+        "action": 1.5444743935309972,
+        "coordination": 3.12266480968004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.427543221956474,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 2.0
+      }
+    },
+    {
+      "frame_index": 121,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6225,
+      "hand": {
+        "position": 1.539553752535497,
+        "angle": 1.9959168823116304,
+        "action": 1.2829614604462476,
+        "coordination": 2.996692074067086
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.6682594719315254,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 122,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.3779656276994914,
+        "action": 1.2903225806451613,
+        "coordination": 2.888337847153613
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.472308395705721,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 123,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.63,
+      "hand": {
+        "position": 1.5483870967741935,
+        "angle": 1.3832783797444876,
+        "action": 1.2903225806451613,
+        "coordination": 2.8896630552949043
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.474773282848522,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 124,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7375,
+      "hand": {
+        "position": 1.6641929499072357,
+        "angle": 1.895611009773364,
+        "action": 1.6641929499072357,
+        "coordination": 3.110287991617983
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.3119221119605133,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 125,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.58,
+      "hand": {
+        "position": 1.2394957983193278,
+        "angle": 1.2793111755168012,
+        "action": 1.2394957983193278,
+        "coordination": 2.8848966776546074
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4370405696134743,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 126,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7133333333333334,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 127,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7133333333333334,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 128,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.5766666666666667,
+      "hand": {
+        "position": 1.2359550561797756,
+        "angle": 1.2733614985965345,
+        "action": 0.9887640449438204,
+        "coordination": 2.6376133854856656
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.434951826164485,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 129,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6266666666666668,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.0,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 130,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6900000000000001,
+      "hand": {
+        "position": 1.3461538461538463,
+        "angle": 2.0199569032856033,
+        "action": 1.6153846153846156,
+        "coordination": 3.072899373692917
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.3421537787011877,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 131,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.61,
+      "hand": {
+        "position": 1.6,
+        "angle": 2.0,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 132,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7100000000000001,
+      "hand": {
+        "position": 1.6,
+        "angle": 2.8000000000000003,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 133,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6233333333333334,
+      "hand": {
+        "position": 1.6,
+        "angle": 2.4000000000000004,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 134,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6733333333333333,
+      "hand": {
+        "position": 1.6,
+        "angle": 2.8000000000000003,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 135,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6866666666666666,
+      "hand": {
+        "position": 1.0745501285347043,
+        "angle": 2.38355378500367,
+        "action": 1.6118251928020566,
+        "coordination": 3.1126624886834646
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.419128540489339,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 136,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6233333333333334,
+      "hand": {
+        "position": 1.0270270270270272,
+        "angle": 1.8204119727267605,
+        "action": 1.283783783783784,
+        "coordination": 2.872044968760031
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.438283192206058,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 137,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.66,
+      "hand": {
+        "position": 1.6,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 138,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.56,
+      "hand": {
+        "position": 1.6,
+        "angle": 1.6,
+        "action": 1.6,
+        "coordination": 1.8
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 139,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.61,
+      "hand": {
+        "position": 1.0163934426229508,
+        "angle": 1.4229460191297167,
+        "action": 1.2704918032786885,
+        "coordination": 2.8276568463368656
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.3496120287964644,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 140,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6766666666666667,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 141,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.64,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.4000000000000004,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 142,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6900000000000001,
+      "hand": {
+        "position": 1.3461538461538463,
+        "angle": 2.0131577260831146,
+        "action": 1.6153846153846156,
+        "coordination": 3.0693838569594676
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.3352985210709614,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 143,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7400000000000001,
+      "hand": {
+        "position": 2.0,
+        "angle": 3.2,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 144,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7400000000000001,
+      "hand": {
+        "position": 2.0,
+        "angle": 3.2,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 145,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6900000000000001,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.8000000000000003,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 146,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6900000000000001,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.8000000000000003,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 147,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6533333333333333,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.8000000000000003,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 148,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.66,
+      "hand": {
+        "position": 1.6,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 149,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.66,
+      "hand": {
+        "position": 1.6,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 150,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.61,
+      "hand": {
+        "position": 1.6,
+        "angle": 2.0,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 151,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.61,
+      "hand": {
+        "position": 1.0163934426229508,
+        "angle": 1.5202015312304558,
+        "action": 1.2704918032786885,
+        "coordination": 2.865814351758268
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4194402637176307,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 152,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7766666666666667,
+      "hand": {
+        "position": 1.4182692307692308,
+        "angle": 2.588828489491998,
+        "action": 2.269230769230769,
+        "coordination": 3.7008157415039538
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.4776967423282246,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 153,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6766666666666667,
+      "hand": {
+        "position": 2.0,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 154,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6133333333333333,
+      "hand": {
+        "position": 2.0,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 155,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6133333333333333,
+      "hand": {
+        "position": 2.0,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 156,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7433333333333333,
+      "hand": {
+        "position": 2.4000000000000004,
+        "angle": 2.8000000000000003,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 157,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.6933333333333334,
+      "hand": {
+        "position": 1.2611498602017501,
+        "angle": 1.3044199393205855,
+        "action": 1.238747553816047,
+        "coordination": 2.164932274942851
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.9198411774873902,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 158,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.8066666666666668,
+      "hand": {
+        "position": 1.7294117647058824,
+        "angle": 2.699161165824713,
+        "action": 2.3058823529411767,
+        "coordination": 3.632987500874162
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.3200984393575945,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 159,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.68,
+      "hand": {
+        "position": 1.2536524365229498,
+        "angle": 1.2419937670275627,
+        "action": 1.2248520710059174,
+        "coordination": 2.7210689953761698
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 2.775745941967154,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 160,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7433333333333333,
+      "hand": {
+        "position": 1.3169265187984986,
+        "angle": 1.7232435092817546,
+        "action": 1.503802281368821,
+        "coordination": 2.891612839464971
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 2.6899650606757244,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 161,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7433333333333333,
+      "hand": {
+        "position": 1.6699507389162562,
+        "angle": 2.0142481927238602,
+        "action": 1.9482758620689655,
+        "coordination": 3.3060973568097314
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.256377634323754,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 162,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.6825,
+      "hand": {
+        "position": 1.3403967985982845,
+        "angle": 2.08348464406255,
+        "action": 1.4320531757754804,
+        "coordination": 1.433507522867921
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 0.5022153342085601,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.5
+      }
+    },
+    {
+      "frame_index": 163,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7550000000000001,
+      "hand": {
+        "position": 1.6813186813186813,
+        "angle": 3.0692406829714676,
+        "action": 2.241758241758242,
+        "coordination": 3.74085644785867
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.569403576990627,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 164,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.68,
+      "hand": {
+        "position": 1.6046511627906979,
+        "angle": 2.4818656321124357,
+        "action": 1.6046511627906979,
+        "coordination": 3.1960474931202807
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.5793518991877433,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 165,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.66,
+      "hand": {
+        "position": 1.5826771653543306,
+        "angle": 1.9759690514697712,
+        "action": 1.5826771653543306,
+        "coordination": 3.2052341394768415
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 3.590971035703384,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 166,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7300000000000001,
+      "hand": {
+        "position": 1.9328358208955225,
+        "angle": 2.47305064891316,
+        "action": 1.9328358208955225,
+        "coordination": 3.4990088262734282
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.374446594669331,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 167,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.6875,
+      "hand": {
+        "position": 1.8815028901734103,
+        "angle": 1.7798596092284944,
+        "action": 1.3439306358381504,
+        "coordination": 2.941614824957619
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.3637480147427126,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 168,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7080000000000001,
+      "hand": {
+        "position": 1.5216897132748788,
+        "angle": 1.6381657104298002,
+        "action": 1.2537834691501748,
+        "coordination": 1.435419508436715
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.578012678873569,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 169,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.7080000000000001,
+      "hand": {
+        "position": 1.5220788005186832,
+        "angle": 1.6838003568996682,
+        "action": 1.2537834691501748,
+        "coordination": 1.3953156733708492
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.5607880817127797,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 170,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.6875,
+      "hand": {
+        "position": 1.5024708334103032,
+        "angle": 1.1699006113860186,
+        "action": 1.0272459499263622,
+        "coordination": 1.9085073575994946
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.8739853098812855,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 171,
+      "skeleton_quality": 1.0,
+      "annotation_confidence": 0.8350000000000001,
+      "hand": {
+        "position": 1.690901376646574,
+        "angle": 2.6593398207252537,
+        "action": 1.8319783197831976,
+        "coordination": 1.8343795835270862
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.5011075829018685,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 172,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.9133333333333334,
+      "hand": {
+        "position": 2.1214442013129107,
+        "angle": 3.1620780499888266,
+        "action": 2.4245076586433263,
+        "coordination": 3.757899799806201
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.346333622932547,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.8132667245865095,
+        "uniformity": 2.8132667245865095
+      }
+    },
+    {
+      "frame_index": 173,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.9133333333333334,
+      "hand": {
+        "position": 2.1214442013129107,
+        "angle": 3.1424683148748978,
+        "action": 2.4245076586433263,
+        "coordination": 3.7542285698998086
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.344003411728073,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.8128006823456144,
+        "uniformity": 2.8128006823456144
+      }
+    },
+    {
+      "frame_index": 174,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.8366666666666666,
+      "hand": {
+        "position": 2.0483870967741935,
+        "angle": 2.300836261355596,
+        "action": 2.0483870967741935,
+        "coordination": 3.467663720095965
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.3555084090578458,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.8151016818115693,
+        "uniformity": 2.8151016818115693
+      }
+    },
+    {
+      "frame_index": 175,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.8133333333333335,
+      "hand": {
+        "position": 2.0245901639344264,
+        "angle": 2.599708866342545,
+        "action": 1.73536299765808,
+        "coordination": 3.1813395682025525
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.3575444383645694,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.815508887672914,
+        "uniformity": 2.815508887672914
+      }
+    },
+    {
+      "frame_index": 176,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7625000000000001,
+      "hand": {
+        "position": 1.9699453551912567,
+        "angle": 2.4064037731206542,
+        "action": 1.9699453551912567,
+        "coordination": 3.4879359438582003
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.3681008678939084,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 177,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.728,
+      "hand": {
+        "position": 2.666666666666667,
+        "angle": 2.1333333333333333,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 178,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.76,
+      "hand": {
+        "position": 2.666666666666667,
+        "angle": 2.1333333333333333,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.5020000000000002,
+        "uniformity": 2.5020000000000002
+      }
+    },
+    {
+      "frame_index": 179,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.88,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 3.2,
+        "action": 3.2,
+        "coordination": 3.4000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.5020000000000002,
+        "uniformity": 2.5020000000000002
+      }
+    },
+    {
+      "frame_index": 180,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.7975,
+      "hand": {
+        "position": 1.9123741859088221,
+        "angle": 2.6868096919361313,
+        "action": 1.9123741859088221,
+        "coordination": 3.4278717507313505
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.3887761760365454,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.629755235207309,
+        "uniformity": 2.629755235207309
+      }
+    },
+    {
+      "frame_index": 181,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.76,
+      "hand": {
+        "position": 1.8734793187347931,
+        "angle": 2.208124906512198,
+        "action": 1.6861313868613137,
+        "coordination": 3.2054658197368004
+      },
+      "noodle_rope": {
+        "thickness": 3.8000000000000003,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.3672867387664236,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.6254573477532848,
+        "uniformity": 2.6254573477532848
+      }
+    },
+    {
+      "frame_index": 182,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.8533333333333332,
+      "hand": {
+        "position": 2.359908883826879,
+        "angle": 1.8949480858640773,
+        "action": 2.0649202733485192,
+        "coordination": 3.362132949954889
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.2909393958752724,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.8021878791750545,
+        "uniformity": 2.8021878791750545
+      }
+    },
+    {
+      "frame_index": 183,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.8533333333333332,
+      "hand": {
+        "position": 2.359908883826879,
+        "angle": 1.8549257924057942,
+        "action": 2.0649202733485192,
+        "coordination": 3.3392473732949943
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.2769855512173645,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.799397110243473,
+        "uniformity": 2.799397110243473
+      }
+    },
+    {
+      "frame_index": 184,
+      "skeleton_quality": 0.6,
+      "annotation_confidence": 0.8375,
+      "hand": {
+        "position": 2.3419689119170988,
+        "angle": 2.9932350035718516,
+        "action": 2.3419689119170988,
+        "coordination": 3.777010677649634
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 2.365509564957435,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 185,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.9033333333333333,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.8000000000000003,
+        "action": 3.2,
+        "coordination": 3.4000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.694,
+        "uniformity": 2.694
+      }
+    },
+    {
+      "frame_index": 186,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.8399999999999999,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.0,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.694,
+        "uniformity": 2.694
+      }
+    },
+    {
+      "frame_index": 187,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.8366666666666666,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.694,
+        "uniformity": 2.694
+      }
+    },
+    {
+      "frame_index": 188,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.8866666666666667,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.8000000000000003,
+        "action": 3.2,
+        "coordination": 3.4000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.694,
+        "uniformity": 2.694
+      }
+    },
+    {
+      "frame_index": 189,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7866666666666666,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.0,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.694,
+        "uniformity": 2.694
+      }
+    },
+    {
+      "frame_index": 190,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7333333333333334,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.0,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 191,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7875000000000001,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.8000000000000003,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 192,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7875000000000001,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.8000000000000003,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 4.6,
+        "elasticity": 2.9999999999999996,
+        "integrity": 1.75,
+        "gloss": 4.0
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 193,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.6466666666666666,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 1.6,
+        "action": 2.0,
+        "coordination": 2.2
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 194,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7100000000000001,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.4000000000000004,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 195,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.7466666666666667,
+      "hand": {
+        "position": 2.8000000000000003,
+        "angle": 2.4000000000000004,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 196,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.73,
+      "hand": {
+        "position": 2.666666666666667,
+        "angle": 2.666666666666667,
+        "action": 2.666666666666667,
+        "coordination": 2.866666666666667
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 197,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.74,
+      "hand": {
+        "position": 2.666666666666667,
+        "angle": 2.9333333333333336,
+        "action": 2.666666666666667,
+        "coordination": 2.866666666666667
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 3.0
+      }
+    },
+    {
+      "frame_index": 198,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.75,
+      "hand": {
+        "position": 3.2,
+        "angle": 2.0,
+        "action": 2.8000000000000003,
+        "coordination": 3.0000000000000004
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.0,
+        "uniformity": 4.0
+      }
+    },
+    {
+      "frame_index": 199,
+      "skeleton_quality": 0.0,
+      "annotation_confidence": 0.75,
+      "hand": {
+        "position": 3.2,
+        "angle": 1.6,
+        "action": 2.4000000000000004,
+        "coordination": 2.6000000000000005
+      },
+      "noodle_rope": {
+        "thickness": 3.2,
+        "elasticity": 3.2,
+        "integrity": 1.4,
+        "gloss": 2.5
+      },
+      "noodle_bundle": {
+        "tightness": 2.088,
+        "uniformity": 2.088
+      }
+    }
+  ],
+  "model_source": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\models\\stretch_detection14\\weights\\best.pt",
+  "score_basis": "最佳抻面模型检测 + 骨架线 + DTW 融合"
+}

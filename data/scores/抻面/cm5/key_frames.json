@@ -1,0 +1,52 @@
+[
+  {
+    "frame": "cm5_00001.jpg",
+    "index": 1,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00016.jpg",
+    "index": 16,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00030.jpg",
+    "index": 30,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00044.jpg",
+    "index": 44,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00069.jpg",
+    "index": 69,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00082.jpg",
+    "index": 82,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00088.jpg",
+    "index": 88,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00102.jpg",
+    "index": 102,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00117.jpg",
+    "index": 117,
+    "detections": 3
+  },
+  {
+    "frame": "cm5_00132.jpg",
+    "index": 132,
+    "detections": 3
+  }
+]

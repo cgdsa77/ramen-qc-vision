@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>抻面综合评分可视化系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #f0f0f5; min-height: 100vh; padding: 20px; color: #333; }
+        .container { max-width: 1280px; margin: 0 auto; }
+        .header { background: #fff; padding: 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .header h1 { color: #333; font-size: 1.75em; margin-bottom: 8px; }
+        .header .subtitle { color: #666; font-size: 14px; margin-bottom: 16px; }
+        .video-selector { display: flex; flex-wrap: wrap; gap: 8px; }
+        .video-btn { padding: 8px 16px; background: #667eea; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .video-btn:hover { opacity: 0.9; }
+        .video-btn.active { background: #f5576c; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+        .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .card h2 { color: #333; margin-bottom: 12px; font-size: 1.05em; }
+        .score-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .score-item { text-align: center; padding: 10px 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 8px; min-width: 80px; }
+        .score-item .label { font-size: 11px; opacity: 0.9; }
+        .score-item .value { font-size: 1.2em; font-weight: bold; margin-top: 2px; }
+        .chart-wrap { height: 220px; }
+        .info-panel { font-size: 13px; line-height: 1.7; }
+        .info-panel .info-item { margin-bottom: 4px; }
+        .load-err { color: #c00; padding: 12px; }
+        .ai-card { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 20px; }
+        .ai-card h2 { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 1.1em; }
+        .ai-card .hint { color: #666; font-size: 13px; margin-bottom: 16px; }
+        .ai-result { min-height: 100px; white-space: pre-wrap; background: #f8f9fa; padding: 16px; border-radius: 8px; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+        .ai-input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .ai-input-row input { flex: 1; min-width: 200px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .ai-input-row .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .ai-input-row .btn-send { background: #667eea; color: #fff; }
+        .ai-input-row .btn-start { background: #f5576c; color: #fff; }
+        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); text-align: left; }
+        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .nav-home:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
+    <div class="container">
+        <div class="header">
+            <h1>抻面综合评分可视化系统</h1>
+            <p class="subtitle">3D骨架线展示,多维度图表分析,交互式数据探索</p>
+            <p class="subtitle" style="margin-top:6px; font-size:12px; color:#555;">得分数据说明：<strong>本次上传</strong> = 当前最佳抻面模型检测 + 规则/图像特征评分；<strong>cm1～cm12</strong> = 基于本地视频已跑完的最佳模型检测 + 骨架线 + DTW 融合结果，界面直接读取报告，<strong>打开本页不会重新跑模型</strong>。需更新 cm1～cm12 数据时请运行：<code>python scripts/process_all_stretch_scores.py</code></p>
+            <div id="videoSelector" class="video-selector"></div>
+        </div>
+        <div id="loadErr" class="card load-err" style="display:none;"></div>
+        <div id="mainContent" style="display:none;">
+            <div class="grid">
+                <div class="card">
+                    <h2>评分概览</h2>
+                    <div id="scoreDisplay" class="score-row"></div>
+                </div>
+                <div class="card">
+                    <h2>检测质量分析</h2>
+                    <div class="chart-wrap"><canvas id="qualityRadarChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>评分分布</h2>
+                    <div class="chart-wrap"><canvas id="scorePieChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>类别得分对比</h2>
+                    <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>面条属性得分</h2>
+                    <div class="chart-wrap"><canvas id="noodleDonutChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>DTW 距离（与标准序列）</h2>
+                    <div class="chart-wrap"><canvas id="dtwChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>角度变化趋势</h2>
+                    <div class="chart-wrap"><canvas id="angleTrendChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>总分分布（雷达）</h2>
+                    <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+                </div>
+            </div>
+            <div class="card" style="margin-bottom:20px;">
+                <h2>详细信息</h2>
+                <div id="infoPanel" class="info-panel"></div>
+            </div>
+        </div>
+        <div class="ai-card">
+            <h2>🤖 AI智能分析</h2>
+            <p class="hint">
+                <strong>开始分析</strong>：不输入问题即可点击，AI 会基于当前视频的评分数据自动生成一份完整分析报告（整体评估、各维度分析、改进建议）。<br>
+                <strong>发送</strong>：在输入框中输入具体问题（如「为什么手部得分低？」「如何提高 DTW 分数？」）后点击，AI 会针对您的问题结合当前数据作答，支持多轮对话。
+            </p>
+            <div id="aiResult" class="ai-result"></div>
+            <div class="ai-input-row">
+                <input type="text" id="aiInput" placeholder="输入您的问题，例如：为什么这个视频分较低？如何改进？" />
+                <button type="button" class="btn btn-send" id="btnSend" title="先输入问题再点击，获得针对该问题的 AI 回复">发送</button>
+                <button type="button" class="btn btn-start" id="btnStart" title="无需输入问题，直接生成当前视频的完整分析报告">开始分析</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentVideo = '';
+        let currentData = null;
+        let aiChatHistory = [];
+        const charts = {};
+
+        async function loadUploadResult() {
+            try {
+                const r = await fetch('/api/upload_score_result');
+                if (!r.ok) throw new Error('暂无上传评分结果或已过期');
+                const api = await r.json();
+                const raw = api.result || {};
+                const total = Number(raw.total_score ?? raw.average_overall_score ?? 0);
+                const scores = raw.class_average_scores || raw.scores || {};
+                currentVideo = '本次上传';
+                currentData = {
+                    video: '本次上传',
+                    total_score: total,
+                    hand_score: scoreVal(scores.hand),
+                    noodle_rope_score: scoreVal(scores.noodle_rope),
+                    noodle_bundle_score: scoreVal(scores.noodle_bundle),
+                    total_frames: raw.total_frames,
+                    scored_frames: raw.scored_frames,
+                    dtw_result: raw.dtw_result || {},
+                    detection_quality: raw.detection_quality || {
+                        quality_score: total / 5,
+                        detection_rate: 1,
+                        both_hands_rate: 0.5
+                    },
+                    frame_scores: raw.frame_scores_sample || raw.frame_scores || [],
+                    model_source: raw.model_source || '当前最佳抻面模型',
+                    score_basis: raw.score_basis || '最佳模型检测 + 规则/图像特征评分'
+                };
+                document.getElementById('videoSelector').innerHTML = '<button class="video-btn active">本次上传</button>';
+                document.getElementById('loadErr').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                updateScoreDisplay();
+                updateInfoPanel();
+                updateQualityRadarChart();
+                updateScorePieChart();
+                updateCategoryChart();
+                updateNoodleDonutChart();
+                updateDtwChart();
+                updateAngleTrendChart();
+                updateRadarChart();
+            } catch (e) {
+                document.getElementById('loadErr').textContent = '加载上传评分结果失败: ' + e.message;
+                document.getElementById('loadErr').style.display = 'block';
+            }
+        }
+
+        async function loadVideoList() {
+            try {
+                const r = await fetch('/reports/comprehensive_scores_final/summary.json');
+                if (!r.ok) throw new Error('无法加载 summary.json');
+                const data = await r.json();
+                const videos = Object.keys(data.results || {}).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, ''), 10) || 0;
+                    const nb = parseInt(b.replace(/\D/g, ''), 10) || 0;
+                    return na - nb;
+                });
+                const sel = document.getElementById('videoSelector');
+                sel.innerHTML = '';
+                videos.forEach(v => {
+                    const btn = document.createElement('button');
+                    btn.className = 'video-btn';
+                    btn.textContent = v;
+                    btn.onclick = () => loadVideoData(v);
+                    sel.appendChild(btn);
+                });
+                document.getElementById('loadErr').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                if (videos.length > 0) loadVideoData(videos[0]);
+            } catch (e) {
+                document.getElementById('loadErr').textContent = '加载视频列表失败: ' + e.message + '。请确认已运行批量评分并存在 reports/comprehensive_scores_final/summary.json';
+                document.getElementById('loadErr').style.display = 'block';
+            }
+        }
+
+        async function loadVideoData(videoName) {
+            currentVideo = videoName;
+            aiChatHistory = [];
+            document.getElementById('aiResult').textContent = '';
+            document.querySelectorAll('.video-btn').forEach(b => {
+                b.classList.toggle('active', b.textContent === videoName);
+            });
+            try {
+                const r = await fetch('/reports/comprehensive_scores_final/comprehensive_score_' + videoName + '.json');
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                let text = await r.text();
+                text = text.replace(/\bInfinity\b/g, 'null').replace(/\bNaN\b/g, 'null');
+                currentData = JSON.parse(text);
+                updateScoreDisplay();
+                updateInfoPanel();
+                updateQualityRadarChart();
+                updateScorePieChart();
+                updateCategoryChart();
+                updateNoodleDonutChart();
+                updateDtwChart();
+                updateAngleTrendChart();
+                updateRadarChart();
+            } catch (e) {
+                currentData = null;
+                document.getElementById('scoreDisplay').innerHTML = '<p class="load-err">加载该视频数据失败: ' + e.message + '</p>';
+            }
+        }
+
+        function scoreVal(v, def) { return v != null && v !== undefined ? Number(v) : (def != null ? def : 0); }
+
+        function getSummaryData() {
+            if (!currentData) return null;
+            return {
+                total_score: currentData.total_score,
+                hand_score: currentData.hand_score,
+                noodle_rope_score: currentData.noodle_rope_score,
+                noodle_bundle_score: currentData.noodle_bundle_score != null ? currentData.noodle_bundle_score : 0,
+                dtw_result: currentData.dtw_result || {},
+                detection_quality: currentData.detection_quality || {}
+            };
+        }
+
+        function updateScoreDisplay() {
+            const d = currentData;
+            if (!d) return;
+            const total = scoreVal(d.total_score);
+            const hand = scoreVal(d.hand_score);
+            const rope = scoreVal(d.noodle_rope_score);
+            const bundle = scoreVal(d.noodle_bundle_score);
+            const dtwScore = (d.dtw_result && d.dtw_result.score != null) ? d.dtw_result.score : 0;
+            document.getElementById('scoreDisplay').innerHTML = `
+                <div class="score-item"><div class="label">总分</div><div class="value">${total.toFixed(2)}</div></div>
+                <div class="score-item"><div class="label">手部</div><div class="value">${hand.toFixed(2)}</div></div>
+                <div class="score-item"><div class="label">面条</div><div class="value">${rope.toFixed(2)}</div></div>
+                <div class="score-item"><div class="label">面条束</div><div class="value">${bundle.toFixed(2)}</div></div>
+                <div class="score-item"><div class="label">DTW</div><div class="value">${dtwScore.toFixed(2)}</div></div>
+            `;
+        }
+
+        function updateInfoPanel() {
+            const d = currentData;
+            if (!d) return;
+            const dtw = d.dtw_result || {};
+            const q = d.detection_quality || {};
+            const matched = scoreVal(dtw.matched_sequence, 0);
+            const modelLine = (d.model_source || d.score_basis) ? `<div class="info-item"><strong>得分依据:</strong> ${d.score_basis || ''} ${d.model_source ? '（模型: ' + (d.model_source.length > 60 ? d.model_source.replace(/^.*[\\/]/, '') : d.model_source) + '）' : ''}</div>` : '';
+            document.getElementById('infoPanel').innerHTML = `
+                <div class="info-item"><strong>视频名称:</strong> ${d.video || currentVideo}</div>
+                ${modelLine}
+                <div class="info-item"><strong>总帧数:</strong> ${scoreVal(d.total_frames)}</div>
+                <div class="info-item"><strong>评分帧数:</strong> ${scoreVal(d.scored_frames)}</div>
+                <div class="info-item"><strong>DTW距离:</strong> ${(dtw.distance != null && isFinite(dtw.distance) ? dtw.distance : 0).toFixed(4)}</div>
+                <div class="info-item"><strong>匹配序列:</strong> cm${matched + 1}</div>
+                <div class="info-item"><strong>检测质量:</strong> ${(scoreVal(q.quality_score) * 100).toFixed(1)}%</div>
+                <div class="info-item"><strong>检测率:</strong> ${(scoreVal(q.detection_rate) * 100).toFixed(1)}%</div>
+                <div class="info-item"><strong>双手检测率:</strong> ${(scoreVal(q.both_hands_rate) * 100).toFixed(1)}%</div>
+            `;
+        }
+
+        function updateQualityRadarChart() {
+            const d = currentData;
+            if (!d || !d.detection_quality) return;
+            const q = d.detection_quality;
+            const ctx = document.getElementById('qualityRadarChart').getContext('2d');
+            if (charts.qualityRadar) charts.qualityRadar.destroy();
+            const v = (x) => Math.round((x != null ? x : 0) * 100);
+            charts.qualityRadar = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['检测率', '双手检测率', '质量评分', '稳定性', '综合'],
+                    datasets: [{
+                        label: '检测质量',
+                        data: [v(q.detection_rate), v(q.both_hands_rate), v(q.quality_score), v(q.quality_score), v(q.quality_score)],
+                        backgroundColor: 'rgba(54,162,235,0.2)',
+                        borderColor: 'rgba(54,162,235,1)',
+                        pointBackgroundColor: 'rgba(54,162,235,1)'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 100 } } }
+            });
+        }
+
+        function updateScorePieChart() {
+            const d = currentData;
+            if (!d) return;
+            const total = scoreVal(d.total_score);
+            const poor = total < 2.5 ? 1 : 0;
+            const mid = total >= 2.5 && total < 3.5 ? 1 : 0;
+            const good = total >= 3.5 ? 1 : 0;
+            const sum = poor + mid + good || 1;
+            const ctx = document.getElementById('scorePieChart').getContext('2d');
+            if (charts.scorePie) charts.scorePie.destroy();
+            charts.scorePie = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['平均', '国标', '国优'],
+                    datasets: [{
+                        data: [poor ? (1/sum)*100 : 33.33, mid ? (1/sum)*100 : 33.33, good ? (1/sum)*100 : 33.34],
+                        backgroundColor: ['rgba(255,99,132,0.8)', 'rgba(54,162,235,0.8)', 'rgba(75,192,192,0.8)']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+        function updateCategoryChart() {
+            const d = currentData;
+            if (!d) return;
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            if (charts.category) charts.category.destroy();
+            const labels = ['手部', '面条', '面条束'];
+            const values = [scoreVal(d.hand_score), scoreVal(d.noodle_rope_score), scoreVal(d.noodle_bundle_score)];
+            charts.category = new Chart(ctx, {
+                type: 'bar',
+                data: { labels, datasets: [{ label: '得分', data: values, backgroundColor: ['rgba(255,99,132,0.8)', 'rgba(54,162,235,0.8)', 'rgba(75,192,192,0.8)'] }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 5 } } }
+            });
+        }
+
+        function updateNoodleDonutChart() {
+            const d = currentData;
+            if (!d) return;
+            const fs = d.frame_scores || [];
+            let thickness = 0, elasticity = 0, gloss = 0, integrity = 0, n = 0;
+            fs.forEach(f => {
+                const r = f.noodle_rope;
+                if (r) {
+                    if (r.thickness != null) { thickness += r.thickness; n++; }
+                    if (r.elasticity != null) elasticity += r.elasticity;
+                    if (r.gloss != null) gloss += r.gloss;
+                    if (r.integrity != null) integrity += r.integrity;
+                }
+            });
+            const fallback = scoreVal(d.noodle_rope_score) || 3;
+            thickness = n ? thickness / fs.length : fallback;
+            elasticity = n ? elasticity / fs.length : fallback;
+            gloss = n ? gloss / fs.length : fallback;
+            integrity = n ? integrity / fs.length : fallback;
+            const ctx = document.getElementById('noodleDonutChart').getContext('2d');
+            if (charts.noodleDonut) charts.noodleDonut.destroy();
+            charts.noodleDonut = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['粗细', '弹性', '光泽', '完整性'],
+                    datasets: [{ data: [thickness, elasticity, gloss, integrity], backgroundColor: ['rgba(255,99,132,0.8)', 'rgba(75,192,192,0.8)', 'rgba(255,206,86,0.8)', 'rgba(153,102,255,0.8)'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+        function updateDtwChart() {
+            const d = currentData;
+            if (!d) return;
+            const dtw = d.dtw_result || {};
+            const dist = dtw.all_distances || [0, 0, 0, 0, 0];
+            const matched = scoreVal(dtw.matched_sequence, 0);
+            const ctx = document.getElementById('dtwChart').getContext('2d');
+            if (charts.dtw) charts.dtw.destroy();
+            const labels = dist.map((_, i) => 'cm' + (i + 1));
+            charts.dtw = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'DTW 距离',
+                        data: dist.map(x => typeof x === 'number' && isFinite(x) ? x : 0),
+                        backgroundColor: labels.map((_, i) => i === matched ? 'rgba(255,99,132,0.8)' : 'rgba(54,162,235,0.6)')
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        function updateAngleTrendChart() {
+            const d = currentData;
+            if (!d) return;
+            const fs = (d.frame_scores || []).slice(0, 100);
+            const labels = fs.map(f => f.frame_index);
+            const pos = fs.map(f => (f.hand && f.hand.position != null) ? f.hand.position : null);
+            const ang = fs.map(f => (f.hand && f.hand.angle != null) ? f.hand.angle : null);
+            const act = fs.map(f => (f.hand && f.hand.action != null) ? f.hand.action : null);
+            const coord = fs.map(f => (f.hand && f.hand.coordination != null) ? f.hand.coordination : null);
+            const ctx = document.getElementById('angleTrendChart').getContext('2d');
+            if (charts.angleTrend) charts.angleTrend.destroy();
+            charts.angleTrend = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: '位置', data: pos, borderColor: 'rgba(255,99,132,1)', fill: false, tension: 0.1 },
+                        { label: '角度', data: ang, borderColor: 'rgba(54,162,235,1)', fill: false, tension: 0.1 },
+                        { label: '动作', data: act, borderColor: 'rgba(75,192,192,1)', fill: false, tension: 0.1 },
+                        { label: '协调', data: coord, borderColor: 'rgba(153,102,255,1)', fill: false, tension: 0.1 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 5 } } }
+            });
+        }
+
+        function updateRadarChart() {
+            const d = currentData;
+            if (!d) return;
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (charts.radar) charts.radar.destroy();
+            const labels = ['手部', '面条', '面条束', 'DTW'];
+            const dtwScore = (d.dtw_result && d.dtw_result.score != null) ? d.dtw_result.score : 0;
+            const values = [scoreVal(d.hand_score), scoreVal(d.noodle_rope_score), scoreVal(d.noodle_bundle_score), dtwScore];
+            charts.radar = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels,
+                    datasets: [{ label: '得分', data: values, backgroundColor: 'rgba(102,126,234,0.2)', borderColor: 'rgba(102,126,234,1)', pointBackgroundColor: 'rgba(102,126,234,1)' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 5 } } }
+            });
+        }
+
+        document.getElementById('btnStart').onclick = async function() {
+            const data = getSummaryData();
+            if (!data) { document.getElementById('aiResult').textContent = '请先选择上方一个视频'; return; }
+            const el = document.getElementById('aiResult');
+            el.textContent = '正在分析，请稍候…';
+            try {
+                const r = await fetch('/api/ai-analyze-scoring', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video: currentVideo, data: data })
+                });
+                const res = await r.json();
+                el.textContent = res.analysis || res.error || '分析失败';
+                if (res.analysis) aiChatHistory.push({ role: 'assistant', content: res.analysis });
+            } catch (e) {
+                el.textContent = '请求失败: ' + e.message;
+            }
+        };
+
+        document.getElementById('btnSend').onclick = async function() {
+            const data = getSummaryData();
+            const question = document.getElementById('aiInput').value.trim();
+            if (!data) { document.getElementById('aiResult').textContent = '请先选择上方一个视频'; return; }
+            if (!question) { document.getElementById('aiResult').textContent = '请输入问题'; return; }
+            const el = document.getElementById('aiResult');
+            el.textContent = '正在回复…';
+            document.getElementById('aiInput').value = '';
+            try {
+                const r = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video: currentVideo, data: data, question: question, history: aiChatHistory })
+                });
+                const res = await r.json();
+                const answer = res.answer || res.error || '请求失败';
+                el.textContent = answer;
+                aiChatHistory.push({ role: 'user', content: question });
+                aiChatHistory.push({ role: 'assistant', content: answer });
+            } catch (e) {
+                el.textContent = '请求失败: ' + e.message;
+            }
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('source') === 'upload') {
+            loadUploadResult();
+        } else {
+            loadVideoList();
+        }
+    </script>
+</body>
+</html>

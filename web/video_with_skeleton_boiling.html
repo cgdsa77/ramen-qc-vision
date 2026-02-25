@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下面及捞面手部姿态视频展示（预处理版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); text-align: left; }
+        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .nav-home:hover { text-decoration: underline; }
+        .content { padding: 40px; }
+        .video-selector { margin-bottom: 30px; }
+        .video-selector label {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .video-selector select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        .video-section { display: none; margin-top: 30px; }
+        /* 视频容器：限制最大高度，横竖屏均适配 */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-height: 70vh;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-wrapper video {
+            max-width: 100%;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+        .controls { display: none; gap: 10px; margin-top: 20px; }
+        .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary { background: #0d9488; color: white; }
+        .btn-primary:hover { background: #0f766e; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .status.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .status.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .info-panel h3 { margin-bottom: 10px; color: #333; }
+        .info-panel p { color: #666; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
+    <div class="container">
+        <div class="header">
+            <h1>下面及捞面 · 手部姿态视频展示</h1>
+            <p>预处理版本 - 骨架线已直接绘制在视频上，无同步问题</p>
+        </div>
+        <div class="content">
+            <div class="video-selector">
+                <label for="videoSelect">选择视频（下面及捞面 xl）：</label>
+                <select id="videoSelect">
+                    <option value="">请选择视频...</option>
+                </select>
+            </div>
+            <div class="status" id="status"></div>
+            <div class="video-section" id="videoSection">
+                <div class="video-wrapper">
+                    <video id="videoPlayer" controls>您的浏览器不支持HTML5视频</video>
+                </div>
+                <div class="controls" id="controls">
+                    <button class="btn btn-primary" id="playBtn">播放</button>
+                    <button class="btn btn-secondary" id="pauseBtn">暂停</button>
+                </div>
+                <div class="info-panel">
+                    <h3>说明</h3>
+                    <p>此视频已预处理，手部骨架线已直接绘制在视频上。</p>
+                    <p>优点：无同步问题，无错位，播放流畅。视频比例已适配界面，横竖屏均正常显示。</p>
+                    <p>注意：若视频不存在，请先运行预处理脚本生成：<code>python scripts/generate_video_with_skeleton.py</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const videoSelect = document.getElementById('videoSelect');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoSection = document.getElementById('videoSection');
+        const controls = document.getElementById('controls');
+        const status = document.getElementById('status');
+        const STAGE = 'boiling_scooping';
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = 'status ' + type;
+            status.style.display = 'block';
+        }
+        function hideStatus() { status.style.display = 'none'; }
+
+        async function loadVideoList() {
+            const fallback = ['xl1', 'xl2', 'xl3', 'xl4', 'xl5', 'xl6', 'xl7', 'xl8', 'xl9', 'xl10'];
+            try {
+                const r = await fetch('/api/get_scoring_videos?stage=boiling_scooping');
+                const data = await r.json();
+                let videos = data.videos || [];
+                if (!Array.isArray(videos)) videos = [];
+                if (videos.length === 0) videos = fallback;
+                videoSelect.innerHTML = '<option value="">请选择视频...</option>';
+                videos.forEach(v => {
+                    const name = typeof v === 'string' ? v : (v.name || v);
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    videoSelect.appendChild(option);
+                });
+            } catch (e) {
+                videoSelect.innerHTML = '<option value="">请选择视频...</option>';
+                fallback.forEach(v => {
+                    const option = document.createElement('option');
+                    option.value = v;
+                    option.textContent = v;
+                    videoSelect.appendChild(option);
+                });
+            }
+        }
+
+        videoSelect.addEventListener('change', async () => {
+            const videoName = videoSelect.value;
+            if (!videoName) {
+                videoSection.style.display = 'none';
+                controls.style.display = 'none';
+                return;
+            }
+            showStatus('正在检查视频文件...', 'info');
+            try {
+                const checkResponse = await fetch('/api/check_processed_video/' + encodeURIComponent(videoName) + '?stage=' + STAGE);
+                const checkResult = await checkResponse.json();
+                if (!checkResult.exists) {
+                    throw new Error('视频文件不存在。请先运行: python scripts/generate_video_with_skeleton.py');
+                }
+                showStatus('正在加载视频...', 'info');
+                const videoPath = checkResult.path || checkResult.path_alt || '/data/processed_videos/下面及捞面/' + videoName + '_with_skeleton.mp4';
+                videoPlayer.src = videoPath;
+                await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => reject(new Error('视频加载超时（10秒）')), 10000);
+                    videoPlayer.addEventListener('loadeddata', () => { clearTimeout(timeout); resolve(); }, { once: true });
+                    videoPlayer.addEventListener('error', () => {
+                        clearTimeout(timeout);
+                        reject(new Error('视频加载失败'));
+                    }, { once: true });
+                });
+                videoSection.style.display = 'block';
+                controls.style.display = 'flex';
+                showStatus('视频加载成功！', 'success');
+            } catch (e) {
+                showStatus('错误: ' + e.message, 'error');
+                videoSection.style.display = 'none';
+                controls.style.display = 'none';
+            }
+        });
+
+        document.getElementById('playBtn').addEventListener('click', () => videoPlayer.play());
+        document.getElementById('pauseBtn').addEventListener('click', () => videoPlayer.pause());
+        loadVideoList();
+    </script>
+</body>
+</html>

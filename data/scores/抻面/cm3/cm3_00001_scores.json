@@ -1,0 +1,36 @@
+{
+  "video": "cm3",
+  "frame": "cm3_00001.jpg",
+  "scores": {
+    "detection_0": {
+      "tightness": 3,
+      "uniformity": 4,
+      "notes": ""
+    },
+    "detection_1": {
+      "tightness": 4,
+      "uniformity": 3,
+      "notes": ""
+    },
+    "detection_2": {
+      "position": 3,
+      "action": 4,
+      "angle": 4,
+      "coordination": 3,
+      "notes": ""
+    },
+    "detection_3": {
+      "position": 3,
+      "action": 4,
+      "angle": 4,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_4": {
+      "tightness": 4,
+      "uniformity": 3,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768831951.9539995
+}

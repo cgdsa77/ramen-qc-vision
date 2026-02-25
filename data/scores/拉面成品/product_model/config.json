@@ -1,0 +1,21 @@
+{
+  "quality_order": [
+    "fair",
+    "good",
+    "excellent"
+  ],
+  "label2idx": {
+    "fair": 0,
+    "good": 1,
+    "excellent": 2
+  },
+  "idx2label": {
+    "0": "fair",
+    "1": "good",
+    "2": "excellent"
+  },
+  "feature_dim": 539,
+  "use_resnet": true,
+  "use_hand": true,
+  "image_size": 224
+}

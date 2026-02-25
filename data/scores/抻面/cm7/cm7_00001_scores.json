@@ -1,0 +1,33 @@
+{
+  "video": "cm7",
+  "frame": "cm7_00001.jpg",
+  "scores": {
+    "detection_0": {
+      "tightness": 5,
+      "uniformity": 4,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 5,
+      "angle": 4,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "position": 4,
+      "action": 5,
+      "angle": 4,
+      "coordination": 3,
+      "notes": ""
+    },
+    "detection_3": {
+      "angle": 4,
+      "position": 4,
+      "action": 4,
+      "coordination": 3,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768832843.3120756
+}

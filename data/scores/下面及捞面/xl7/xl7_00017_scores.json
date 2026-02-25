@@ -1,0 +1,39 @@
+{
+  "video": "xl7",
+  "frame": "xl7_00017.jpg",
+  "scores": {
+    "detection_0": {
+      "operation_standardization": 4,
+      "cleanliness": 5,
+      "drainage_effect": 4,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 4,
+      "action": 5,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "position": 4,
+      "action": 4,
+      "tool_coordination": 5,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_3": {
+      "operation_standardization": 4,
+      "cleanliness": 3,
+      "drainage_effect": 4,
+      "notes": ""
+    },
+    "detection_4": {
+      "soup_adhesion": 2,
+      "noodle_soup_ratio": 3,
+      "distribution_state": 2,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770692205.7669132
+}

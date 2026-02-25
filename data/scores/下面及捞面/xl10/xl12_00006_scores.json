@@ -1,0 +1,14 @@
+{
+  "video": "xl10",
+  "frame": "xl12_00006.jpg",
+  "scores": {
+    "detection_0": {
+      "operation_standardization": 3,
+      "cleanliness": 4,
+      "drainage_effect": 3,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770690884.7974315
+}

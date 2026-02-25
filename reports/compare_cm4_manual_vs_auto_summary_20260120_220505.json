@@ -1,0 +1,142 @@
+{
+  "video": "cm4",
+  "frames_compared": 9,
+  "overall": {
+    "manual": {
+      "count": 9,
+      "mean": 3.9296,
+      "median": 3.8917,
+      "min": 3.5667,
+      "max": 4.4417,
+      "dist_1_to_5": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 9,
+        "5": 0
+      }
+    },
+    "auto": {
+      "count": 9,
+      "mean": 3.1556,
+      "median": 3.0917,
+      "min": 2.775,
+      "max": 3.6,
+      "dist_1_to_5": {
+        "1": 0,
+        "2": 0,
+        "3": 8,
+        "4": 1,
+        "5": 0
+      }
+    },
+    "delta(auto-manual)": {
+      "count": 9,
+      "mean": -0.7741,
+      "median": -0.6583,
+      "min": -1.6583,
+      "max": -0.3833,
+      "dist_1_to_5": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      }
+    }
+  },
+  "per_class": {
+    "hand": {
+      "manual": {
+        "count": 9,
+        "mean": 4.3056,
+        "median": 4.25,
+        "min": 4.0,
+        "max": 4.825,
+        "dist_1_to_5": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 8,
+          "5": 1
+        }
+      },
+      "auto": {
+        "count": 9,
+        "mean": 3.6111,
+        "median": 3.575,
+        "min": 2.825,
+        "max": 4.45,
+        "dist_1_to_5": {
+          "1": 0,
+          "2": 0,
+          "3": 3,
+          "4": 6,
+          "5": 0
+        }
+      },
+      "delta(auto-manual)": {
+        "count": 9,
+        "mean": -0.6944,
+        "median": -0.8,
+        "min": -1.375,
+        "max": 0.2,
+        "dist_1_to_5": {
+          "1": 1,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0
+        }
+      }
+    },
+    "noodle_rope": {
+      "manual": {
+        "count": 9,
+        "mean": 3.7417,
+        "median": 3.75,
+        "min": 3.25,
+        "max": 4.25,
+        "dist_1_to_5": {
+          "1": 0,
+          "2": 0,
+          "3": 3,
+          "4": 6,
+          "5": 0
+        }
+      },
+      "auto": {
+        "count": 9,
+        "mean": 2.9278,
+        "median": 2.85,
+        "min": 2.45,
+        "max": 3.25,
+        "dist_1_to_5": {
+          "1": 0,
+          "2": 1,
+          "3": 8,
+          "4": 0,
+          "5": 0
+        }
+      },
+      "delta(auto-manual)": {
+        "count": 9,
+        "mean": -0.8139,
+        "median": -0.675,
+        "min": -1.8,
+        "max": -0.3,
+        "dist_1_to_5": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0
+        }
+      }
+    }
+  },
+  "artifacts": {
+    "csv": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\compare_cm4_manual_vs_auto_20260120_220505.csv",
+    "summary_json": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\compare_cm4_manual_vs_auto_summary_20260120_220505.json"
+  }
+}

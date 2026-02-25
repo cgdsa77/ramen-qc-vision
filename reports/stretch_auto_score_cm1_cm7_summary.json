@@ -1,0 +1,91 @@
+{
+  "stage": "stretch",
+  "videos": {
+    "cm1": {
+      "video_path": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\data\\raw\\抻面\\cm1.mp4",
+      "total_frames": 2798,
+      "scored_frames": 2431,
+      "average_overall_score": 3.7538313932799228,
+      "class_average_scores": {
+        "noodle_rope": 3.9007194616977223,
+        "hand": 3.8350768352651916,
+        "noodle_bundle": 2.6481545961002784
+      },
+      "report_file": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\stretch_auto_score_cm1.json"
+    },
+    "cm2": {
+      "video_path": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\data\\raw\\抻面\\cm2.mp4",
+      "total_frames": 1148,
+      "scored_frames": 1140,
+      "average_overall_score": 3.969261208576998,
+      "class_average_scores": {
+        "noodle_rope": 4.165148287385129,
+        "hand": 3.8806107153458003,
+        "noodle_bundle": 2.9940944881889764
+      },
+      "report_file": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\stretch_auto_score_cm2.json"
+    },
+    "cm3": {
+      "video_path": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\data\\raw\\抻面\\cm3.mp4",
+      "total_frames": 2729,
+      "scored_frames": 2691,
+      "average_overall_score": 3.765879965110037,
+      "class_average_scores": {
+        "noodle_rope": 3.9820269200316707,
+        "hand": 3.985008506739956,
+        "noodle_bundle": 2.835381861575179
+      },
+      "report_file": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\stretch_auto_score_cm3.json"
+    },
+    "cm4": {
+      "video_path": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\data\\raw\\抻面\\cm4.mp4",
+      "total_frames": 3022,
+      "scored_frames": 3010,
+      "average_overall_score": 3.60809347808891,
+      "class_average_scores": {
+        "noodle_rope": 3.822573520131263,
+        "hand": 3.290560355392157,
+        "noodle_bundle": 3.1453343313373257
+      },
+      "report_file": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\stretch_auto_score_cm4.json"
+    },
+    "cm5": {
+      "video_path": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\data\\raw\\抻面\\cm5.mp4",
+      "total_frames": 2203,
+      "scored_frames": 2198,
+      "average_overall_score": 4.127397602618542,
+      "class_average_scores": {
+        "noodle_rope": 4.100592105263158,
+        "hand": 4.267717622080679,
+        "noodle_bundle": 2.617993721461187
+      },
+      "report_file": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\stretch_auto_score_cm5.json"
+    },
+    "cm6": {
+      "video_path": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\data\\raw\\抻面\\cm6.mp4",
+      "total_frames": 2330,
+      "scored_frames": 2326,
+      "average_overall_score": 3.905150020813714,
+      "class_average_scores": {
+        "noodle_rope": 3.786961651917404,
+        "hand": 4.166306800853919,
+        "noodle_bundle": 3.1693548387096775
+      },
+      "report_file": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\stretch_auto_score_cm6.json"
+    },
+    "cm7": {
+      "video_path": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\data\\raw\\抻面\\cm7.mp4",
+      "total_frames": 849,
+      "scored_frames": 822,
+      "average_overall_score": 3.7543036969451204,
+      "class_average_scores": {
+        "noodle_rope": 3.743375,
+        "hand": 3.83875,
+        "noodle_bundle": 2.95703125
+      },
+      "report_file": "C:\\Users\\86187\\Desktop\\ramen-qc-vision\\reports\\stretch_auto_score_cm7.json"
+    }
+  },
+  "created_at": "2026-01-20 22:13:34",
+  "rules_version": "1.0"
+}

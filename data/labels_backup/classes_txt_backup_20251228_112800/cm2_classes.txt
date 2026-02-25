@@ -1,0 +1,3 @@
+hand
+noodle_bundle
+noodle_rope

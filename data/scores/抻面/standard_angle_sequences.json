@@ -1,0 +1,25 @@
+{
+  "standard_videos": [
+    "cm1",
+    "cm2",
+    "cm3"
+  ],
+  "sequences_summary": [
+    {
+      "video": "cm1",
+      "total_frames": 2798,
+      "valid_frames": 1145
+    },
+    {
+      "video": "cm2",
+      "total_frames": 1148,
+      "valid_frames": 738
+    },
+    {
+      "video": "cm3",
+      "total_frames": 2729,
+      "valid_frames": 2191
+    }
+  ],
+  "note": "完整角度序列数据太大，仅保存摘要信息"
+}

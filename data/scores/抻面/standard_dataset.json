@@ -1,0 +1,2085 @@
+{
+  "stage": "抻面",
+  "total_frames": 82,
+  "videos": {
+    "cm1": [
+      {
+        "frame": "cm1_00001.jpg",
+        "scores": {
+          "detection_0": {
+            "gloss": 3,
+            "integrity": 4,
+            "elasticity": 4,
+            "thickness": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00005.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 3,
+            "elasticity": 4,
+            "gloss": 5,
+            "integrity": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "coordination": 5,
+            "angle": 5,
+            "action": 5,
+            "position": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "coordination": 5,
+            "angle": 5,
+            "action": 5,
+            "position": 5,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00013.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00015.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 3,
+            "uniformity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "coordination": 5,
+            "angle": 4,
+            "action": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00027.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 3,
+            "elasticity": 3,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "action": 4,
+            "angle": 5,
+            "position": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "action": 4,
+            "position": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00035.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 5,
+            "elasticity": 4,
+            "gloss": 5,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00043.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00045.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 5,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00053.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 4,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00055.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 5,
+            "integrity": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "action": 5,
+            "position": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00060.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00062.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 5,
+            "action": 4,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "coordination": 4,
+            "action": 4,
+            "position": 4,
+            "angle": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "gloss": 4,
+            "elasticity": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00073.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00075.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 5,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00083.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 5,
+            "elasticity": 5,
+            "gloss": 5,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm1_00085.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 5,
+            "elasticity": 5,
+            "gloss": 5,
+            "integrity": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      }
+    ],
+    "cm2": [
+      {
+        "frame": "cm2_00001.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm2_00011.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm2_00021.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "action": 4,
+            "position": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "gloss": 3,
+            "elasticity": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm2_00031.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 3,
+            "action": 4,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm2_00041.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "angle": 4,
+            "action": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm2_00051.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 4,
+            "integrity": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 5,
+            "action": 4,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm2_00061.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "angle": 5,
+            "action": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "gloss": 3,
+            "integrity": 4,
+            "elasticity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm2_00071.jpg",
+        "scores": {
+          "detection_0": {
+            "gloss": 3,
+            "elasticity": 4,
+            "thickness": 4,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          }
+        }
+      }
+    ],
+    "cm3": [
+      {
+        "frame": "cm3_00001.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 3,
+            "uniformity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 3,
+            "action": 4,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_3": {
+            "position": 3,
+            "action": 4,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_4": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00011.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "action": 5,
+            "position": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00021.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00031.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00041.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00051.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00061.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 4,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00071.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00081.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00091.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00101.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 5,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00111.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "uniformity": 4,
+            "tightness": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 5,
+            "notes": ""
+          },
+          "detection_3": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00121.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 5,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00131.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "gloss": 3,
+            "elasticity": 3,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00141.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00151.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00161.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00171.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm3_00181.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_3": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_4": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 3,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      }
+    ],
+    "cm4": [
+      {
+        "frame": "cm4_00021.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "action": 4,
+            "position": 3,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm4_00042.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "gloss": 3,
+            "elasticity": 4,
+            "integrity": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm4_00061.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "elasticity": 5,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "angle": 3,
+            "action": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm4_00081.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "action": 4,
+            "position": 3,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "gloss": 3,
+            "elasticity": 4,
+            "thickness": 3,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm4_00101.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "elasticity": 4,
+            "thickness": 3,
+            "gloss": 4,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm4_00124.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 3,
+            "integrity": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_3": {
+            "thickness": 3,
+            "elasticity": 4,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm4_00142.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "elasticity": 4,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm4_00161.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "elasticity": 4,
+            "thickness": 4,
+            "gloss": 4,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm4_00182.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "thickness": 4,
+            "gloss": 4,
+            "elasticity": 4,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      }
+    ],
+    "cm5": [
+      {
+        "frame": "cm5_00001.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "angle": 4,
+            "action": 3,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00016.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 3,
+            "integrity": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00030.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 3,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 2,
+            "elasticity": 2,
+            "gloss": 2,
+            "integrity": 2,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00044.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 5,
+            "elasticity": 4,
+            "gloss": 4,
+            "integrity": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 5,
+            "action": 4,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 3,
+            "action": 3,
+            "angle": 2,
+            "coordination": 2,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00069.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00082.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 3,
+            "elasticity": 4,
+            "gloss": 3,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00088.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 3,
+            "elasticity": 2,
+            "gloss": 3,
+            "integrity": 2,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 4,
+            "coordination": 4,
+            "angle": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00102.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 2,
+            "elasticity": 3,
+            "gloss": 2,
+            "integrity": 2,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00117.jpg",
+        "scores": {
+          "detection_0": {
+            "thickness": 2,
+            "elasticity": 3,
+            "gloss": 2,
+            "integrity": 2,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 3,
+            "action": 4,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm5_00132.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "thickness": 5,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      }
+    ],
+    "cm6": [
+      {
+        "frame": "cm6_00001.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 3,
+            "elasticity": 2,
+            "gloss": 3,
+            "integrity": 2,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00015.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "angle": 4,
+            "action": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "gloss": 4,
+            "elasticity": 3,
+            "thickness": 3,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00032.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00048.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "action": 4,
+            "position": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00062.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00077.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 4,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00092.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 3,
+            "elasticity": 2,
+            "gloss": 3,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00106.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "elasticity": 4,
+            "thickness": 3,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00121.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "elasticity": 3,
+            "thickness": 3,
+            "gloss": 3,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm6_00136.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 3,
+            "elasticity": 3,
+            "integrity": 4,
+            "gloss": 3,
+            "notes": ""
+          }
+        }
+      }
+    ],
+    "cm7": [
+      {
+        "frame": "cm7_00001.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 5,
+            "uniformity": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_3": {
+            "angle": 4,
+            "position": 4,
+            "action": 4,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00008.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "coordination": 5,
+            "angle": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 3,
+            "action": 4,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_3": {
+            "tightness": 4,
+            "uniformity": 5,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00012.jpg",
+        "scores": {
+          "detection_0": {
+            "tightness": 4,
+            "uniformity": 5,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 4,
+            "coordination": 5,
+            "angle": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 5,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_3": {
+            "position": 4,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00019.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_2": {
+            "tightness": 4,
+            "uniformity": 4,
+            "notes": ""
+          },
+          "detection_3": {
+            "position": 4,
+            "action": 3,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00026.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 5,
+            "action": 4,
+            "angle": 3,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 3,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_3": {
+            "position": 4,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00029.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 4,
+            "action": 5,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 3,
+            "gloss": 4,
+            "integrity": 3,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00034.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 5,
+            "action": 4,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 5,
+            "action": 4,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "elasticity": 4,
+            "gloss": 3,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00042.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 5,
+            "action": 4,
+            "angle": 3,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 5,
+            "gloss": 3,
+            "elasticity": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00045.jpg",
+        "scores": {
+          "detection_0": {
+            "gloss": 3,
+            "thickness": 3,
+            "elasticity": 4,
+            "integrity": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 5,
+            "action": 4,
+            "angle": 4,
+            "coordination": 4,
+            "notes": ""
+          },
+          "detection_2": {
+            "position": 4,
+            "action": 3,
+            "angle": 5,
+            "coordination": 4,
+            "notes": ""
+          }
+        }
+      },
+      {
+        "frame": "cm7_00051.jpg",
+        "scores": {
+          "detection_0": {
+            "position": 4,
+            "action": 5,
+            "angle": 4,
+            "coordination": 3,
+            "notes": ""
+          },
+          "detection_1": {
+            "position": 3,
+            "action": 4,
+            "angle": 4,
+            "coordination": 5,
+            "notes": ""
+          },
+          "detection_2": {
+            "thickness": 4,
+            "gloss": 3,
+            "elasticity": 4,
+            "integrity": 4,
+            "notes": ""
+          }
+        }
+      }
+    ]
+  },
+  "excluded_frames": [
+    "cm4_00008",
+    "cm1_00011",
+    "cm1_00012",
+    "cm4_00011"
+  ]
+}

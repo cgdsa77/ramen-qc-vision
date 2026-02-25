@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "stage": "拉面成品",
+  "description": "成品评分以面条质感为主体，汤型/辣椒/辅料不参与惩罚，仅作可选微调加分",
+  "formula": {
+    "primary": "S_final = S_texture + w_presentation * S_presentation",
+    "S_texture": "面条质感得分，唯一主导项。由 noodle_quality 映射得到，清汤/红汤、辣椒有无不参与计算",
+    "S_presentation": "可选呈现加分 [0,5]，仅对辅料丰富度做小幅正向加分，无辅料不扣分",
+    "w_presentation": 0.04,
+    "score_range": [0, 100]
+  },
+  "noodle_quality_mapping": {
+    "excellent": { "score": 92, "label_zh": "优秀", "description": "筋道、软硬适中、无断生、色泽好" },
+    "good":     { "score": 77, "label_zh": "良好", "description": "整体良好，略有偏差" },
+    "fair":     { "score": 58, "label_zh": "一般", "description": "可接受，有明显不足" },
+    "poor":     { "score": 35, "label_zh": "较差", "description": "偏软/偏硬/断生或明显不达标" },
+    "bad":      { "score": 15, "label_zh": "差",   "description": "严重不达标或难以判断" }
+  },
+  "presentation_bonus": {
+    "description": "仅作小幅加分，无辅料时得0不扣分。清汤、面条无辣椒不参与本项",
+    "beef":   { "none": 0, "little": 0.5, "normal": 1.0, "more": 1.5 },
+    "egg":    { "none": 0, "yes": 1.0, "little": 0.5 },
+    "scallion": { "none": 0, "little": 0.5, "normal": 1.0, "more": 1.5 },
+    "max_bonus": 5.0
+  },
+  "model": {
+    "noodle_quality_weights": "从数据集学习得到的质感等级权重或分类器参数",
+    "ensemble": "可选：规则映射 + 图像模型预测的融合"
+  }
+}

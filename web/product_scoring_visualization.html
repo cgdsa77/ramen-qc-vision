@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>兰州拉面成品综合评分</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #faf5ef; min-height: 100vh; padding: 20px; color: #2c1810; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .nav-home-wrap { padding: 10px 20px; background: rgba(196,92,38,0.08); text-align: left; border-radius: 8px; margin-bottom: 16px; }
+        .nav-home { color: #8b5a2b; text-decoration: none; font-size: 14px; }
+        .nav-home:hover { text-decoration: underline; }
+        .header { background: linear-gradient(135deg, #2c1810 0%, #8b5a2b 100%); color: #fffbf7; padding: 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(44,24,16,0.2); }
+        .header h1 { font-size: 1.6em; margin-bottom: 8px; }
+        .header .subtitle { font-size: 14px; opacity: 0.95; }
+        .card { background: #fffbf7; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid rgba(196,92,38,0.12); margin-bottom: 20px; }
+        .card h2 { color: #8b5a2b; margin-bottom: 12px; font-size: 1.1em; padding-bottom: 6px; border-bottom: 1px solid rgba(196,92,38,0.2); }
+        .upload-zone { border: 2px dashed #c45c26; border-radius: 12px; padding: 32px; text-align: center; background: rgba(196,92,38,0.04); cursor: pointer; transition: background 0.2s; }
+        .upload-zone:hover { background: rgba(196,92,38,0.08); }
+        .upload-zone.dragover { background: rgba(196,92,38,0.12); }
+        .upload-zone input { display: none; }
+        .upload-zone .hint { color: #5c4a3a; font-size: 13px; margin-top: 8px; }
+        .score-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+        .score-item { text-align: center; padding: 12px 18px; background: linear-gradient(135deg, #c45c26 0%, #8b5a2b 100%); color: #fff; border-radius: 10px; min-width: 90px; }
+        .score-item .label { font-size: 11px; opacity: 0.9; }
+        .score-item .value { font-size: 1.3em; font-weight: bold; margin-top: 4px; }
+        .score-item.total { background: linear-gradient(135deg, #2c1810 0%, #5c3d1e 100%); }
+        .chart-wrap { height: 220px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+        .report-placeholder { color: #888; padding: 24px; text-align: center; font-size: 14px; }
+        .samples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+        .sample-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .sample-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .sample-card.selected { border-color: #c45c26; box-shadow: 0 0 0 2px rgba(196,92,38,0.3); }
+        .sample-card img { width: 100%; height: 140px; object-fit: cover; display: block; cursor: pointer; }
+        .sample-card .body { padding: 10px 12px; }
+        .sample-card .label-zh { font-size: 12px; color: #8b5a2b; font-weight: 600; margin-bottom: 4px; }
+        .sample-card .total-score { font-size: 1.1em; font-weight: bold; color: #2c1810; }
+        .sample-card .detail { font-size: 11px; color: #666; margin-top: 4px; }
+        .ai-card { background: #fffbf7; padding: 24px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid rgba(196,92,38,0.12); margin-top: 20px; }
+        .ai-card h2 { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 1.1em; color: #8b5a2b; }
+        .ai-card .hint { color: #5c4a3a; font-size: 13px; margin-bottom: 16px; line-height: 1.6; }
+        .ai-result { min-height: 100px; white-space: pre-wrap; background: #f8f9fa; padding: 16px; border-radius: 8px; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+        .ai-input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .ai-input-row input { flex: 1; min-width: 200px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .ai-input-row .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .ai-input-row .btn-send { background: #8b5a2b; color: #fff; }
+        .ai-input-row .btn-start { background: #c45c26; color: #fff; }
+        .err { color: #c00; padding: 12px; font-size: 13px; }
+        .loading { color: #666; padding: 16px; text-align: center; }
+        .attr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+        .attr-item { background: rgba(196,92,38,0.06); padding: 10px 12px; border-radius: 8px; font-size: 12px; border: 1px solid rgba(196,92,38,0.15); }
+        .attr-item .k { color: #666; margin-bottom: 2px; }
+        .attr-item .v { font-weight: 600; color: #2c1810; }
+        .presentation-form { margin-top: 16px; padding: 16px; background: rgba(196,92,38,0.05); border-radius: 10px; border: 1px dashed rgba(196,92,38,0.25); }
+        .presentation-form h4 { font-size: 13px; color: #8b5a2b; margin-bottom: 10px; }
+        .presentation-form .hint { font-size: 12px; color: #666; margin-bottom: 10px; }
+        .presentation-form .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+        .presentation-form label { font-size: 12px; color: #5c4a3a; }
+        .presentation-form select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; min-width: 100px; }
+        .prob-bars { margin-top: 8px; }
+        .prob-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; }
+        .prob-bar .name { width: 72px; color: #5c4a3a; }
+        .prob-bar .track { flex: 1; height: 14px; background: #eee; border-radius: 7px; overflow: hidden; }
+        .prob-bar .fill { height: 100%; background: linear-gradient(90deg, #c45c26, #d4a574); border-radius: 7px; transition: width 0.2s; }
+        .prob-bar .pct { width: 36px; text-align: right; color: #8b5a2b; font-weight: 600; }
+        .report-top { display: flex; gap: 20px; align-items: flex-start; margin-top: 12px; flex-wrap: wrap; }
+        .report-image-wrap { flex-shrink: 0; width: 280px; max-width: 100%; }
+        .report-image-wrap img { width: 100%; max-height: 240px; object-fit: contain; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); border: 1px solid rgba(196,92,38,0.2); display: block; background: #f5f0ea; cursor: pointer; }
+        .report-image-wrap .caption { font-size: 12px; color: #666; margin-top: 6px; text-align: center; }
+        .report-image-wrap .caption .click-hint { color: #8b5a2b; font-size: 11px; }
+        .lightbox { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; cursor: pointer; }
+        .lightbox.show { display: flex; }
+        .lightbox img { max-width: 95vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: none; }
+        .lightbox .close-hint { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.8); font-size: 13px; pointer-events: none; }
+        .report-score-wrap { flex: 1; min-width: 260px; }
+        .confirm-overlay { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; }
+        .confirm-overlay.show { display: flex; }
+        .confirm-box { background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); max-width: 360px; text-align: center; }
+        .confirm-box p { margin-bottom: 20px; font-size: 16px; color: #333; }
+        .confirm-box .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .confirm-box .btns button { padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; }
+        .confirm-box .btns .btn-ok { background: #8b5a2b; color: #fff; }
+        .confirm-box .btns .btn-cancel { background: #e9ecef; color: #333; }
+        @media (max-width: 640px) { .report-top { flex-direction: column; } .report-image-wrap { width: 100%; } .report-image-wrap img { max-height: 200px; } }
+    </style>
+</head>
+<body>
+    <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
+    <div class="container">
+        <div class="header">
+            <h1>兰州拉面成品综合评分</h1>
+            <p class="subtitle">上传图片评分 · 多维度报告与图表 · 代表性样本展示 · AI 智能分析</p>
+        </div>
+
+        <!-- 1. 上传评分与报告 -->
+        <div class="card">
+            <h2>上传图片进行评分</h2>
+            <div id="uploadZone" class="upload-zone">
+                <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" />
+                <div>点击或拖拽图片到此处</div>
+                <div class="hint">支持 JPG、PNG，将生成成品评分报告（以面条质感为主体）</div>
+            </div>
+            <div id="uploadReport" style="display:none;">
+                <h3 style="margin:16px 0 8px; font-size:1em;">评分报告</h3>
+                <div class="report-top">
+                    <div class="report-image-wrap">
+                        <img id="reportImage" alt="当前评分图片" style="display:none" />
+                        <div class="caption" id="reportImageCaption">当前评分图片 <span class="click-hint">（点击放大）</span></div>
+                    </div>
+                    <div class="report-score-wrap">
+                        <div id="reportScoreRow" class="score-row"></div>
+                    </div>
+                </div>
+                <div id="reportPresentationForm" class="presentation-form" style="display:none;">
+                    <h4>辅料（用于呈现加分）</h4>
+                    <p class="hint">上传图片时模型不识别辅料，请根据画面勾选后，呈现加分会重新计算并更新报告。</p>
+                    <div class="row">
+                        <label>牛肉</label><select id="reportBeef"><option value="none">无</option><option value="little">少量</option><option value="more">较多</option></select>
+                        <label>鸡蛋</label><select id="reportEgg"><option value="none">无</option><option value="yes">有</option></select>
+                        <label>蒜苗碎</label><select id="reportScallion"><option value="none">无</option><option value="little">少量</option><option value="more">较多</option></select>
+                    </div>
+                </div>
+                <div id="reportAttrSection" class="card" style="margin-top:16px; display:none;">
+                    <h2>维度与属性</h2>
+                    <div id="reportAttrGrid" class="attr-grid"></div>
+                    <div id="reportProbSection" class="prob-bars" style="display:none;"></div>
+                </div>
+                <div class="grid" style="margin-top:16px;">
+                    <div class="card" style="margin-bottom:0;"><h2>维度占比</h2><div class="chart-wrap"><canvas id="reportDonutChart"></canvas></div></div>
+                    <div class="card" style="margin-bottom:0;"><h2>得分构成</h2><div class="chart-wrap"><canvas id="reportBarChart"></canvas></div></div>
+                </div>
+                <div class="card" style="margin-top:16px;"><h2>多维度雷达</h2><div class="chart-wrap"><canvas id="reportRadarChart"></canvas></div></div>
+            </div>
+            <div id="uploadPlaceholder" class="report-placeholder">上传图片后将显示评分与图表</div>
+        </div>
+
+        <!-- 2. 代表性样本 -->
+        <div class="card">
+            <h2>数据集代表样本（高分且具代表性）</h2>
+            <p class="hint" style="margin-bottom:12px; color:#666; font-size:13px;">从 178 张标注中挑选红汤多肉有蛋、清汤多蒜苗等组合。点击图片可放大查看，点击卡片可选中并用于 AI 分析</p>
+            <div id="samplesLoading" class="loading">加载中…</div>
+            <div id="samplesGrid" class="samples-grid" style="display:none;"></div>
+        </div>
+
+        <!-- 3. AI 智能分析 -->
+        <div class="ai-card">
+            <h2>🤖 AI 智能分析</h2>
+            <p class="hint">
+                <strong>开始分析</strong>：基于当前选中的成品（上传结果或下方样本）生成完整分析报告。<br>
+                <strong>发送</strong>：输入具体问题（如「为什么质感得分是良好？」「清汤和红汤在评分上有区别吗？」），AI 结合当前数据作答。
+            </p>
+            <div id="aiResult" class="ai-result"></div>
+            <div class="ai-input-row">
+                <input type="text" id="aiInput" placeholder="输入问题，例如：清汤和红汤在评分上有区别吗？" />
+                <button type="button" class="btn btn-send" id="btnSend">发送</button>
+                <button type="button" class="btn btn-start" id="btnStart">开始分析</button>
+            </div>
+        </div>
+    </div>
+    <div id="imageLightbox" class="lightbox" title="点击任意处关闭">
+        <img id="lightboxImage" alt="大图" />
+        <span class="close-hint">点击任意处关闭</span>
+    </div>
+    <div id="ivcamConfirmOverlay" class="confirm-overlay">
+        <div class="confirm-box">
+            <p>确认对其进行检测吗？</p>
+            <div class="btns">
+                <button type="button" class="btn-ok" id="ivcamConfirmOk">确认</button>
+                <button type="button" class="btn-cancel" id="ivcamConfirmCancel">取消</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentProductData = null;
+        let currentProductSource = '';
+        let reportCharts = {};
+        let lastUploadResult = null;
+
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const uploadReport = document.getElementById('uploadReport');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+        uploadZone.onclick = () => fileInput.click();
+        uploadZone.ondragover = (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); };
+        uploadZone.ondragleave = () => uploadZone.classList.remove('dragover');
+        uploadZone.ondrop = (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const f = e.dataTransfer && e.dataTransfer.files[0];
+            if (f && f.type.startsWith('image/')) doUpload(f);
+        };
+        fileInput.onchange = () => { const f = fileInput.files[0]; if (f) doUpload(f); };
+
+        async function doUpload(file) {
+            uploadPlaceholder.style.display = 'none';
+            uploadReport.style.display = 'block';
+            document.getElementById('reportScoreRow').innerHTML = '<div class="loading">评分中…</div>';
+            document.getElementById('reportPresentationForm').style.display = 'none';
+            try {
+                const fd = new FormData();
+                fd.append('file', file);
+                const r = await fetch('/api/product-score/upload', { method: 'POST', body: fd });
+                const res = await r.json();
+                if (!res.success) {
+                    document.getElementById('reportScoreRow').innerHTML = '<div class="err">' + (res.message || '评分失败') + '</div>';
+                    return;
+                }
+                lastUploadResult = res;
+                var imgEl = document.getElementById('reportImage');
+                var capEl = document.getElementById('reportImageCaption');
+                if (imgEl && capEl) {
+                    var fr = new FileReader();
+                    fr.onload = function() { imgEl.src = fr.result; imgEl.style.display = 'block'; };
+                    fr.readAsDataURL(file);
+                    capEl.innerHTML = (file.name || '当前评分图片') + ' <span class="click-hint">（点击放大）</span>';
+                }
+                document.getElementById('reportBeef').value = res.beef || 'none';
+                document.getElementById('reportEgg').value = (res.egg && res.egg !== 'none') ? 'yes' : 'none';
+                document.getElementById('reportScallion').value = res.scallion || 'none';
+                document.getElementById('reportPresentationForm').style.display = 'block';
+                setCurrentProduct(res, res.image_filename || file.name);
+                renderReport(res);
+            } catch (e) {
+                document.getElementById('reportScoreRow').innerHTML = '<div class="err">请求失败: ' + e.message + '</div>';
+            }
+        }
+
+        async function applyPresentationAndRefresh() {
+            if (!lastUploadResult) return;
+            const beef = document.getElementById('reportBeef').value;
+            const egg = document.getElementById('reportEgg').value;
+            const scallion = document.getElementById('reportScallion').value;
+            try {
+                const r = await fetch('/api/product-score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        annotation: {
+                            noodle_quality: lastUploadResult.noodle_quality,
+                            beef: beef,
+                            egg: egg,
+                            scallion: scallion,
+                            soup_type: lastUploadResult.soup_type || 'red',
+                            noodle_chili: lastUploadResult.noodle_chili || 'partial'
+                        },
+                        use_presentation: true
+                    })
+                });
+                const res = await r.json();
+                if (res.success && res.score) {
+                    const s = res.score;
+                    const merged = { ...lastUploadResult, total_score: s.total_score, s_texture: s.s_texture, s_presentation: s.s_presentation, beef: beef, egg: egg, scallion: scallion };
+                    lastUploadResult = merged;
+                    setCurrentProduct(merged, currentProductSource);
+                    renderReport(merged);
+                }
+            } catch (e) { console.warn(e); }
+        }
+
+        document.getElementById('reportBeef').onchange = applyPresentationAndRefresh;
+        document.getElementById('reportEgg').onchange = applyPresentationAndRefresh;
+        document.getElementById('reportScallion').onchange = applyPresentationAndRefresh;
+
+        function setCurrentProduct(data, source) {
+            currentProductData = {
+                total_score: data.total_score,
+                s_texture: data.s_texture,
+                s_presentation: data.s_presentation,
+                noodle_quality: data.noodle_quality,
+                soup_type: data.soup_type || '',
+                noodle_chili: data.noodle_chili || '',
+                beef: data.beef || '',
+                egg: data.egg || '',
+                scallion: data.scallion || ''
+            };
+            if (data.confidence != null) currentProductData.confidence = data.confidence;
+            currentProductSource = source || '上传图片';
+        }
+
+        function renderReport(data) {
+            const total = Number(data.total_score) || 0;
+            const sTex = Number(data.s_texture) || 0;
+            const sPre = Number(data.s_presentation) || 0;
+            const quality = (data.noodle_quality || 'fair').toLowerCase();
+            const qualityZh = { excellent: '优秀', good: '良好', fair: '一般', poor: '较差', bad: '差' }[quality] || quality;
+            const conf = data.confidence != null ? Math.round(Number(data.confidence) * 100) : null;
+            document.getElementById('reportScoreRow').innerHTML = `
+                <div class="score-item total"><div class="label">综合得分</div><div class="value">${total.toFixed(1)}</div></div>
+                <div class="score-item"><div class="label">面条质感</div><div class="value">${sTex.toFixed(1)}</div></div>
+                <div class="score-item"><div class="label">呈现加分</div><div class="value">${sPre.toFixed(1)}</div></div>
+                <div class="score-item"><div class="label">质感等级</div><div class="value">${qualityZh}</div></div>
+                ${conf != null ? '<div class="score-item"><div class="label">预测置信度</div><div class="value">' + conf + '%</div></div>' : ''}
+            `;
+            const ctxDonut = document.getElementById('reportDonutChart').getContext('2d');
+            if (reportCharts.donut) reportCharts.donut.destroy();
+            reportCharts.donut = new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['面条质感得分', '呈现加分(×0.04)'],
+                    datasets: [{ data: [sTex, Math.max(0.1, 0.04 * sPre)], backgroundColor: ['#c45c26', '#d4a574'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+            const barLabels = ['综合', '质感', '呈现'];
+            const barData = [total, sTex, sPre];
+            if (conf != null) { barLabels.push('置信度'); barData.push(conf); }
+            const ctxBar = document.getElementById('reportBarChart').getContext('2d');
+            if (reportCharts.bar) reportCharts.bar.destroy();
+            reportCharts.bar = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: barLabels,
+                    datasets: [{ label: '得分', data: barData, backgroundColor: ['#2c1810', '#c45c26', '#8b5a2b', '#5c3d1e'].slice(0, barData.length) }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+            });
+            const radarLabels = ['质感得分', '呈现贡献', '置信度'];
+            const radarVal = [sTex / 100, (0.04 * sPre) / 5, (conf != null ? conf / 100 : 0.5)];
+            const ctxRadar = document.getElementById('reportRadarChart').getContext('2d');
+            if (reportCharts.radar) reportCharts.radar.destroy();
+            reportCharts.radar = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: radarLabels,
+                    datasets: [{ label: '归一化', data: radarVal, backgroundColor: 'rgba(196,92,38,0.2)', borderColor: '#c45c26', pointBackgroundColor: '#c45c26' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 1 } } }
+            });
+            const attr = [
+                { k: '面条质感等级', v: qualityZh },
+                { k: '面条质感得分', v: sTex.toFixed(1) },
+                { k: '呈现加分', v: sPre.toFixed(1) },
+                { k: '综合得分', v: total.toFixed(1) }
+            ];
+            if (conf != null) attr.push({ k: '预测置信度', v: conf + '%' });
+            const soupZh = (data.soup_type || '') === 'clear' ? '清汤' : (data.soup_type === 'red' ? '红汤' : '');
+            if (soupZh) attr.push({ k: '汤型', v: soupZh });
+            const chiliZh = { all: '全部', partial: '部分', none: '无' }[data.noodle_chili] || '';
+            if (chiliZh) attr.push({ k: '面条辣椒', v: chiliZh });
+            const beefZh = { none: '无', little: '少量', more: '较多', normal: '适量' }[data.beef] || data.beef || '';
+            if (beefZh) attr.push({ k: '牛肉', v: beefZh });
+            const eggZh = (data.egg && data.egg !== 'none') ? '有' : '无';
+            attr.push({ k: '鸡蛋', v: eggZh });
+            const scallionZh = { none: '无', little: '少量', more: '较多', normal: '适量' }[data.scallion] || data.scallion || '';
+            if (scallionZh) attr.push({ k: '蒜苗碎', v: scallionZh });
+            document.getElementById('reportAttrSection').style.display = 'block';
+            document.getElementById('reportAttrGrid').innerHTML = attr.map(a => '<div class="attr-item"><div class="k">' + a.k + '</div><div class="v">' + a.v + '</div></div>').join('');
+            const probs = data.probabilities || {};
+            const probSection = document.getElementById('reportProbSection');
+            if (Object.keys(probs).length > 0) {
+                probSection.style.display = 'block';
+                const names = { excellent: '优秀', good: '良好', fair: '一般' };
+                probSection.innerHTML = '<h4 style="font-size:12px; color:#8b5a2b; margin-bottom:6px;">等级概率</h4>' + Object.entries(probs).map(([key, p]) => {
+                    const pct = Math.round(Number(p) * 100);
+                    return '<div class="prob-bar"><span class="name">' + (names[key] || key) + '</span><div class="track"><div class="fill" style="width:' + pct + '%"></div></div><span class="pct">' + pct + '%</span></div>';
+                }).join('');
+            } else probSection.style.display = 'none';
+        }
+
+        async function loadSamples() {
+            try {
+                const r = await fetch('/api/product-score/representative-samples');
+                const res = await r.json();
+                document.getElementById('samplesLoading').style.display = 'none';
+                document.getElementById('samplesGrid').style.display = 'grid';
+                if (!res.success || !res.samples || res.samples.length === 0) {
+                    document.getElementById('samplesGrid').innerHTML = '<div class="report-placeholder">暂无代表样本数据</div>';
+                    return;
+                }
+                const grid = document.getElementById('samplesGrid');
+                grid.innerHTML = '';
+                const lb = document.getElementById('imageLightbox');
+                const lbImg = document.getElementById('lightboxImage');
+                res.samples.forEach((s, idx) => {
+                    const card = document.createElement('div');
+                    card.className = 'sample-card';
+                    card.dataset.index = idx;
+                    const imgUrl = s.image ? '/api/product-image/' + encodeURIComponent(s.image) : '';
+                    const score = s.score || {};
+                    const total = Number(score.total_score) || 0;
+                    card.innerHTML = `
+                        <img src="${imgUrl}" alt="${s.label_zh}" title="点击放大" onerror="this.style.background='#eee';this.alt=''"/>
+                        <div class="body">
+                            <div class="label-zh">${s.label_zh || '成品'}</div>
+                            <div class="total-score">${total.toFixed(1)} 分</div>
+                            <div class="detail">质感 ${(score.s_texture || 0).toFixed(0)} · ${(score.noodle_quality || '').toLowerCase()}</div>
+                        </div>
+                    `;
+                    const imgEl = card.querySelector('img');
+                    imgEl.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (imgUrl) {
+                            lbImg.src = imgUrl;
+                            lb.classList.add('show');
+                        }
+                    });
+                    card.onclick = () => {
+                        document.querySelectorAll('.sample-card').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        const ann = s.annotation || {};
+                        setCurrentProduct({
+                            total_score: score.total_score,
+                            s_texture: score.s_texture,
+                            s_presentation: score.s_presentation,
+                            noodle_quality: score.noodle_quality,
+                            soup_type: ann.soup_type,
+                            noodle_chili: ann.noodle_chili,
+                            beef: ann.beef,
+                            egg: ann.egg,
+                            scallion: ann.scallion
+                        }, s.image || '');
+                    };
+                    grid.appendChild(card);
+                });
+            } catch (e) {
+                document.getElementById('samplesLoading').textContent = '加载失败: ' + e.message;
+            }
+        }
+
+        document.getElementById('btnStart').onclick = async function() {
+            if (!currentProductData) {
+                document.getElementById('aiResult').textContent = '请先上传一张图片进行评分，或从下方代表样本中点击选择一项';
+                return;
+            }
+            const el = document.getElementById('aiResult');
+            el.textContent = '正在分析…';
+            try {
+                const r = await fetch('/api/ai-analyze-scoring', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stage: 'product', video: currentProductSource, data: currentProductData })
+                });
+                const res = await r.json();
+                el.textContent = res.analysis || res.error || '分析失败';
+            } catch (e) {
+                el.textContent = '请求失败: ' + e.message;
+            }
+        };
+
+        document.getElementById('btnSend').onclick = async function() {
+            const question = document.getElementById('aiInput').value.trim();
+            if (!currentProductData) {
+                document.getElementById('aiResult').textContent = '请先选择一项成品（上传评分或点击样本）';
+                return;
+            }
+            if (!question) {
+                document.getElementById('aiResult').textContent = '请输入问题';
+                return;
+            }
+            document.getElementById('aiInput').value = '';
+            const el = document.getElementById('aiResult');
+            el.textContent = '正在回复…';
+            try {
+                const r = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stage: 'product', video: currentProductSource, data: currentProductData, question: question, history: [] })
+                });
+                const res = await r.json();
+                el.textContent = res.answer || res.error || '请求失败';
+            } catch (e) {
+                el.textContent = '请求失败: ' + e.message;
+            }
+        };
+
+        var lightbox = document.getElementById('imageLightbox');
+        var lightboxImg = document.getElementById('lightboxImage');
+        document.getElementById('reportImage').onclick = function() {
+            if (this.src && this.style.display !== 'none') {
+                lightboxImg.src = this.src;
+                lightbox.classList.add('show');
+            }
+        };
+        lightbox.onclick = function() { lightbox.classList.remove('show'); };
+
+        (function initIvcamConfirm() {
+            var params = new URLSearchParams(location.search);
+            var ivcam = params.get('ivcam');
+            if (!ivcam) { loadSamples(); return; }
+            var overlay = document.getElementById('ivcamConfirmOverlay');
+            var btnOk = document.getElementById('ivcamConfirmOk');
+            var btnCancel = document.getElementById('ivcamConfirmCancel');
+            function clearIvcamUrl() {
+                params.delete('ivcam');
+                var q = params.toString();
+                history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
+            }
+            overlay.classList.add('show');
+            btnCancel.onclick = function() {
+                overlay.classList.remove('show');
+                location.href = '/realtime-monitor';
+            };
+            btnOk.onclick = async function() {
+                overlay.classList.remove('show');
+                clearIvcamUrl();
+                loadSamples();
+                try {
+                    var r = await fetch('/api/ivcam/file/' + encodeURIComponent(ivcam));
+                    if (!r.ok) throw new Error('无法获取文件');
+                    var blob = await r.blob();
+                    var name = ivcam;
+                    var file = new File([blob], name, { type: blob.type || 'image/jpeg' });
+                    await doUpload(file);
+                } catch (e) {
+                    document.getElementById('reportScoreRow').innerHTML = '<div class="err">' + (e.message || '请求失败') + '</div>';
+                    document.getElementById('uploadReport').style.display = 'block';
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                }
+            };
+        })();
+    </script>
+</body>
+</html>

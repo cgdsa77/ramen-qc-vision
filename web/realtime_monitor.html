@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时监测</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 26px; margin-bottom: 4px; }
+        .header p { font-size: 14px; opacity: 0.95; }
+        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); text-align: left; }
+        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .nav-home:hover { text-decoration: underline; }
+        .content { padding: 24px 30px; }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .controls label { font-weight: bold; color: #333; font-size: 14px; }
+        .controls select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            min-width: 130px;
+        }
+        .btn-start, .btn-stop {
+            padding: 10px 22px;
+            font-size: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-start { background: #28a745; color: white; }
+        .btn-start:hover { background: #218838; }
+        .btn-stop { background: #dc3545; color: white; }
+        .btn-stop:hover { background: #c82333; }
+        .btn-stop:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-detect { padding: 8px 14px; font-size: 13px; border: 1px solid #666; border-radius: 8px; background: #f5f5f5; cursor: pointer; }
+        .btn-detect:hover { background: #eee; }
+        .video-wrapper {
+            width: 100%;
+            max-height: 70vh;
+            background: #111;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-wrapper img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            display: block;
+        }
+        .video-wrapper .placeholder { color: #888; padding: 40px; text-align: center; }
+        .status { margin-top: 10px; color: #666; font-size: 13px; }
+        .tip-one { font-size: 12px; color: #666; margin-bottom: 14px; }
+        .checkbox-wrap { font-weight: normal; display: inline-flex; align-items: center; gap: 5px; font-size: 14px; }
+        .controls .checkbox-wrap input { margin: 0; }
+        .ivcam-section { margin-top: 24px; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e0e0e0; }
+        .ivcam-section h3 { font-size: 15px; color: #333; margin-bottom: 8px; }
+        .ivcam-section .hint { font-size: 12px; color: #666; margin-bottom: 14px; }
+        .ivcam-btns-row { display: flex; flex-wrap: wrap; gap: 12px; }
+        .ivcam-btn { padding: 12px 24px; border-radius: 8px; font-size: 14px; border: none; cursor: pointer; background: #667eea; color: #fff; }
+        .ivcam-btn:hover { opacity: 0.9; }
+        .ivcam-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .ivcam-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+        .ivcam-modal.show { display: flex; }
+        .ivcam-modal-box { background: #fff; border-radius: 12px; padding: 20px; max-width: 420px; width: 90%; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
+        .ivcam-modal-title { font-size: 15px; color: #333; margin-bottom: 12px; }
+        .ivcam-list { list-style: none; max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; padding: 6px; margin-bottom: 12px; }
+        .ivcam-list li { padding: 10px 12px; cursor: pointer; border-radius: 6px; font-size: 13px; }
+        .ivcam-list li:hover { background: rgba(102, 126, 234, 0.1); }
+        .ivcam-list li.selected { background: rgba(102, 126, 234, 0.2); font-weight: bold; }
+        .ivcam-modal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+        .ivcam-modal-actions a { padding: 10px 18px; border-radius: 8px; font-size: 14px; text-decoration: none; background: #667eea; color: #fff; }
+        .ivcam-modal-actions a:hover { opacity: 0.9; }
+        .ivcam-modal-actions a.disabled { pointer-events: none; opacity: 0.5; }
+        .ivcam-empty { font-size: 13px; color: #888; padding: 12px; }
+        .ivcam-modal-close { align-self: flex-end; margin: -8px -8px 8px 0; padding: 4px 10px; font-size: 13px; cursor: pointer; color: #666; border: none; background: none; }
+        .ivcam-modal-close:hover { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>实时监测</h1>
+            <p>摄像头视频流 · 手部/头部外源模型 · 抻面/下面及捞面</p>
+        </div>
+        <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
+        <div class="content">
+            <p class="tip-one">离开前请点「停止」释放摄像头；手部与头部使用 MediaPipe 外源模型。使用 ivCam 等虚拟摄像头时，请先最小化 ivCam 窗口再点「开始」；若选「外接 1」无画面，点「检测摄像头」后按提示改选外接 2。</p>
+            <div class="controls">
+                <label>摄像头</label>
+                <select id="device">
+                    <option value="0">默认（电脑摄像头）</option>
+                    <option value="1">外接 1（如 ivCam）</option>
+                    <option value="2">外接 2</option>
+                </select>
+                <button type="button" class="btn-detect" id="btnDetect">检测摄像头</button>
+                <label>阶段</label>
+                <select id="stage">
+                    <option value="stretch">抻面</option>
+                    <option value="boiling_scooping">下面及捞面</option>
+                </select>
+                <label class="checkbox-wrap"><input type="checkbox" id="useMediaPipeHands" checked /> 手部</label>
+                <label class="checkbox-wrap"><input type="checkbox" id="useMediaPipeFace" checked /> 头部</label>
+                <button class="btn-start" id="btnStart">开始</button>
+                <button class="btn-stop" id="btnStop" disabled>停止</button>
+            </div>
+            <div class="video-wrapper">
+                <img id="streamImg" src="" alt="实时画面" style="display: none;" />
+                <div class="placeholder" id="placeholder">选择后点击「开始」</div>
+            </div>
+            <div class="status" id="status"></div>
+
+            <div class="ivcam-section">
+                <h3>选择本地视频或图片进行检测（使用 ivcam）</h3>
+                <p class="hint">从 data\ivcam 目录选择已录制的视频或拍摄的图片，跳转到对应检测模块（跳转后将提示确认是否开始检测）。</p>
+                <div class="ivcam-btns-row">
+                    <button type="button" class="ivcam-btn" id="ivcamBtnVideo">选择视频文件</button>
+                    <button type="button" class="ivcam-btn" id="ivcamBtnImage">选择图片文件</button>
+                </div>
+            </div>
+            <div id="ivcamModal" class="ivcam-modal">
+                <div class="ivcam-modal-box">
+                    <button type="button" class="ivcam-modal-close" id="ivcamModalClose">关闭</button>
+                    <div class="ivcam-modal-title" id="ivcamModalTitle">选择文件</div>
+                    <ul id="ivcamModalList" class="ivcam-list"></ul>
+                    <div id="ivcamModalEmpty" class="ivcam-empty" style="display:none;">暂无文件，请将文件放入 data\ivcam</div>
+                    <div id="ivcamModalActions" class="ivcam-modal-actions" style="display:none;">
+                        <a href="#" id="ivcamModalBtnStretch">1. 抻面部分</a>
+                        <a href="#" id="ivcamModalBtnBoiling">2. 下面及捞面部分</a>
+                        <a href="#" id="ivcamModalBtnProduct" style="display:none;">兰州拉面成品综合评分</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var streamImg = document.getElementById('streamImg');
+            var placeholder = document.getElementById('placeholder');
+            var btnStart = document.getElementById('btnStart');
+            var btnStop = document.getElementById('btnStop');
+            var device = document.getElementById('device');
+            var stage = document.getElementById('stage');
+            var useMediaPipeHands = document.getElementById('useMediaPipeHands');
+            var useMediaPipeFace = document.getElementById('useMediaPipeFace');
+            var btnDetect = document.getElementById('btnDetect');
+            var status = document.getElementById('status');
+            var currentStreamId = null;
+
+            if (btnDetect) {
+                btnDetect.addEventListener('click', function () {
+                    status.textContent = '检测中…';
+                    fetch('/api/cameras/list').then(function (r) { return r.json(); }).then(function (data) {
+                        var list = (data && data.available) ? data.available : [];
+                        if (list.length === 0) status.textContent = '未检测到可用摄像头';
+                        else status.textContent = '可用设备号: ' + list.join(', ') + '（默认=0，外接1=1，外接2=2）';
+                    }).catch(function () { status.textContent = '检测失败'; });
+                });
+            }
+
+            function setRunning(running) {
+                btnStart.disabled = running;
+                btnStop.disabled = !running;
+                device.disabled = running;
+                stage.disabled = running;
+                useMediaPipeHands.disabled = running;
+                useMediaPipeFace.disabled = running;
+            }
+
+            btnStart.addEventListener('click', function () {
+                currentStreamId = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2);
+                var url = '/api/realtime-stream?device=' + encodeURIComponent(device.value) + '&stage=' + encodeURIComponent(stage.value)
+                    + '&use_mediapipe_hands=' + (useMediaPipeHands.checked ? 'true' : 'false')
+                    + '&use_mediapipe_face=' + (useMediaPipeFace.checked ? 'true' : 'false')
+                    + '&stream_id=' + encodeURIComponent(currentStreamId);
+                streamImg.src = url;
+                streamImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                setRunning(true);
+                status.textContent = '连接中…';
+                streamImg.onload = function () { status.textContent = '已连接'; };
+                streamImg.onerror = function () { status.textContent = '连接失败，请关闭占用摄像头的应用后重试'; };
+            });
+
+            function doStop() {
+                if (currentStreamId) {
+                    fetch('/api/realtime-stream/stop?stream_id=' + encodeURIComponent(currentStreamId)).catch(function () {});
+                    currentStreamId = null;
+                }
+                streamImg.src = '';
+                streamImg.style.display = 'none';
+                placeholder.style.display = 'block';
+                setRunning(false);
+                status.textContent = '已停止';
+            }
+            btnStop.addEventListener('click', doStop);
+
+            function onLeave() {
+                if (currentStreamId) navigator.sendBeacon('/api/realtime-stream/stop?stream_id=' + encodeURIComponent(currentStreamId));
+            }
+            window.addEventListener('pagehide', onLeave);
+            window.addEventListener('beforeunload', onLeave);
+
+            (function initIvcam() {
+                var modal = document.getElementById('ivcamModal');
+                var modalTitle = document.getElementById('ivcamModalTitle');
+                var modalList = document.getElementById('ivcamModalList');
+                var modalEmpty = document.getElementById('ivcamModalEmpty');
+                var modalActions = document.getElementById('ivcamModalActions');
+                var btnStretch = document.getElementById('ivcamModalBtnStretch');
+                var btnBoiling = document.getElementById('ivcamModalBtnBoiling');
+                var btnProduct = document.getElementById('ivcamModalBtnProduct');
+                var selectedName = null;
+                var currentMode = null;
+
+                function openModal(mode) {
+                    currentMode = mode;
+                    selectedName = null;
+                    modalList.style.display = 'block';
+                    modalList.innerHTML = '';
+                    modalEmpty.style.display = 'none';
+                    modalActions.style.display = 'none';
+                    btnStretch.style.display = mode === 'video' ? 'inline-block' : 'none';
+                    btnBoiling.style.display = mode === 'video' ? 'inline-block' : 'none';
+                    btnProduct.style.display = mode === 'image' ? 'inline-block' : 'none';
+                    modalTitle.textContent = mode === 'video' ? '选择视频文件（data\\ivcam）' : '选择图片文件（data\\ivcam）';
+                    modal.classList.add('show');
+                    fetch('/api/ivcam/list').then(function (r) { return r.json(); }).then(function (res) {
+                        var items = mode === 'video' ? (res.videos || []) : (res.images || []);
+                        if (items.length === 0) {
+                            modalList.style.display = 'none';
+                            modalEmpty.style.display = 'block';
+                            return;
+                        }
+                        modalList.innerHTML = items.map(function (name) {
+                            return '<li data-name="' + name.replace(/"/g, '&quot;') + '">' + name + '</li>';
+                        }).join('');
+                        modalList.querySelectorAll('li').forEach(function (li) {
+                            li.addEventListener('click', function () {
+                                modalList.querySelectorAll('li').forEach(function (l) { l.classList.remove('selected'); });
+                                li.classList.add('selected');
+                                selectedName = li.dataset.name;
+                                modalActions.style.display = 'flex';
+                                if (mode === 'video') {
+                                    btnStretch.href = '/stretch-detection?ivcam=' + encodeURIComponent(selectedName);
+                                    btnBoiling.href = '/boiling-detection?ivcam=' + encodeURIComponent(selectedName);
+                                } else {
+                                    btnProduct.href = '/product-scoring-visualization?ivcam=' + encodeURIComponent(selectedName);
+                                }
+                            });
+                        });
+                    }).catch(function () {
+                        modalEmpty.textContent = '加载失败';
+                        modalEmpty.style.display = 'block';
+                        modalList.style.display = 'none';
+                    });
+                }
+                function closeModal() {
+                    modal.classList.remove('show');
+                }
+
+                document.getElementById('ivcamBtnVideo').addEventListener('click', function () { openModal('video'); });
+                document.getElementById('ivcamBtnImage').addEventListener('click', function () { openModal('image'); });
+                document.getElementById('ivcamModalClose').addEventListener('click', closeModal);
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) closeModal();
+                });
+            })();
+        })();
+    </script>
+</body>
+</html>

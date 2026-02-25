@@ -1,0 +1,28 @@
+{
+  "video": "cm6",
+  "frame": "cm6_00136.jpg",
+  "scores": {
+    "detection_0": {
+      "position": 4,
+      "action": 3,
+      "angle": 4,
+      "coordination": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 3,
+      "action": 4,
+      "angle": 3,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "thickness": 3,
+      "elasticity": 3,
+      "integrity": 4,
+      "gloss": 3,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768832820.376538
+}

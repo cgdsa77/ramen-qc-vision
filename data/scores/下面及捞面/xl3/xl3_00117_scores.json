@@ -1,0 +1,25 @@
+{
+  "video": "xl3",
+  "frame": "xl3_00117.jpg",
+  "scores": {
+    "detection_0": {
+      "drainage_effect": 3.41,
+      "distribution_state": 3.6,
+      "action": 4.29,
+      "thickness": 4.0,
+      "cleanliness": 3.29,
+      "elasticity": 3.6,
+      "ripeness": 3.0,
+      "operation_standardization": 3.71,
+      "position": 3.91,
+      "tool_coordination": 4.0,
+      "soup_adhesion": 3.6,
+      "noodle_soup_ratio": 3.6,
+      "integrity": 3.6,
+      "coordination": 3.71,
+      "notes": "关键帧时间线性插值"
+    }
+  },
+  "stage": "boiling_scooping",
+  "interpolated": true
+}

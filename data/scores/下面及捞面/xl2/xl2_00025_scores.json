@@ -1,0 +1,41 @@
+{
+  "video": "xl2",
+  "frame": "xl2_00025.jpg",
+  "scores": {
+    "detection_0": {
+      "thickness": 4,
+      "elasticity": 3,
+      "integrity": 4,
+      "ripeness": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 3,
+      "action": 4,
+      "coordination": 4,
+      "tool_coordination": 4,
+      "notes": ""
+    },
+    "detection_2": {
+      "position": 4,
+      "action": 3,
+      "coordination": 4,
+      "notes": ""
+    },
+    "detection_3": {
+      "operation_standardization": 4,
+      "cleanliness": 3,
+      "drainage_effect": 4,
+      "notes": ""
+    },
+    "detection_4": {
+      "position": 3,
+      "action": 3,
+      "coordination": 3,
+      "tool_coordination": 4,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770691118.6735406
+}

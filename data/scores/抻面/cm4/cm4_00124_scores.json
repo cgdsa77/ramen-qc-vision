@@ -1,0 +1,35 @@
+{
+  "video": "cm4",
+  "frame": "cm4_00124.jpg",
+  "scores": {
+    "detection_0": {
+      "thickness": 4,
+      "elasticity": 3,
+      "gloss": 3,
+      "integrity": 3,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 3,
+      "action": 4,
+      "angle": 3,
+      "coordination": 3,
+      "notes": ""
+    },
+    "detection_2": {
+      "position": 3,
+      "action": 4,
+      "angle": 3,
+      "coordination": 3,
+      "notes": ""
+    },
+    "detection_3": {
+      "thickness": 3,
+      "elasticity": 4,
+      "gloss": 3,
+      "integrity": 4,
+      "notes": ""
+    }
+  },
+  "timestamp": 1768832404.190649
+}

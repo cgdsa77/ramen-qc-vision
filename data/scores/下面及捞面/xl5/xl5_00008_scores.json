@@ -1,0 +1,21 @@
+{
+  "video": "xl5",
+  "frame": "xl5_00008.jpg",
+  "scores": {
+    "detection_0": {
+      "soup_adhesion": 4,
+      "noodle_soup_ratio": 5,
+      "distribution_state": 4,
+      "notes": ""
+    },
+    "detection_1": {
+      "position": 3,
+      "action": 3,
+      "coordination": 3,
+      "tool_coordination": 2,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770691826.7239223
+}

@@ -1,0 +1,20 @@
+{
+  "video": "xl10",
+  "frame": "xl12_00032.jpg",
+  "scores": {
+    "detection_0": {
+      "soup_adhesion": 4,
+      "noodle_soup_ratio": 5,
+      "distribution_state": 4,
+      "notes": ""
+    },
+    "detection_1": {
+      "noodle_soup_ratio": 5,
+      "soup_adhesion": 4,
+      "distribution_state": 5,
+      "notes": ""
+    }
+  },
+  "stage": "boiling_scooping",
+  "timestamp": 1770690979.4416087
+}

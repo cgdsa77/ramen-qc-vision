@@ -1,0 +1,97 @@
+[
+  {
+    "frame": "cm3_00001.jpg",
+    "index": 0,
+    "detections": 5
+  },
+  {
+    "frame": "cm3_00011.jpg",
+    "index": 10,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00021.jpg",
+    "index": 20,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00031.jpg",
+    "index": 30,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00041.jpg",
+    "index": 40,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00051.jpg",
+    "index": 50,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00061.jpg",
+    "index": 60,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00071.jpg",
+    "index": 70,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00081.jpg",
+    "index": 80,
+    "detections": 2
+  },
+  {
+    "frame": "cm3_00091.jpg",
+    "index": 90,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00101.jpg",
+    "index": 100,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00111.jpg",
+    "index": 110,
+    "detections": 4
+  },
+  {
+    "frame": "cm3_00121.jpg",
+    "index": 120,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00131.jpg",
+    "index": 130,
+    "detections": 1
+  },
+  {
+    "frame": "cm3_00141.jpg",
+    "index": 140,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00151.jpg",
+    "index": 150,
+    "detections": 2
+  },
+  {
+    "frame": "cm3_00161.jpg",
+    "index": 160,
+    "detections": 1
+  },
+  {
+    "frame": "cm3_00171.jpg",
+    "index": 170,
+    "detections": 3
+  },
+  {
+    "frame": "cm3_00181.jpg",
+    "index": 180,
+    "detections": 5
+  }
+]

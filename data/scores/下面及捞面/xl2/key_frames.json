@@ -1,0 +1,52 @@
+[
+  {
+    "frame": "xl2_00001.jpg",
+    "index": 1,
+    "detections": 3
+  },
+  {
+    "frame": "xl2_00008.jpg",
+    "index": 8,
+    "detections": 2
+  },
+  {
+    "frame": "xl2_00017.jpg",
+    "index": 17,
+    "detections": 2
+  },
+  {
+    "frame": "xl2_00025.jpg",
+    "index": 25,
+    "detections": 5
+  },
+  {
+    "frame": "xl2_00031.jpg",
+    "index": 31,
+    "detections": 6
+  },
+  {
+    "frame": "xl2_00037.jpg",
+    "index": 37,
+    "detections": 5
+  },
+  {
+    "frame": "xl2_00046.jpg",
+    "index": 46,
+    "detections": 4
+  },
+  {
+    "frame": "xl2_00052.jpg",
+    "index": 52,
+    "detections": 3
+  },
+  {
+    "frame": "xl2_00061.jpg",
+    "index": 61,
+    "detections": 3
+  },
+  {
+    "frame": "xl2_00068.jpg",
+    "index": 68,
+    "detections": 3
+  }
+]
