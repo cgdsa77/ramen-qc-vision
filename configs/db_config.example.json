@@ -1,0 +1,10 @@
+{
+  "mysql": {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "user": "root",
+    "password": "你的MySQL密码",
+    "database": "ramen_qc",
+    "charset": "utf8mb4"
+  }
+}

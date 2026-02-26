@@ -189,12 +189,23 @@ class BoilingScoopingScorer:
         overall_weights = self.rules.get("overall_weights", {})
         class_scores: Dict[str, List[float]] = {}
 
+        min_conf = 0.3  # 边界规则：仅置信度 >= 0.3 的检测框参与评分
         for det in detections:
             class_name = det.get("class", "")
             if not class_name or class_name not in CLASSES:
                 continue
+            conf = float(det.get("conf", 0))
+            if conf < min_conf:
+                continue
             scores = self.score_detection(det, class_name, image)
             weighted = self.calculate_weighted_score(scores, class_name)
+            # 代理特征权重衰减：tools_noodle/soup_noodle 使用手部或面条特征代理时，低置信度则衰减
+            if class_name in ("tools_noodle", "soup_noodle"):
+                if conf < 0.3:
+                    weighted = weighted * 0.8
+                elif conf < 0.5:
+                    weighted = weighted * 0.9
+                weighted = max(1.0, min(5.0, weighted))
             frame_scores["detections"].append({"class": class_name, "scores": scores, "weighted_score": weighted})
             class_scores.setdefault(class_name, []).append(weighted)
 
@@ -254,13 +265,25 @@ class BoilingScoopingScorer:
                 "frame_scores": [],
             }
 
+        total_frames = len(frame_scores_list)
         overall_scores = [f["overall_score"] for f in frame_scores_list if f.get("overall_score", 0) > 0]
         avg_overall_fallback = sum(overall_scores) / len(overall_scores) if overall_scores else 0.0
         class_avg: Dict[str, float] = {}
         for cls in CLASSES:
             vals = [f["class_scores"][cls] for f in frame_scores_list if cls in f.get("class_scores", {})]
             class_avg[cls] = sum(vals) / len(vals) if vals else 0.0
-        # 操作规范：仅基于「有检测到的」工具/汤面；若只出现一类则用该类，两类都有则取平均
+
+        # 视频级有效类别：该类别在至少 10% 的帧中出现才参与加权（兼顾 xl1 等面条出现较少的视频仍能出分）
+        min_frame_ratio = 0.10
+        present_classes = []
+        for c in CLASSES:
+            appear_count = sum(1 for f in frame_scores_list if f.get("class_scores", {}).get(c, 0) > 0)
+            if appear_count >= max(1, total_frames * min_frame_ratio):
+                present_classes.append(c)
+            else:
+                class_avg[c] = 0.0
+
+        # 操作规范 noodle_bundle：仅当 tools_noodle 与 soup_noodle 均为有效参与类别时取两者平均
         t = class_avg.get("tools_noodle", 0.0)
         s = class_avg.get("soup_noodle", 0.0)
         if t > 0 and s > 0:
@@ -272,9 +295,7 @@ class BoilingScoopingScorer:
         else:
             class_avg["noodle_bundle"] = 0.0
 
-        # 仅用「有检测到的类别」计算总分，权重按现有类别重新归一化，不因缺失类别惩罚
         overall_weights = self.rules.get("overall_weights", {})
-        present_classes = [c for c in CLASSES if class_avg.get(c, 0) > 0]
         total_weight = sum(overall_weights.get(c, 0) for c in present_classes)
         if total_weight > 0:
             total_score_sum = sum(class_avg[c] * overall_weights.get(c, 0) for c in present_classes)
@@ -282,10 +303,28 @@ class BoilingScoopingScorer:
         else:
             avg_overall = avg_overall_fallback
 
+        normalized_weights = {}
+        if total_weight > 0:
+            for c in present_classes:
+                normalized_weights[c] = round(overall_weights.get(c, 0) / total_weight, 4)
+
+        scored_frames = len(overall_scores)
+        warning = None
+        if total_frames > 0 and scored_frames < total_frames * 0.5:
+            warning = "有效评分帧数不足总帧数50%，建议检查视频或检测质量"
+
         return {
-            "total_frames": len(frame_scores_list),
-            "scored_frames": len(overall_scores),
+            "total_frames": total_frames,
+            "scored_frames": scored_frames,
             "average_overall_score": avg_overall,
             "class_average_scores": class_avg,
             "frame_scores": frame_scores_list,
+            "normalization_detail": {
+                "all_categories": CLASSES,
+                "valid_categories": present_classes,
+                "original_overall_weights": overall_weights,
+                "normalized_weights": normalized_weights,
+                "category_avg_scores": {k: round(v, 2) for k, v in class_avg.items() if k in CLASSES},
+            },
+            "warning": warning,
         }

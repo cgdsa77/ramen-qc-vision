@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>评分结果 - 下面及捞面</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Microsoft YaHei', sans-serif; padding: 20px; background: #f5f5f5; color: #333; }
+.card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+h1 { font-size: 1.2em; color: #667eea; margin-bottom: 12px; }
+.meta { font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.8; }
+table { border-collapse: collapse; width: 100%; max-width: 320px; margin-bottom: 16px; }
+th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+th { background: #f8f9fa; }
+.section-title { font-size: 12px; color: #666; margin-bottom: 8px; }
+.ai-text { background: #f8f9fa; padding: 14px; border-radius: 8px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; min-height: 60px; }
+.chart-title { font-size: 12px; color: #666; margin: 16px 0 8px; }
+.bar-row { display: flex; align-items: center; margin-bottom: 10px; gap: 10px; }
+.bar-label { width: 90px; font-size: 13px; }
+.bar-track { flex: 1; height: 24px; background: #eee; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+.bar-value { width: 44px; font-size: 13px; font-weight: bold; }
+</style></head><body>
+<div class="card"><h1>评分结果</h1>
+<div class="meta">视频/样本：已选择: xl1.MP4<br>阶段：下面及捞面<br>保存时间：2026-02-26 17:49:24</div>
+<div class="section-title">评分汇总</div>
+<table><tr><th>维度</th><th>得分</th></tr>
+<tr><td>总分</td><td>2.16</td></tr>
+<tr><td>手部</td><td>2.29</td></tr>
+<tr><td>面条/汤面</td><td>0.00</td></tr>
+<tr><td>操作规范</td><td>2.00</td></tr>
+</table>
+<div class="section-title">AI 分析</div>
+<div class="ai-text">1. 整体表现评估  <br>总分2.16（满分5分）显示动作完成度不足，处于不及格水平。检测质量43.2%表明视频存在拍摄角度遮挡或动作模糊问题，影响评分准确性。<br><br>2. 维度分析  <br>- 手部动作（2.29分）：基础动作框架存在但细节缺失，可能存在手腕发力不连贯或姿势变形问题  <br>- 面条/汤面（0分）：完全未检测到有效拉面成型动作，可能是面团状态异常或动作未执行到位  <br>- 操作规范（2分）：存在明显违规操作（如案板使用不规范或卫生隐患）<br><br>3. 关键问题与建议  <br>- 首要问题：确保面团延展性达标（含水量建议50%-55%），重新拍摄时保持完整动作轨迹  <br>- 改进重点：强化手腕翻折训练（建议配合慢动作分解练习），规范案板操作流程  <br>- 拍摄要求：调整镜头至俯视45°角，确保手部与面团区域完全入镜  <br><br>注：需优先解决0分项，该维度权重占比最高。建议先进行静态姿势校准后再录制动态视频。</div>
+<div class="chart-title">各维度得分（精简）</div>
+<div class="chart-bars"><div class="bar-row"><span class="bar-label">总分</span><div class="bar-track"><div class="bar-fill" style="width:43.2%;background:rgba(13,148,136,0.8)"></div></div><span class="bar-value">2.16</span></div><div class="bar-row"><span class="bar-label">手部</span><div class="bar-track"><div class="bar-fill" style="width:45.8%;background:rgba(255,99,132,0.8)"></div></div><span class="bar-value">2.29</span></div><div class="bar-row"><span class="bar-label">面条/汤面</span><div class="bar-track"><div class="bar-fill" style="width:0.0%;background:rgba(54,162,235,0.8)"></div></div><span class="bar-value">0.00</span></div><div class="bar-row"><span class="bar-label">操作规范</span><div class="bar-track"><div class="bar-fill" style="width:40.0%;background:rgba(245,87,108,0.8)"></div></div><span class="bar-value">2.00</span></div></div>
+</div></body></html>

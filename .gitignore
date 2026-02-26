@@ -1,5 +1,7 @@
 # AI API 密钥（勿提交到仓库）
 configs/ai_api_secret.json
+# MySQL 连接配置（含密码，勿提交）
+configs/db_config.json
 
 # Python
 .venv/

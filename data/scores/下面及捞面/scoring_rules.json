@@ -4,115 +4,115 @@
   "thresholds": {
     "position": {
       "excellent": 4.0,
-      "good": 4.0,
+      "good": 3.99,
       "fair": 3.83,
-      "poor": 3.4926,
-      "mean": 3.708,
-      "std": 0.4308
+      "poor": 3.49,
+      "mean": 3.71,
+      "std": 0.43
     },
     "action": {
       "excellent": 4.5,
       "good": 4.33,
       "fair": 4.0,
       "poor": 3.4,
-      "mean": 3.8935,
-      "std": 0.6456
+      "mean": 3.89,
+      "std": 0.65
     },
     "coordination": {
       "excellent": 4.21,
       "good": 4.0,
-      "fair": 4.0,
+      "fair": 3.99,
       "poor": 3.38,
-      "mean": 3.7428,
-      "std": 0.496
+      "mean": 3.74,
+      "std": 0.5
     },
     "tool_coordination": {
-      "excellent": 4.188,
+      "excellent": 4.19,
       "good": 4.0,
       "fair": 3.62,
       "poor": 3.0,
-      "mean": 3.5724,
-      "std": 0.6092
+      "mean": 3.57,
+      "std": 0.61
     },
     "thickness": {
       "excellent": 4.0,
-      "good": 4.0,
-      "fair": 4.0,
-      "poor": 3.5073,
-      "mean": 3.7335,
-      "std": 0.4524
+      "good": 3.99,
+      "fair": 3.98,
+      "poor": 3.51,
+      "mean": 3.73,
+      "std": 0.45
     },
     "elasticity": {
       "excellent": 4.5,
       "good": 4.0,
       "fair": 3.39,
       "poor": 3.0,
-      "mean": 3.5101,
-      "std": 0.6757
+      "mean": 3.51,
+      "std": 0.68
     },
     "integrity": {
-      "excellent": 4.166,
+      "excellent": 4.17,
       "good": 4.0,
       "fair": 3.6,
       "poor": 3.0,
-      "mean": 3.4786,
-      "std": 0.6305
+      "mean": 3.48,
+      "std": 0.63
     },
     "ripeness": {
       "excellent": 4.5,
       "good": 4.0,
       "fair": 3.6,
       "poor": 3.0,
-      "mean": 3.5087,
-      "std": 0.6773
+      "mean": 3.51,
+      "std": 0.68
     },
     "distribution_state": {
       "excellent": 4.0,
       "good": 3.86,
       "fair": 3.6,
-      "poor": 3.3545,
-      "mean": 3.6102,
-      "std": 0.5113
+      "poor": 3.35,
+      "mean": 3.61,
+      "std": 0.51
     },
     "drainage_effect": {
       "excellent": 4.0,
       "good": 3.76,
       "fair": 3.33,
       "poor": 3.0,
-      "mean": 3.3788,
-      "std": 0.4166
+      "mean": 3.38,
+      "std": 0.42
     },
     "cleanliness": {
       "excellent": 4.42,
       "good": 4.0,
       "fair": 3.6,
       "poor": 3.09,
-      "mean": 3.6231,
-      "std": 0.5627
+      "mean": 3.62,
+      "std": 0.56
     },
     "operation_standardization": {
       "excellent": 4.0,
-      "good": 4.0,
+      "good": 3.99,
       "fair": 3.65,
       "poor": 3.25,
-      "mean": 3.6114,
-      "std": 0.4525
+      "mean": 3.61,
+      "std": 0.45
     },
     "soup_adhesion": {
       "excellent": 4.0,
-      "good": 4.0,
+      "good": 3.99,
       "fair": 3.6,
-      "poor": 3.4776,
-      "mean": 3.6746,
-      "std": 0.3941
+      "poor": 3.48,
+      "mean": 3.67,
+      "std": 0.39
     },
     "noodle_soup_ratio": {
       "excellent": 4.5,
       "good": 4.05,
       "fair": 3.6,
-      "poor": 3.3843,
-      "mean": 3.7432,
-      "std": 0.7179
+      "poor": 3.38,
+      "mean": 3.74,
+      "std": 0.72
     },
     "angle": {
       "excellent": 4.5,

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>评分结果 - 抻面</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Microsoft YaHei', sans-serif; padding: 20px; background: #f5f5f5; color: #333; }
+.card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+h1 { font-size: 1.2em; color: #667eea; margin-bottom: 12px; }
+.meta { font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.8; }
+table { border-collapse: collapse; width: 100%; max-width: 320px; margin-bottom: 16px; }
+th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+th { background: #f8f9fa; }
+.section-title { font-size: 12px; color: #666; margin-bottom: 8px; }
+.ai-text { background: #f8f9fa; padding: 14px; border-radius: 8px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; min-height: 60px; }
+.chart-title { font-size: 12px; color: #666; margin: 16px 0 8px; }
+.bar-row { display: flex; align-items: center; margin-bottom: 10px; gap: 10px; }
+.bar-label { width: 90px; font-size: 13px; }
+.bar-track { flex: 1; height: 24px; background: #eee; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+.bar-value { width: 44px; font-size: 13px; font-weight: bold; }
+</style></head><body>
+<div class="card"><h1>评分结果</h1>
+<div class="meta">视频/样本：已选择: cm10.mp4<br>阶段：抻面<br>保存时间：2026-02-26 17:40:51</div>
+<div class="section-title">评分汇总</div>
+<table><tr><th>维度</th><th>得分</th></tr>
+<tr><td>总分</td><td>3.92</td></tr>
+<tr><td>手部</td><td>4.11</td></tr>
+<tr><td>面条</td><td>4.03</td></tr>
+<tr><td>面条束</td><td>2.72</td></tr>
+</table>
+<div class="section-title">AI 分析</div>
+<div class="ai-text">1. 整体表现评估<br>总分3.92分（满分5分）属于中等偏上水平，但面条束得分明显拉低整体表现。检测质量78.4%表明视频分析存在约21.6%的数据可信度偏差，需注意动作识别可能存在误差。<br><br>2. 各维度得分分析<br>- 手部动作（4.11分）：表现最佳，达到良好水平<br>- 面条形态（4.03分）：控制较好但仍有提升空间<br>- 面条束（2.72分）：明显短板，未达及格线<br>- DTW 0分表明与标准动作时序匹配度极低<br><br>3. 主要问题与改进建议<br>核心问题：面条束成型阶段动作变形<br>建议：<br>① 重点加强收束时的力度控制（当前存在过度拉伸或力度不均）<br>② 调整甩面节奏，改善动作连贯性（DTW反映时序问题）<br>③ 检查面粉用量是否适中（面条束得分低可能因粘连或过干）<br><br>4. 标准动作对比<br>与专业抻面相比：<br>- 起始动作达标（手部高分）<br>- 收尾阶段差异显著（面条束低分+DTW异常）<br>- 建议对照标准视频重点调整第3-5个甩面周期的动作幅度和发力方式<br><br>注：因检测质量未达85%，建议重新拍摄更清晰的视频进行复核。</div>
+<div class="chart-title">各维度得分（精简）</div>
+<div class="chart-bars"><div class="bar-row"><span class="bar-label">总分</span><div class="bar-track"><div class="bar-fill" style="width:78.4%;background:rgba(102,126,234,0.8)"></div></div><span class="bar-value">3.92</span></div><div class="bar-row"><span class="bar-label">手部</span><div class="bar-track"><div class="bar-fill" style="width:82.20000000000002%;background:rgba(255,99,132,0.8)"></div></div><span class="bar-value">4.11</span></div><div class="bar-row"><span class="bar-label">面条</span><div class="bar-track"><div class="bar-fill" style="width:80.6%;background:rgba(54,162,235,0.8)"></div></div><span class="bar-value">4.03</span></div><div class="bar-row"><span class="bar-label">面条束</span><div class="bar-track"><div class="bar-fill" style="width:54.4%;background:rgba(75,192,192,0.8)"></div></div><span class="bar-value">2.72</span></div></div>
+</div></body></html>

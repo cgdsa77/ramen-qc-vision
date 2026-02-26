@@ -258,13 +258,15 @@ class StretchScorer:
             
             base = total_score / total_weight if total_weight > 0 else 0.0
         
-        # 类别级别的简单偏置校准：
-        # 根据人工 vs 自动对比结果，适当抬升 hand 和 noodle_rope 的得分，使其更接近人工评分均值
-        if class_name == 'hand':
-            base += 0.7  # hand 整体偏低约 0.7 分，先做一次线性平移
-        elif class_name == 'noodle_rope':
-            base += 0.8  # noodle_rope 偏低约 0.8 分，单独补偿一次
-        
+        # 动态偏置校准（方案 4.1）：仅对中间区间分数做修正，避免极端值失真
+        # 仅当 1.2 < base < 4.8 时施加偏置，且越接近两端偏置越小
+        if class_name in ('hand', 'noodle_rope') and 1.2 < base < 4.8:
+            bias = 0.7 if class_name == 'hand' else 0.8
+            center = 3.0
+            distance = abs(base - center) / 2.0  # 归一化距离
+            dynamic_bias = bias * max(0.0, 1.0 - distance / 3.0)
+            base += dynamic_bias
+
         # 保证在 1-5 范围内
         base = max(1.0, min(5.0, base))
         return base
@@ -289,11 +291,16 @@ class StretchScorer:
         class_scores = {}
         overall_weights = self.rules.get('overall_weights', {})
         
+        # 边界规则：仅置信度 >= 0.3 的检测框参与评分
+        min_conf = 0.3
         for det in detections:
             class_name = det.get('class', '')
             if not class_name:
                 continue
-            
+            conf = float(det.get('conf', 0))
+            if conf < min_conf:
+                continue
+
             # 对单个检测框评分（传入图像以提取特征）
             scores = self.score_detection(det, class_name, image)
             weighted_score = self.calculate_weighted_score(scores, class_name)
@@ -400,22 +407,50 @@ class StretchScorer:
                 else:
                     class_avg_scores[class_name] = 0.0
             
-            # 仅用「有检测到的类别」计算总分，权重按现有类别重新归一化
+            # 视频级有效类别：该类别在至少 10% 的帧中出现才参与加权（兼顾出现较少的视频仍能出分）
+            total_frames = len(frame_scores_list)
+            min_frame_ratio = 0.10
+            present_classes = []
+            for c in stretch_classes:
+                appear_count = sum(1 for fs in frame_scores_list if fs.get('class_scores', {}).get(c, 0) > 0)
+                if appear_count >= max(1, total_frames * min_frame_ratio):
+                    present_classes.append(c)
+                else:
+                    class_avg_scores[c] = 0.0  # 未达比例视为不参与
+
             overall_weights = self.rules.get('overall_weights', {})
-            present_classes = [c for c in stretch_classes if class_avg_scores.get(c, 0) > 0]
             total_weight = sum(overall_weights.get(c, 0) for c in present_classes)
             if total_weight > 0:
                 total_score_sum = sum(class_avg_scores[c] * overall_weights.get(c, 0) for c in present_classes)
                 avg_overall = round(total_score_sum / total_weight, 2)
             else:
                 avg_overall = avg_overall_fallback
-            
+
+            # 归一化明细，便于追溯（方案 4.3）
+            normalized_weights = {}
+            if total_weight > 0:
+                for c in present_classes:
+                    normalized_weights[c] = round(overall_weights.get(c, 0) / total_weight, 4)
+
+            scored_frames = len(overall_scores)
+            warning = None
+            if total_frames > 0 and scored_frames < total_frames * 0.5:
+                warning = "有效评分帧数不足总帧数50%，建议检查视频或检测质量"
+
             return {
-                'total_frames': len(frame_scores_list),
-                'scored_frames': len(overall_scores),
+                'total_frames': total_frames,
+                'scored_frames': scored_frames,
                 'average_overall_score': avg_overall,
                 'class_average_scores': class_avg_scores,
-                'frame_scores': frame_scores_list
+                'frame_scores': frame_scores_list,
+                'normalization_detail': {
+                    'all_categories': stretch_classes,
+                    'valid_categories': present_classes,
+                    'original_overall_weights': overall_weights,
+                    'normalized_weights': normalized_weights,
+                    'category_avg_scores': {k: round(v, 2) for k, v in class_avg_scores.items()},
+                },
+                'warning': warning,
             }
         
         return {

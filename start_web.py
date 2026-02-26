@@ -7,6 +7,7 @@ import sys
 import threading
 import uuid
 from pathlib import Path
+from typing import Optional
 
 # 异步检测/评分任务状态（job_id -> 状态字典），供前端轮询进度
 _detect_jobs = {}
@@ -113,6 +114,247 @@ try:
     # 拉面成品图片目录（用于成品评估标注）
     raw_lmcp_dir = project_root / "data" / "raw" / "拉面成品"
     product_scores_dir = project_root / "data" / "scores" / "拉面成品"
+
+    # ---------- 毕设：用户权限与 Session（SQLite 或 MySQL）----------
+    try:
+        from src import auth_db
+        auth_db.init_db()
+        mode = auth_db._resolve_db_mode()
+        if mode == "mysql":
+            print("[认证] 用户库已初始化（MySQL），默认管理员 admin / admin123")
+        else:
+            print("[认证] 用户库已初始化（SQLite），默认管理员 admin / admin123")
+    except Exception as e:
+        print(f"[认证] 初始化失败: {e}，登录/用户管理将不可用")
+
+    def _auth_session_id(request: Request) -> Optional[str]:
+        return request.cookies.get("ramen_session")
+
+    def _auth_current_user(request: Request):
+        uid = _auth_session_id(request)
+        return auth_db.get_session(uid)
+
+    # 登录
+    @app.post("/api/auth/login")
+    async def api_auth_login(request: Request):
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
+        username = (body.get("username") or "").strip()
+        password = (body.get("password") or "")
+        if not username or password is None:
+            return JSONResponse(content={"success": False, "error": "请输入账号和密码"})
+        user, session_id = auth_db.login(username, password)
+        if user is None:
+            return JSONResponse(content={"success": False, "error": "账号或密码错误"})
+        if user.get("_disabled"):
+            return JSONResponse(content={"success": False, "error": "账号已禁用，请联系管理员"})
+        res = JSONResponse(content={
+            "success": True,
+            "user": {"id": user["id"], "username": user["username"], "role": user["role"], "name": user["name"]},
+        })
+        res.set_cookie(key="ramen_session", value=session_id, max_age=24 * 3600, httponly=True, samesite="lax")
+        return res
+
+    @app.get("/api/auth/session")
+    async def api_auth_session(request: Request):
+        u = _auth_current_user(request)
+        if not u:
+            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
+        return JSONResponse(content={"success": True, "user": u})
+
+    @app.post("/api/auth/logout")
+    async def api_auth_logout(request: Request):
+        sid = _auth_session_id(request)
+        if sid:
+            auth_db.logout(sid)
+        res = JSONResponse(content={"success": True})
+        res.delete_cookie(key="ramen_session")
+        return res
+
+    # 用户管理（仅管理员 role=0）
+    @app.get("/api/users")
+    async def api_users_list(request: Request):
+        u = _auth_current_user(request)
+        if not u:
+            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
+        if u.get("role") != 0:
+            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
+        users = auth_db.list_users()
+        return JSONResponse(content={"success": True, "users": users})
+
+    @app.post("/api/users")
+    async def api_users_create(request: Request):
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 0:
+            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
+        tid = body.get("assigned_trainer_id")
+        if tid is not None and tid != "":
+            try:
+                tid = int(tid)
+            except (TypeError, ValueError):
+                tid = None
+        ok, msg, row = auth_db.create_user(
+            body.get("username", ""),
+            body.get("password", ""),
+            int(body.get("role", 2)),
+            body.get("name", ""),
+            assigned_trainer_id=tid,
+        )
+        if not ok:
+            return JSONResponse(content={"success": False, "error": msg})
+        return JSONResponse(content={"success": True, "user": row, "message": msg})
+
+    @app.put("/api/users/{uid}")
+    async def api_users_update(uid: int, request: Request):
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 0:
+            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
+        kw = {}
+        if "role" in body:
+            kw["role"] = int(body["role"])
+        if "name" in body:
+            kw["name"] = body.get("name")
+        if "status" in body:
+            kw["status"] = int(body["status"])
+        if "assigned_trainer_id" in body:
+            tid = body["assigned_trainer_id"]
+            if tid is not None and tid != "":
+                try:
+                    kw["assigned_trainer_id"] = int(tid)
+                except (TypeError, ValueError):
+                    kw["assigned_trainer_id"] = None
+            else:
+                kw["assigned_trainer_id"] = None
+        ok, msg = auth_db.update_user(uid, **kw)
+        if not ok:
+            return JSONResponse(content={"success": False, "error": msg})
+        return JSONResponse(content={"success": True, "message": msg})
+
+    @app.delete("/api/users/{uid}")
+    async def api_users_delete(uid: int, request: Request):
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 0:
+            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
+        ok, msg = auth_db.delete_user(uid)
+        if not ok:
+            return JSONResponse(content={"success": False, "error": msg})
+        return JSONResponse(content={"success": True, "message": msg})
+
+    @app.post("/api/users/{uid}/reset-password")
+    async def api_users_reset_password(uid: int, request: Request):
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 0:
+            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
+        ok, msg = auth_db.reset_password(uid, body.get("new_password", ""))
+        if not ok:
+            return JSONResponse(content={"success": False, "error": msg})
+        return JSONResponse(content={"success": True, "message": msg})
+
+    # 培训师：获取当前培训师名下的学员列表（role=1 可调）
+    @app.get("/api/trainer/students")
+    async def api_trainer_students(request: Request):
+        u = _auth_current_user(request)
+        if not u:
+            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
+        if u.get("role") != 1:
+            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可查看"})
+        students = auth_db.get_students_by_trainer(int(u["id"]))
+        return JSONResponse(content={"success": True, "students": students})
+
+    # 培训师列表（管理员/培训师用于下拉：所属培训师）
+    @app.get("/api/trainers")
+    async def api_trainers_list(request: Request):
+        u = _auth_current_user(request)
+        if not u:
+            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
+        if u.get("role") not in (0, 1):
+            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
+        trainers = auth_db.list_trainers()
+        return JSONResponse(content={"success": True, "trainers": trainers})
+
+    # 评分标准（培训师/管理员可读可改，权重总和须为 1.0）
+    _scoring_rules_paths = {
+        "stretch": project_root / "data" / "scores" / "抻面" / "scoring_rules.json",
+        "boiling": project_root / "data" / "scores" / "下面及捞面" / "scoring_rules.json",
+    }
+    _overall_weight_labels = {
+        "stretch": {"noodle_rope": "面绳", "hand": "手部", "noodle_bundle": "面束"},
+        "boiling": {"noodle_rope": "面绳", "hand": "手部", "tools_noodle": "工具面", "soup_noodle": "汤面"},
+    }
+
+    @app.get("/api/scoring-rules")
+    async def api_scoring_rules_get(request: Request, stage: str = Query("stretch", description="stretch|boiling")):
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 1:
+            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可查看评分标准"})
+        if stage not in _scoring_rules_paths:
+            return JSONResponse(status_code=400, content={"success": False, "error": "stage 须为 stretch 或 boiling"})
+        path = _scoring_rules_paths[stage]
+        if not path.exists():
+            return JSONResponse(content={"success": False, "error": "规则文件不存在"})
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            weights = data.get("overall_weights") or {}
+            labels = _overall_weight_labels.get(stage) or {}
+            return JSONResponse(content={
+                "success": True,
+                "stage": stage,
+                "overall_weights": weights,
+                "labels": labels,
+            })
+        except Exception as e:
+            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+    @app.put("/api/scoring-rules")
+    async def api_scoring_rules_put(request: Request):
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 1:
+            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可修改评分标准"})
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
+        stage = body.get("stage")
+        if stage not in _scoring_rules_paths:
+            return JSONResponse(content={"success": False, "error": "stage 须为 stretch 或 boiling"})
+        new_weights = body.get("overall_weights")
+        if not isinstance(new_weights, dict):
+            return JSONResponse(content={"success": False, "error": "overall_weights 须为对象"})
+        try:
+            total = sum(float(v) for v in new_weights.values())
+        except (TypeError, ValueError):
+            return JSONResponse(content={"success": False, "error": "权重须为数字"})
+        if abs(total - 1.0) > 1e-6:
+            return JSONResponse(content={"success": False, "error": "权重总和须为 100%（即 1.0），当前为 " + str(round(total * 100, 1)) + "%"})
+        path = _scoring_rules_paths[stage]
+        if not path.exists():
+            return JSONResponse(content={"success": False, "error": "规则文件不存在"})
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            data["overall_weights"] = {k: float(v) for k, v in new_weights.items()}
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            return JSONResponse(content={"success": True, "message": "已保存"})
+        except Exception as e:
+            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+    # ---------- 毕设用户权限结束 ----------
     
     # 根路径：毕设主页面（整合导航）
     @app.get("/")
@@ -761,7 +1003,9 @@ try:
                                 "rules_used": "基于标准数据集的评分规则和阈值",
                                 "frame_scores_sample": video_score_result.get('frame_scores', [])[:5],
                                 "model_source": model_path or "当前最佳抻面模型(latest best.pt)",
-                                "score_basis": "最佳抻面模型检测 + 规则/图像特征评分"
+                                "score_basis": "最佳抻面模型检测 + 规则/图像特征评分",
+                                "normalization_detail": video_score_result.get('normalization_detail'),
+                                "warning": video_score_result.get('warning'),
                             }
                         except Exception as e:
                             import traceback
@@ -794,7 +1038,9 @@ try:
                                 "rules_used": "下面及捞面规则（scoring_rules.json）",
                                 "frame_scores_sample": video_score_result.get('frame_scores', [])[:5],
                                 "model_source": getattr(detector, "model_path", None) or "",
-                                "score_basis": "检测 + 图像特征 + 规则（与抻面一致）"
+                                "score_basis": "检测 + 图像特征 + 规则（与抻面一致）",
+                                "normalization_detail": video_score_result.get('normalization_detail'),
+                                "warning": video_score_result.get('warning'),
                             }
                         except Exception as e:
                             import traceback
@@ -944,7 +1190,9 @@ try:
                         "rules_used": "基于标准数据集的评分规则和阈值",
                         "frame_scores_sample": video_score_result.get('frame_scores', [])[:5],
                         "model_source": model_path or "当前最佳抻面模型(latest best.pt)",
-                        "score_basis": "最佳抻面模型检测 + 规则/图像特征评分"
+                        "score_basis": "最佳抻面模型检测 + 规则/图像特征评分",
+                        "normalization_detail": video_score_result.get('normalization_detail'),
+                        "warning": video_score_result.get('warning'),
                     }
                 except Exception as e:
                     import traceback
@@ -980,7 +1228,9 @@ try:
                         "rules_used": "下面及捞面规则（scoring_rules.json）",
                         "frame_scores_sample": video_score_result.get('frame_scores', [])[:5],
                         "model_source": getattr(detector, "model_path", None) or "",
-                        "score_basis": "检测 + 图像特征 + 规则（与抻面一致）"
+                        "score_basis": "检测 + 图像特征 + 规则（与抻面一致）",
+                        "normalization_detail": video_score_result.get('normalization_detail'),
+                        "warning": video_score_result.get('warning'),
                     }
                 except Exception as e:
                     import traceback
