@@ -21,10 +21,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
-            background: var(--warm-cream);
             min-height: 100vh;
             color: var(--warm-dark);
             line-height: 1.6;
+            background-color: var(--warm-cream);
+        }
+        /* 仅登录页：背景图 + 左右侧栏拉面成品 */
+        body.login-page {
+            background: linear-gradient(rgba(44, 24, 16, 0.35), rgba(44, 24, 16, 0.35)),
+                url('/data/web_background_images/web1_bg.jpg') center center / contain no-repeat fixed;
         }
         /* 顶部装饰条 */
         .top-bar {
@@ -75,8 +80,17 @@
             color: var(--warm-mid);
             margin-bottom: 20px;
             padding-bottom: 8px;
-            border-bottom: 2px solid var(--warm-gold);
+            border-bottom: 2px solid rgba(212,165,116,0.3);
             display: inline-block;
+            position: relative;
+        }
+        .section-title .section-title-line {
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            height: 2px;
+            background: var(--warm-gold);
+            width: 0;
         }
         .card-grid {
             display: grid;
@@ -154,6 +168,10 @@
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999;
             display: flex; align-items: center; justify-content: center; padding: 20px;
         }
+        .modal-overlay .modal-box {
+            position: relative;
+            z-index: 10001;
+        }
         .modal-box {
             background: var(--warm-white);
             border-radius: var(--radius);
@@ -171,9 +189,36 @@
             width: 100%; padding: 12px; background: linear-gradient(135deg, var(--warm-accent), var(--warm-mid));
             color: var(--warm-white); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 8px;
         }
+        .modal-box .btn-primary { position: relative; overflow: hidden; min-height: 44px; }
         .modal-box .btn-primary:hover { opacity: 0.92; }
+        .modal-box .btn-primary .login-btn-spinner {
+            display: none; position: absolute; inset: 0; margin: auto;
+            width: 24px; height: 24px;
+            border: 2px solid rgba(255,255,255,0.25);
+            border-top-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(255,255,255,0.4);
+        }
+        .modal-box .btn-primary.is-loading .login-btn-text { opacity: 0; }
+        .modal-box .btn-primary.is-loading .login-btn-spinner {
+            display: block;
+            animation: spin 0.6s linear infinite;
+        }
+        .modal-box .btn-primary.is-loading .login-btn-spinner::before {
+            content: '';
+            position: absolute; inset: -4px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            animation: spin 1.2s linear infinite reverse;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .modal-box .hint { font-size: 12px; color: #7d6b5a; margin-top: 12px; text-align: center; }
         .modal-box .error-msg { color: #c45c26; font-size: 13px; margin-top: 8px; display: none; }
+        /* 全局提示条（成功/错误） */
+        #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 10002; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { pointer-events: auto; padding: 12px 20px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-size: 14px; max-width: 320px; transform: translateX(120%); }
+        .toast--success { background: linear-gradient(135deg, #2d5a27, #3d7a35); color: #fff; }
+        .toast--error { background: linear-gradient(135deg, #8b2e2e, #a63d3d); color: #fff; }
         .modal-box .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .modal-box .modal-head h3 { margin: 0; }
         .modal-box .btn-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #5c4a3a; }
@@ -189,9 +234,93 @@
         .scoring-weight-fields .weight-row label { font-size: 13px; color: #5c4a3a; min-width: 72px; }
         .scoring-weight-fields .weight-row input { width: 64px; padding: 6px 8px; border: 1px solid rgba(196,92,38,0.3); border-radius: 6px; }
         .hidden { display: none !important; }
+
+        /* 左右两侧各 3 列播放带，每列占满上下，仅登录页显示 */
+        .side-panel {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: min(680px, 44vw);
+            min-width: 520px;
+            z-index: 10000;
+            display: none;
+            pointer-events: auto;
+            flex-direction: row;
+            align-items: stretch;
+            padding: 18px 9px;
+            gap: 8px;
+        }
+        body.login-page .side-panel { display: flex; }
+        .side-panel.left { left: 0; }
+        .side-panel.right { right: 0; }
+        .side-strip {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+            position: relative;
+            transition: filter 0.35s ease, transform 0.25s ease, box-shadow 0.3s ease;
+            filter: brightness(0.42);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+        .side-strip:hover {
+            filter: brightness(1);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+        }
+        .side-strip-track {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+            padding: 4px 0;
+            will-change: transform;
+        }
+        .side-strip-item {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            min-height: 180px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--warm-dark);
+        }
+        .side-strip-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .side-strip-item .placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--warm-mid), var(--warm-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--warm-cream);
+            font-size: 11px;
+        }
+        @media (max-width: 1200px) {
+            .side-panel { display: none !important; }
+        }
     </style>
 </head>
-<body>
+<body class="login-page">
+    <div id="toastContainer" aria-live="polite"></div>
+    <!-- 左侧 3 条滚动播放带 -->
+    <div id="sidePanelLeft" class="side-panel left" aria-hidden="true">
+        <div class="side-strip" data-strip="0"><div class="side-strip-track"></div></div>
+        <div class="side-strip" data-strip="1"><div class="side-strip-track"></div></div>
+        <div class="side-strip" data-strip="2"><div class="side-strip-track"></div></div>
+    </div>
+    <!-- 右侧 3 条滚动播放带 -->
+    <div id="sidePanelRight" class="side-panel right" aria-hidden="true">
+        <div class="side-strip" data-strip="3"><div class="side-strip-track"></div></div>
+        <div class="side-strip" data-strip="4"><div class="side-strip-track"></div></div>
+        <div class="side-strip" data-strip="5"><div class="side-strip-track"></div></div>
+    </div>
+
     <!-- 登录弹窗（未登录时显示，无关闭按钮，必须登录） -->
     <div id="loginModal" class="modal-overlay">
         <div class="modal-box">
@@ -204,7 +333,7 @@
                 <label>密码</label>
                 <input type="password" id="loginPassword" placeholder="请输入密码" autocomplete="current-password">
             </div>
-            <button type="button" class="btn-primary" id="loginBtn">登录</button>
+            <button type="button" class="btn-primary" id="loginBtn"><span class="login-btn-text">登录</span><span class="login-btn-spinner" aria-hidden="true"></span></button>
             <p class="error-msg" id="loginError"></p>
             <p class="hint">忘记密码？联系管理员重置</p>
         </div>
@@ -226,7 +355,7 @@
         </header>
         <main class="container">
             <section class="section" data-role-visible="0,1,2">
-                <h2 class="section-title">流程检测</h2>
+                <h2 class="section-title">流程检测<span class="section-title-line"></span></h2>
                 <div class="card-grid">
                     <div class="card">
                         <h3>抻面动作检测</h3>
@@ -246,7 +375,7 @@
                 </div>
             </section>
             <section class="section" data-role-visible="0,1">
-                <h2 class="section-title">标注工具</h2>
+                <h2 class="section-title">标注工具<span class="section-title-line"></span></h2>
                 <div class="card-grid">
                     <div class="card">
                         <h3>抻面评分标注工具</h3>
@@ -266,7 +395,7 @@
                 </div>
             </section>
             <section class="section" data-role-visible="0,1,2">
-                <h2 class="section-title">综合评分</h2>
+                <h2 class="section-title">综合评分<span class="section-title-line"></span></h2>
                 <div class="card-grid" data-role-visible="0,1">
                     <div class="card">
                         <h3>抻面综合评分可视化</h3>
@@ -293,7 +422,7 @@
                 </div>
             </section>
             <section class="section" data-role-visible="0,1">
-                <h2 class="section-title">姿态与视频展示</h2>
+                <h2 class="section-title">姿态与视频展示<span class="section-title-line"></span></h2>
                 <div class="card-grid">
                     <div class="card">
                         <h3>抻面手部姿态视频（预处理）</h3>
@@ -394,10 +523,175 @@
         </div>
     </div>
 
+    <!-- Popmotion：来自本地 popmotion-master。静态目录挂载在 /web，故用 /web/js/ 路径保证从 / 或 /web 打开页面都能加载 -->
+    <script src="/web/js/popmotion.bundle.js"></script>
     <script>
         (function() {
             var currentUser = null;
             var ROLE_NAMES = { 0: '管理员', 1: '培训师', 2: '厨师/学员' };
+
+            var pm = function() { return window.popmotion; };
+            function showToast(message, type) {
+                type = type === 'success' ? 'success' : 'error';
+                var container = document.getElementById('toastContainer');
+                if (!container) return;
+                var el = document.createElement('div');
+                el.className = 'toast toast--' + type;
+                el.textContent = message;
+                container.appendChild(el);
+                if (pm()) {
+                    pm().animate({ from: 120, to: 0, duration: 350, ease: pm().easeInOut, onUpdate: function(v) { el.style.transform = 'translateX(' + v + '%)'; } });
+                } else {
+                    el.style.transform = 'translateX(0)';
+                }
+                var hide = function() {
+                    if (el._toastHiding) return;
+                    el._toastHiding = true;
+                    if (pm()) {
+                        pm().animate({ from: 0, to: 120, duration: 280, ease: pm().easeInOut, onUpdate: function(v) { el.style.transform = 'translateX(' + v + '%)'; }, onComplete: function() { el.remove(); } });
+                    } else { el.remove(); }
+                };
+                el._toastT = setTimeout(hide, 3500);
+                el.addEventListener('click', function() { if (el._toastT) clearTimeout(el._toastT); hide(); });
+            }
+            window.showToast = showToast;
+            function springTo(el, prop, fromVal, toVal, opts) {
+                if (!pm()) return;
+                var s = opts || {};
+                pm().animate({ from: fromVal, to: toVal, type: 'spring', stiffness: s.stiffness || 100, damping: s.damping || 14, onUpdate: function(v) {
+                    if (prop === 'opacity') el.style.opacity = v;
+                    else if (prop === 'y') el.style.transform = 'translateY(' + v + 'px)';
+                    else if (prop === 'scale') el.style.transform = (el.style.transform || '').replace(/scale\([^)]+\)/, '') + ' scale(' + v + ')';
+                } });
+            }
+            window.runLoginAnimations = function() {
+                if (!pm()) return;
+                var box = document.querySelector('#loginModal .modal-box');
+                if (!box || document.getElementById('loginModal').classList.contains('hidden')) return;
+                box.style.opacity = '0';
+                box.style.transform = 'translateY(-50px)';
+                pm().animate({ from: 0, to: 1, type: 'spring', stiffness: 45, damping: 14, onUpdate: function(v) { box.style.opacity = v; } });
+                pm().animate({ from: -50, to: 0, type: 'spring', stiffness: 45, damping: 14, onUpdate: function(v) { box.style.transform = 'translateY(' + v + 'px)'; } });
+            };
+            (function bindLoginAnimations() {
+                if (!pm()) return;
+                var loginBox = document.querySelector('#loginModal .modal-box');
+                if (!loginBox) return;
+                var inputs = [document.getElementById('loginUsername'), document.getElementById('loginPassword')].filter(Boolean);
+                inputs.forEach(function(inp) {
+                    inp.addEventListener('focus', function() {
+                        if (!pm()) return;
+                        inp.style.transform = 'translateY(-2px)';
+                        inp.style.boxShadow = '0 4px 12px rgba(196,92,38,0.2)';
+                    });
+                    inp.addEventListener('blur', function() {
+                        inp.style.transform = '';
+                        inp.style.boxShadow = '';
+                    });
+                });
+                var loginBtn = document.getElementById('loginBtn');
+                if (loginBtn) {
+                    loginBtn.style.transformOrigin = 'center';
+                    loginBtn.addEventListener('mouseenter', function() { if (pm()) pm().animate({ from: 1, to: 1.03, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ')'; } }); });
+                    loginBtn.addEventListener('mouseleave', function() { if (pm()) pm().animate({ from: 1.03, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ')'; } }); });
+                    loginBtn.addEventListener('mousedown', function() { if (pm()) pm().animate({ from: 1, to: 0.97, duration: 100, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ')'; } }); });
+                    loginBtn.addEventListener('mouseup', function() { if (pm()) pm().animate({ from: 0.97, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ')'; } }); });
+                }
+            })();
+            window.runPageAnimations = function() {
+                if (!pm()) return;
+                var animate = pm().animate, easeInOut = pm().easeInOut;
+                var hero = document.querySelector('#mainWrap .hero');
+                if (hero) {
+                    var h1 = hero.querySelector('h1');
+                    if (h1 && !h1.querySelector('.hero-char')) {
+                        var titleText = h1.textContent || '';
+                        h1.textContent = '';
+                        for (var c = 0; c < titleText.length; c++) {
+                            var span = document.createElement('span');
+                            span.className = 'hero-char';
+                            span.textContent = titleText[c];
+                            span.style.opacity = '0';
+                            span.style.display = 'inline-block';
+                            span.style.transform = 'translateY(10px)';
+                            h1.appendChild(span);
+                        }
+                        var chars = h1.querySelectorAll('.hero-char');
+                        chars.forEach(function(span, i) {
+                            var delay = -50 * i;
+                            animate({ from: 0, to: 1, duration: 320, ease: easeInOut, elapsed: delay, onUpdate: function(v) { span.style.opacity = v; } });
+                            animate({ from: 10, to: 0, duration: 320, ease: easeInOut, elapsed: delay, onUpdate: function(v) { span.style.transform = 'translateY(' + v + 'px)'; }, onComplete: function() { span.style.transform = ''; } });
+                        });
+                    }
+                    var sub = hero.querySelector('.subtitle');
+                    if (sub) {
+                        sub.style.opacity = '0';
+                        var subDelay = (h1 && h1.querySelectorAll('.hero-char').length) * 50 + 200;
+                        animate({ from: 0, to: 1, duration: 500, ease: easeInOut, elapsed: -subDelay, onUpdate: function(v) { sub.style.opacity = v; } });
+                    }
+                }
+                var cards = document.querySelectorAll('#mainWrap .card-grid .card');
+                cards.forEach(function(card, i) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(24px)';
+                    var delay = -70 * i;
+                    animate({ from: 0, to: 1, duration: 360, ease: easeInOut, elapsed: delay, onUpdate: function(v) { card.style.opacity = v; } });
+                    animate({ from: 24, to: 0, duration: 360, ease: easeInOut, elapsed: delay, onUpdate: function(v) { card.style.transform = 'translateY(' + v + 'px)'; }, onComplete: function() { card.style.transform = ''; } });
+                });
+                cards.forEach(function(card) {
+                    card.style.willChange = 'transform';
+                    card.addEventListener('mouseenter', function() {
+                        if (!pm()) return;
+                        pm().animate({ from: 0, to: -8, type: 'spring', stiffness: 100, damping: 14, onUpdate: function(v) { card.style.transform = 'translateY(' + v + 'px)'; card.style.boxShadow = '0 ' + (8 + (-v/2)) + 'px 32px rgba(44,24,16,0.18)'; } });
+                    });
+                    card.addEventListener('mouseleave', function() {
+                        if (!pm()) return;
+                        pm().animate({ from: -8, to: 0, type: 'spring', stiffness: 100, damping: 14, onUpdate: function(v) {
+                            card.style.transform = 'translateY(' + v + 'px)';
+                            card.style.boxShadow = v >= 0 ? '' : '0 ' + (8 + (-v/2)) + 'px 32px rgba(44,24,16,0.18)';
+                        } });
+                    });
+                });
+                var btns = document.querySelectorAll('#mainWrap .card .btn, #mainWrap .btn-nav, .btn-primary');
+                btns.forEach(function(btn) {
+                    if (btn._popmotionBound) return;
+                    btn._popmotionBound = true;
+                    btn.style.transformOrigin = 'center';
+                    btn.addEventListener('mouseenter', function() {
+                        if (!pm()) return;
+                        pm().animate({ from: 1, to: 1.03, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { btn.style.transform = 'scale(' + v + ')'; } });
+                    });
+                    btn.addEventListener('mouseleave', function() {
+                        if (!pm()) return;
+                        pm().animate({ from: 1.03, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { btn.style.transform = 'scale(' + v + ')'; } });
+                    });
+                    btn.addEventListener('mousedown', function() {
+                        if (!pm()) return;
+                        pm().animate({ from: 1, to: 0.97, duration: 80, onUpdate: function(v) { btn.style.transform = 'scale(' + v + ')'; } });
+                    });
+                    btn.addEventListener('mouseup', function() {
+                        if (pm()) pm().animate({ from: 0.97, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { btn.style.transform = 'scale(' + v + ')'; } });
+                    });
+                });
+                var sections = document.querySelectorAll('#mainWrap .section');
+                sections.forEach(function(section) {
+                    var title = section.querySelector('.section-title');
+                    var line = title && title.querySelector('.section-title-line');
+                    if (!line) return;
+                    var io = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(e) {
+                            if (!e.isIntersecting || !pm()) return;
+                            var t = e.target.querySelector('.section-title .section-title-line');
+                            if (!t || t.getAttribute('data-animated') === 'true') return;
+                            t.setAttribute('data-animated', 'true');
+                            pm().animate({ from: 0, to: 1, duration: 400, ease: easeInOut, onUpdate: function(v) {
+                                t.style.width = (v * 100) + '%';
+                            } });
+                        });
+                    }, { threshold: 0.2, rootMargin: '0px' });
+                    io.observe(section);
+                });
+            };
 
             function applyRoleVisibility() {
                 var role = currentUser ? currentUser.role : null;
@@ -410,9 +704,13 @@
             function showMain(show) {
                 document.getElementById('mainWrap').classList.toggle('hidden', !show);
                 document.getElementById('loginModal').classList.toggle('hidden', show);
+                document.body.classList.toggle('login-page', !show);
                 if (show) {
                     document.getElementById('navUserInfo').textContent = '当前用户：' + (currentUser ? (currentUser.name || currentUser.username) + '（' + ROLE_NAMES[currentUser.role] + '）' : '');
                     applyRoleVisibility();
+                    setTimeout(function() { if (window.runPageAnimations) window.runPageAnimations(); }, 80);
+                } else {
+                    setTimeout(function() { if (window.runLoginAnimations) window.runLoginAnimations(); }, 50);
                 }
             }
 
@@ -435,23 +733,70 @@
                 var username = document.getElementById('loginUsername').value.trim();
                 var password = document.getElementById('loginPassword').value;
                 var errEl = document.getElementById('loginError');
+                var btn = document.getElementById('loginBtn');
                 errEl.style.display = 'none';
-                if (!username || !password) { errEl.textContent = '请输入账号和密码'; errEl.style.display = 'block'; return; }
+                if (!username || !password) {
+                    errEl.textContent = '请输入账号和密码';
+                    errEl.style.display = 'block';
+                    if (window.showToast) showToast('请输入账号和密码', 'error');
+                    return;
+                }
+                if (btn.classList.contains('is-loading')) return;
+                var w = btn.offsetWidth;
+                var loadingStart = Date.now();
+                var minLoadingMs = 400;
+                btn.classList.add('is-loading');
+                if (pm()) {
+                    pm().animate({ from: w, to: 44, duration: 380, ease: pm().easeInOut, onUpdate: function(v) { btn.style.width = v + 'px'; } });
+                } else { btn.style.width = '44px'; }
                 fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ username: username, password: password })
                 }).then(function(r) { return r.json(); }).then(function(data) {
+                    function restoreBtn() {
+                        var elapsed = Date.now() - loadingStart;
+                        var wait = Math.max(0, minLoadingMs - elapsed);
+                        setTimeout(function() {
+                            btn.classList.remove('is-loading');
+                            if (pm()) pm().animate({ from: 44, to: w, duration: 400, ease: pm().easeInOut, onUpdate: function(v) { btn.style.width = v + 'px'; }, onComplete: function() { btn.style.width = ''; } });
+                            else btn.style.width = '';
+                        }, wait);
+                    }
+                    function doAfterRestore(cb) {
+                        var elapsed = Date.now() - loadingStart;
+                        var wait = Math.max(0, minLoadingMs - elapsed) + 420;
+                        setTimeout(cb, wait);
+                    }
                     if (data.success) {
+                        restoreBtn();
                         currentUser = data.user;
                         document.getElementById('loginPassword').value = '';
-                        showMain(true);
+                        if (window.showToast) showToast('登录成功', 'success');
+                        doAfterRestore(function() { showMain(true); });
                     } else {
+                        restoreBtn();
                         errEl.textContent = data.error || '登录失败';
                         errEl.style.display = 'block';
+                        if (window.showToast) showToast(data.error || '登录失败', 'error');
+                        var box = document.querySelector('#loginModal .modal-box');
+                        if (box && pm()) pm().animate({ from: [0, -5, 5, -3, 3, 0], duration: 300, onUpdate: function(v) { box.style.transform = 'translateY(0) translateX(' + v + 'px)'; } });
                     }
-                }).catch(function() { errEl.textContent = '网络错误'; errEl.style.display = 'block'; });
+                }).catch(function() {
+                    var elapsed = Date.now() - loadingStart;
+                    var wait = Math.max(0, minLoadingMs - elapsed);
+                    setTimeout(function() {
+                        btn.classList.remove('is-loading');
+                        if (pm()) pm().animate({ from: 44, to: w, duration: 400, ease: pm().easeInOut, onUpdate: function(v) { btn.style.width = v + 'px'; }, onComplete: function() { btn.style.width = ''; } });
+                        else btn.style.width = '';
+                    }, wait);
+                    errEl.textContent = '网络错误';
+                    errEl.style.display = 'block';
+                    if (window.showToast) showToast('网络错误', 'error');
+                    var box = document.querySelector('#loginModal .modal-box');
+                    if (box && pm()) pm().animate({ from: [0, -5, 5, -3, 3, 0], duration: 300, onUpdate: function(v) { box.style.transform = 'translateY(0) translateX(' + v + 'px)'; } });
+                });
             };
 
             document.getElementById('btnLogout').onclick = function() {
@@ -686,6 +1031,111 @@
             };
 
             checkSession();
+
+            /* 左右两侧 6 条滚动播放带：拉面成品循环滚动，悬停暂停 */
+            (function() {
+                var GAP = 22;
+                var COPY_COUNT = 6;
+                var SCROLL_SPEED = 14;
+
+                function buildItem(url) {
+                    var item = document.createElement('div');
+                    item.className = 'side-strip-item';
+                    if (url) {
+                        var img = document.createElement('img');
+                        img.src = url;
+                        img.alt = '拉面成品';
+                        img.loading = 'lazy';
+                        item.appendChild(img);
+                    } else {
+                        var ph = document.createElement('div');
+                        ph.className = 'placeholder';
+                        ph.textContent = '拉面成品';
+                        item.appendChild(ph);
+                    }
+                    return item;
+                }
+
+                function fillStrip(trackEl, urls) {
+                    trackEl.innerHTML = '';
+                    if (!urls.length) return;
+                    for (var c = 0; c < COPY_COUNT; c++) {
+                        for (var i = 0; i < urls.length; i++) {
+                            trackEl.appendChild(buildItem(urls[i]));
+                        }
+                    }
+                }
+
+                function setupStrip(stripEl, urls) {
+                    var track = stripEl.querySelector('.side-strip-track');
+                    if (!track) return;
+                    fillStrip(track, urls);
+                    var offset = 0;
+                    var paused = false;
+                    var animId = null;
+                    var itemHeight = 160;
+
+                    function getItemHeight() {
+                        var first = track.querySelector('.side-strip-item');
+                        return first ? first.offsetHeight : 220;
+                    }
+
+                    function tick() {
+                        if (paused) return;
+                        var h = getItemHeight();
+                        if (h > 0) itemHeight = h;
+                        var step = itemHeight + GAP;
+                        offset += SCROLL_SPEED * 0.06;
+                        if (offset >= step * urls.length) offset -= step * urls.length;
+                        track.style.transform = 'translateY(-' + offset + 'px)';
+                        animId = requestAnimationFrame(tick);
+                    }
+
+                    function startScroll() {
+                        if (!animId) animId = requestAnimationFrame(tick);
+                    }
+                    function stopScroll() {
+                        if (animId) { cancelAnimationFrame(animId); animId = null; }
+                    }
+
+                    stripEl.addEventListener('mouseenter', function() {
+                        paused = true;
+                        stopScroll();
+                    });
+                    stripEl.addEventListener('mouseleave', function() {
+                        paused = false;
+                        startScroll();
+                    });
+
+                    startScroll();
+                }
+
+                /* 为每条播放带生成不同顺序的图片列表（6 条互不相同） */
+                function getUrlsForStrip(allUrls, stripIndex) {
+                    if (!allUrls.length) return [null];
+                    var n = allUrls.length;
+                    var start = (stripIndex * 5) % n;
+                    var out = [];
+                    for (var j = 0; j < n; j++) out.push(allUrls[(start + j) % n]);
+                    return out;
+                }
+                fetch('/api/product-images/list', { credentials: 'include' })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        var list = (data.success && data.images) ? data.images : [];
+                        var urls = list.map(function(name) { return '/api/product-image/' + encodeURIComponent(name); });
+                        if (!urls.length) urls = [null];
+                        var allStrips = document.querySelectorAll('.side-strip');
+                        for (var i = 0; i < allStrips.length; i++) {
+                            var stripUrls = getUrlsForStrip(urls, i);
+                            setupStrip(allStrips[i], stripUrls);
+                        }
+                    })
+                    .catch(function() {
+                        var allStrips = document.querySelectorAll('.side-strip');
+                        for (var i = 0; i < allStrips.length; i++) setupStrip(allStrips[i], [null]);
+                    });
+            })();
         })();
     </script>
 </body>

@@ -1,0 +1,12 @@
+{
+  "name": "ramen-qc-vision",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:popmotion": "node build-popmotion.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "popmotion": "file:./popmotion-master/packages/popmotion"
+  }
+}

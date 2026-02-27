@@ -89,6 +89,11 @@ try:
         app.mount("/web", StaticFiles(directory=str(web_dir)), name="web")
     
     app.mount("/reports", StaticFiles(directory=str(reports_dir)), name="reports")
+
+    # 主页面背景图（data/web_background_images）
+    web_bg_dir = project_root / "data" / "web_background_images"
+    if web_bg_dir.exists():
+        app.mount("/data/web_background_images", StaticFiles(directory=str(web_bg_dir)), name="web_background_images")
     
     # 评分数据服务
     if scores_dir.exists():
