@@ -24,12 +24,26 @@
             min-height: 100vh;
             color: var(--warm-dark);
             line-height: 1.6;
+            letter-spacing: 0.01em;
             background-color: var(--warm-cream);
         }
         /* 仅登录页：背景图 + 左右侧栏拉面成品 */
         body.login-page {
-            background: linear-gradient(rgba(44, 24, 16, 0.35), rgba(44, 24, 16, 0.35)),
+            background: linear-gradient(rgba(44, 24, 16, 0.25), rgba(44, 24, 16, 0.45)),
                 url('/data/web_background_images/web1_bg.jpg') center center / contain no-repeat fixed;
+        }
+        body.login-page::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255,248,240,0.08), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: loginGlow 15s ease-in-out infinite;
+        }
+        @keyframes loginGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
         /* 顶部装饰条（角色主题覆盖其渐变，此处为默认） */
         .top-bar {
@@ -37,13 +51,7 @@
             background: linear-gradient(90deg, var(--warm-accent), var(--warm-gold), var(--warm-mid));
             transform-origin: left;
         }
-        body.main-page .top-bar {
-            animation: topBarReveal 0.6s ease-out forwards;
-        }
-        @keyframes topBarReveal {
-            from { transform: scaleX(0); opacity: 0.6; }
-            to { transform: scaleX(1); opacity: 1; }
-        }
+        /* 顶条入场由 Popmotion 在 runPageAnimations 中执行 */
         .hero {
             background: linear-gradient(165deg, var(--warm-dark) 0%, #3d2318 40%, var(--warm-mid) 100%);
             color: var(--warm-white);
@@ -63,16 +71,18 @@
             font-family: 'Noto Serif SC', serif;
             font-weight: 700;
             font-size: clamp(1.5rem, 4vw, 2rem);
+            line-height: 1.3;
+            letter-spacing: 0.02em;
             max-width: 900px;
             margin: 0 auto 16px;
             position: relative;
-            letter-spacing: 0.02em;
         }
         .hero .subtitle {
             font-size: 15px;
             opacity: 0.92;
             font-weight: 400;
             position: relative;
+            line-height: 1.6;
         }
         .container {
             max-width: 1100px;
@@ -81,6 +91,10 @@
         }
         .section {
             margin-bottom: 48px;
+        }
+        body.main-page #mainWrap .section {
+            opacity: 0;
+            transform: translateY(15px);
         }
         .section-title {
             font-family: 'Noto Serif SC', serif;
@@ -132,52 +146,254 @@
             display: inline-block;
             padding: 10px 20px;
             background: linear-gradient(135deg, var(--warm-accent), var(--warm-mid));
+            background-size: 200% 100%;
             color: var(--warm-white);
             text-decoration: none;
             border-radius: 999px;
             font-size: 14px;
             font-weight: 500;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, background-position 0.25s, box-shadow 0.2s;
         }
         .card .btn:hover {
             opacity: 0.92;
+            background-position: 100% 0;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
         }
         .footer {
             text-align: center;
             padding: 24px;
             font-size: 13px;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
             color: #7d6b5a;
         }
         /* 角色主题：管理员 - 深棕/金，沉稳管控感 */
-        body.role-0 .top-bar { background: linear-gradient(90deg, #5c4033, #8b6914, #5c4033); }
+        body.role-0 .top-bar { background: linear-gradient(90deg, #4a3022, #d4b18e, #4a3022); }
         body.role-0 .hero { background: linear-gradient(165deg, #2c1810 0%, #3d2818 35%, #4a3520 70%, #5c4033 100%); }
         body.role-0 .container { background: linear-gradient(180deg, #f8f4ef 0%, #f0ebe3 100%); }
-        body.role-0 .section-title { color: #5c4033; border-bottom-color: rgba(139,105,20,0.25); }
-        body.role-0 .card { background: #fffcf9; border-color: rgba(92,64,51,0.18); box-shadow: 0 8px 28px rgba(44,24,16,0.1); }
-        body.role-0 .card:hover { box-shadow: 0 14px 42px rgba(44,24,16,0.14); }
-        body.role-0 .card .btn { background: linear-gradient(135deg, #6b5344, #8b6914); }
+        body.role-0 .section-title { color: #5c4033; font-weight: 600; border-bottom-color: transparent; }
+        body.role-0 .section-title .section-title-line { background: linear-gradient(90deg, #5c4033, #d4b18e); }
+        body.role-0 .card { background: #fffcf9; border-radius: 8px; border-color: rgba(92,64,51,0.15); box-shadow: 0 4px 12px rgba(92,64,51,0.15); }
+        body.role-0 .card .btn { background: linear-gradient(135deg, #6b5344, #8b6914); background-size: 200% 100%; }
+        body.role-0 .card .btn:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25); }
         body.role-0 .nav-bar { background: rgba(44,24,16,0.96); }
         body.role-0 .footer { color: #6b5a4a; }
         /* 角色主题：培训师 - 偏蓝色调，冷静教学感 */
-        body.role-1 .top-bar { background: linear-gradient(90deg, #2c5282, #3182ce, #2c5282); }
+        body.role-1 .top-bar { background: linear-gradient(90deg, #1a365d, #63b3ed, #1a365d); }
         body.role-1 .hero { background: linear-gradient(165deg, #1a365d 0%, #2c5282 40%, #2b6cb0 70%, #3182ce 100%); }
         body.role-1 .container { background: linear-gradient(180deg, #e6f0f7 0%, #dae8f2 100%); }
-        body.role-1 .section-title { color: #2c5282; border-bottom-color: rgba(49,130,206,0.35); }
-        body.role-1 .card { background: #f0f7fc; border-color: rgba(44,82,130,0.18); box-shadow: 0 8px 30px rgba(26,54,93,0.08); }
-        body.role-1 .card:hover { box-shadow: 0 14px 44px rgba(26,54,93,0.12); }
-        body.role-1 .card .btn { background: linear-gradient(135deg, #2b6cb0, #3182ce); }
+        body.role-1 .section-title { color: #2c5282; font-weight: 500; border-bottom-color: transparent; }
+        body.role-1 .section-title .section-title-line { background: linear-gradient(90deg, #1a365d, #63b3ed); }
+        body.role-1 .card { background: #f0f7fc; border-radius: 8px; border-color: rgba(44,82,130,0.15); box-shadow: 0 4px 12px rgba(44,82,130,0.15); }
+        body.role-1 .card .btn { background: linear-gradient(135deg, #2b6cb0, #3182ce); background-size: 200% 100%; }
+        body.role-1 .card .btn:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25); }
         body.role-1 .nav-bar { background: rgba(26,54,93,0.95); }
         body.role-1 .footer { color: #2c5282; }
         /* 角色主题：厨师/学员 - 浅绿/青，清爽操作感 */
-        body.role-2 .top-bar { background: linear-gradient(90deg, #2d5a4a, #4a7c59, #2d5a4a); }
+        body.role-2 .top-bar { background: linear-gradient(90deg, #2d5a4a, #99f6e4, #2d5a4a); }
         body.role-2 .hero { background: linear-gradient(165deg, #1e3c32 0%, #2d5a4a 45%, #3d6b5a 80%, #4a7c59 100%); }
         body.role-2 .container { background: linear-gradient(180deg, #f4faf6 0%, #e8f4ee 100%); }
-        body.role-2 .section-title { color: #2d5a4a; border-bottom-color: rgba(74,124,89,0.3); }
-        body.role-2 .card { background: #fff; border-color: rgba(45,90,74,0.15); box-shadow: 0 8px 28px rgba(45,90,74,0.08); }
-        body.role-2 .card:hover { box-shadow: 0 14px 40px rgba(45,90,74,0.12); }
-        body.role-2 .card .btn { background: linear-gradient(135deg, #2d5a4a, #4a7c59); }
+        body.role-2 .section-title { color: #2d5a4a; font-weight: 400; border-bottom-color: transparent; }
+        body.role-2 .section-title .section-title-line { background: linear-gradient(90deg, #2d5a4a, #99f6e4); }
+        body.role-2 .card { background: #fff; border-radius: 8px; border-color: rgba(45,90,74,0.15); box-shadow: 0 4px 12px rgba(45,90,74,0.15); }
+        body.role-2 .card .btn { background: linear-gradient(135deg, #2d5a4a, #4a7c59); background-size: 200% 100%; }
+        body.role-2 .card .btn:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25); }
         body.role-2 .nav-bar { background: rgba(30,60,50,0.95); }
         body.role-2 .footer { color: #3d6b5a; }
+        body.role-1 .card h3 { font-weight: 500; }
+        body.role-2 .card h3 { font-weight: 400; }
+        /* 角色主题下的弹窗与模块按钮统一（排除登录弹窗，登录页无 role） */
+        body.role-0 .modal-overlay .modal-box {
+            background: #fffcf9;
+            border: 1px solid rgba(92,64,51,0.2);
+            box-shadow: 0 12px 40px rgba(44,24,16,0.15), 0 4px 12px rgba(44,24,16,0.08);
+        }
+        body.role-0 .modal-overlay .modal-box h3,
+        body.role-0 .modal-overlay .modal-box .modal-head h3 { color: #5c4033; }
+        body.role-0 .modal-overlay .modal-box label,
+        body.role-0 .modal-overlay .modal-box .settings-section p,
+        body.role-0 .modal-overlay .modal-box .settings-list li,
+        body.role-0 .modal-overlay .modal-box .scoring-weight-fields .weight-row label,
+        body.role-0 .modal-overlay .modal-box .explain-section p,
+        body.role-0 .modal-overlay .modal-box .explain-bar-row .label,
+        body.role-0 .modal-overlay .modal-box .explain-demo-row label { color: #5c4a3a; }
+        body.role-0 .modal-overlay .modal-box input[type="text"],
+        body.role-0 .modal-overlay .modal-box input[type="password"],
+        body.role-0 .modal-overlay .modal-box input[type="number"] {
+            border-color: rgba(92,64,51,0.35);
+        }
+        body.role-0 .modal-overlay .modal-box .btn-primary {
+            background: linear-gradient(135deg, #6b5344, #8b6914);
+            color: #fff;
+            border: 1px solid rgba(212,165,116,0.4);
+        }
+        body.role-0 .modal-overlay .modal-box .btn-primary:hover {
+            opacity: 0.92;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+        }
+        body.role-0 .modal-overlay .modal-box .btn-outline {
+            border: 1px solid rgba(92,64,51,0.5);
+            background: #fffcf9;
+            color: #5c4033;
+        }
+        body.role-0 .modal-overlay .modal-box .btn-outline:hover {
+            background: #f0ebe3;
+            color: #2c1810;
+        }
+        body.role-0 .modal-overlay .modal-box .btn-close { color: #5c4033; }
+        body.role-0 .modal-overlay .modal-box .settings-section h4,
+        body.role-0 .modal-overlay .modal-box .explain-section h4 { color: #5c4033; border-bottom-color: rgba(92,64,51,0.25); }
+        body.role-0 .modal-overlay .modal-box .settings-quick-btn {
+            border-color: rgba(92,64,51,0.4);
+            background: #fffcf9;
+            color: #5c4033;
+        }
+        body.role-0 .modal-overlay .modal-box .settings-quick-btn:hover {
+            background: #f0ebe3;
+            color: #2c1810;
+        }
+        body.role-0 .modal-overlay .modal-box .user-table th,
+        body.role-0 .modal-overlay .modal-box .user-table .btn-sm { color: #5c4033; border-color: rgba(92,64,51,0.4); }
+        body.role-0 .modal-overlay .modal-box .user-table .btn-sm:hover { background: #f0ebe3; color: #2c1810; }
+        body.role-0 .modal-overlay .modal-box .user-table td { border-bottom-color: rgba(92,64,51,0.2); }
+        body.role-0 .modal-overlay .modal-box .explain-chart-wrap { background: rgba(92,64,51,0.06); }
+        body.role-0 .modal-overlay .modal-box .explain-bar-fill { background: linear-gradient(90deg, #5c4033, #8b6914); }
+        body.role-0 .modal-overlay .modal-box .explain-bar-pct,
+        body.role-0 .modal-overlay .modal-box .explain-demo-result strong { color: #5c4033; }
+        body.role-0 .modal-overlay .modal-box .explain-demo { background: #f8f4ef; border-color: rgba(92,64,51,0.2); }
+        /* 培训师 - 蓝色主调 */
+        body.role-1 .modal-overlay .modal-box {
+            background: #f0f7fc;
+            border: 1px solid rgba(44,82,130,0.2);
+            box-shadow: 0 12px 40px rgba(26,54,93,0.15), 0 4px 12px rgba(26,54,93,0.08);
+        }
+        body.role-1 .modal-overlay .modal-box h3,
+        body.role-1 .modal-overlay .modal-box .modal-head h3 { color: #2c5282; }
+        body.role-1 .modal-overlay .modal-box label,
+        body.role-1 .modal-overlay .modal-box .settings-section p,
+        body.role-1 .modal-overlay .modal-box .settings-list li,
+        body.role-1 .modal-overlay .modal-box .scoring-weight-fields .weight-row label,
+        body.role-1 .modal-overlay .modal-box .explain-section p,
+        body.role-1 .modal-overlay .modal-box .explain-bar-row .label,
+        body.role-1 .modal-overlay .modal-box .explain-demo-row label { color: #2c5282; }
+        body.role-1 .modal-overlay .modal-box input[type="text"],
+        body.role-1 .modal-overlay .modal-box input[type="password"],
+        body.role-1 .modal-overlay .modal-box input[type="number"] {
+            border-color: rgba(44,82,130,0.35);
+        }
+        body.role-1 .modal-overlay .modal-box .btn-primary {
+            background: linear-gradient(135deg, #2b6cb0, #3182ce);
+            color: #fff;
+            border: 1px solid rgba(99,179,237,0.5);
+        }
+        body.role-1 .modal-overlay .modal-box .btn-primary:hover {
+            opacity: 0.92;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+        }
+        body.role-1 .modal-overlay .modal-box .btn-outline {
+            border: 1px solid rgba(44,82,130,0.5);
+            background: #f0f7fc;
+            color: #2c5282;
+        }
+        body.role-1 .modal-overlay .modal-box .btn-outline:hover {
+            background: #dae8f2;
+            color: #1a365d;
+        }
+        body.role-1 .modal-overlay .modal-box .btn-close { color: #2c5282; }
+        body.role-1 .modal-overlay .modal-box .settings-section h4,
+        body.role-1 .modal-overlay .modal-box .explain-section h4 { color: #2c5282; border-bottom-color: rgba(44,82,130,0.3); }
+        body.role-1 .modal-overlay .modal-box .settings-quick-btn {
+            border-color: rgba(44,82,130,0.4);
+            background: #f0f7fc;
+            color: #2c5282;
+        }
+        body.role-1 .modal-overlay .modal-box .settings-quick-btn:hover {
+            background: #dae8f2;
+            color: #1a365d;
+        }
+        body.role-1 .modal-overlay .modal-box .user-table th,
+        body.role-1 .modal-overlay .modal-box .user-table .btn-sm { color: #2c5282; border-color: rgba(44,82,130,0.4); }
+        body.role-1 .modal-overlay .modal-box .user-table .btn-sm:hover { background: #dae8f2; color: #1a365d; }
+        body.role-1 .modal-overlay .modal-box .user-table td { border-bottom-color: rgba(44,82,130,0.2); }
+        body.role-1 .modal-overlay .modal-box .scoring-weight-fields input { border-color: rgba(44,82,130,0.35); }
+        body.role-1 .modal-overlay .modal-box .explain-chart-wrap { background: rgba(44,82,130,0.06); }
+        body.role-1 .modal-overlay .modal-box .explain-bar-fill { background: linear-gradient(90deg, #2c5282, #3182ce); }
+        body.role-1 .modal-overlay .modal-box .explain-bar-pct,
+        body.role-1 .modal-overlay .modal-box .explain-demo-result strong { color: #2c5282; }
+        body.role-1 .modal-overlay .modal-box .explain-demo { background: #e6f0f7; border-color: rgba(44,82,130,0.2); }
+        /* 厨师/学员 - 青绿主调 */
+        body.role-2 .modal-overlay .modal-box {
+            background: #fff;
+            border: 1px solid rgba(45,90,74,0.2);
+            box-shadow: 0 12px 40px rgba(45,90,74,0.12), 0 4px 12px rgba(45,90,74,0.08);
+        }
+        body.role-2 .modal-overlay .modal-box h3,
+        body.role-2 .modal-overlay .modal-box .modal-head h3 { color: #2d5a4a; }
+        body.role-2 .modal-overlay .modal-box label,
+        body.role-2 .modal-overlay .modal-box .settings-section p,
+        body.role-2 .modal-overlay .modal-box .settings-list li,
+        body.role-2 .modal-overlay .modal-box .scoring-weight-fields .weight-row label,
+        body.role-2 .modal-overlay .modal-box .explain-section p,
+        body.role-2 .modal-overlay .modal-box .explain-bar-row .label,
+        body.role-2 .modal-overlay .modal-box .explain-demo-row label { color: #2d5a4a; }
+        body.role-2 .modal-overlay .modal-box input[type="text"],
+        body.role-2 .modal-overlay .modal-box input[type="password"],
+        body.role-2 .modal-overlay .modal-box input[type="number"] {
+            border-color: rgba(45,90,74,0.35);
+        }
+        body.role-2 .modal-overlay .modal-box .btn-primary {
+            background: linear-gradient(135deg, #2d5a4a, #4a7c59);
+            color: #fff;
+            border: 1px solid rgba(153,246,228,0.4);
+        }
+        body.role-2 .modal-overlay .modal-box .btn-primary:hover {
+            opacity: 0.92;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+        }
+        body.role-2 .modal-overlay .modal-box .btn-outline {
+            border: 1px solid rgba(45,90,74,0.5);
+            background: #fff;
+            color: #2d5a4a;
+        }
+        body.role-2 .modal-overlay .modal-box .btn-outline:hover {
+            background: #e8f4ee;
+            color: #1e3c32;
+        }
+        body.role-2 .modal-overlay .modal-box .btn-close { color: #2d5a4a; }
+        body.role-2 .modal-overlay .modal-box .settings-section h4,
+        body.role-2 .modal-overlay .modal-box .explain-section h4 { color: #2d5a4a; border-bottom-color: rgba(45,90,74,0.3); }
+        body.role-2 .modal-overlay .modal-box .settings-quick-btn {
+            border-color: rgba(45,90,74,0.4);
+            background: #fff;
+            color: #2d5a4a;
+        }
+        body.role-2 .modal-overlay .modal-box .settings-quick-btn:hover {
+            background: #e8f4ee;
+            color: #1e3c32;
+        }
+        body.role-2 .modal-overlay .modal-box .user-table th,
+        body.role-2 .modal-overlay .modal-box .user-table .btn-sm { color: #2d5a4a; border-color: rgba(45,90,74,0.4); }
+        body.role-2 .modal-overlay .modal-box .user-table .btn-sm:hover { background: #e8f4ee; color: #1e3c32; }
+        body.role-2 .modal-overlay .modal-box .user-table td { border-bottom-color: rgba(45,90,74,0.2); }
+        body.role-2 .modal-overlay .modal-box .scoring-weight-fields input { border-color: rgba(45,90,74,0.35); }
+        body.role-2 .modal-overlay .modal-box .explain-chart-wrap { background: rgba(45,90,74,0.06); }
+        body.role-2 .modal-overlay .modal-box .explain-bar-fill { background: linear-gradient(90deg, #2d5a4a, #4a7c59); }
+        body.role-2 .modal-overlay .modal-box .explain-bar-pct,
+        body.role-2 .modal-overlay .modal-box .explain-demo-result strong { color: #2d5a4a; }
+        body.role-2 .modal-overlay .modal-box .explain-demo { background: #f4faf6; border-color: rgba(45,90,74,0.2); }
+        /* 响应式：窄屏 */
+        @media (max-width: 767px) {
+            .hero h1 { font-size: clamp(2rem, 5vw, 3rem); }
+            .hero .subtitle { font-size: clamp(13px, 2.5vw, 15px); }
+            .card-grid { grid-template-columns: 1fr; gap: 16px; }
+            .container { padding: 32px 16px 48px; }
+            #mainWrap .card h3 { font-size: 1.02rem; }
+            #mainWrap .card p { font-size: 12px; }
+        }
+        /* 响应式：中屏 */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .card-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        }
         /* 毕设：导航栏（角色按钮 + 退出） */
         .nav-bar {
             background: rgba(44, 24, 16, 0.95);
@@ -212,10 +428,39 @@
         }
         .modal-box {
             background: var(--warm-white);
-            border-radius: var(--radius);
+            border-radius: 8px;
             box-shadow: var(--shadow);
             padding: 28px;
             width: 100%; max-width: 400px;
+        }
+        /* 登录弹窗专属：暖调质感 + 玻璃感 */
+        #loginModal .modal-box {
+            border-radius: 12px;
+            box-shadow: 0 12px 40px rgba(44,24,16,0.15), 0 4px 12px rgba(44,24,16,0.08);
+            background: rgba(255,248,240,0.98);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        #loginModal .modal-box h3 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--warm-dark);
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+            position: relative;
+        }
+        #loginModal .modal-box h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 1px;
+            background: var(--warm-gold);
         }
         .modal-box h3 { font-size: 1.2rem; color: var(--warm-dark); margin-bottom: 20px; text-align: center; }
         .modal-box .form-group { margin-bottom: 16px; }
@@ -223,9 +468,49 @@
         .modal-box input[type="text"], .modal-box input[type="password"], .modal-box input[type="number"] {
             width: 100%; padding: 10px 12px; border: 1px solid rgba(196,92,38,0.3); border-radius: 8px; font-size: 14px;
         }
+        #loginModal .modal-box input[type="text"],
+        #loginModal .modal-box input[type="password"] {
+            border: 1px solid rgba(212,165,116,0.3);
+            background: #fffdf8;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, outline 0.2s ease;
+        }
+        #loginModal .modal-box input[type="text"]::placeholder,
+        #loginModal .modal-box input[type="password"]::placeholder {
+            color: #9e8a78;
+            font-style: italic;
+        }
+        #loginModal .modal-box input[type="text"]:focus,
+        #loginModal .modal-box input[type="password"]:focus {
+            border-color: var(--warm-accent);
+            box-shadow: 0 6px 16px rgba(196,92,38,0.15);
+            outline: 1px solid rgba(212,165,116,0.8);
+            outline-offset: 0;
+        }
+        #loginModal .modal-box input.input-flash {
+            border-color: #c45c26 !important;
+            box-shadow: 0 0 0 2px rgba(196,92,38,0.35);
+        }
         .modal-box .btn-primary {
             width: 100%; padding: 12px; background: linear-gradient(135deg, var(--warm-accent), var(--warm-mid));
             color: var(--warm-white); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 8px;
+        }
+        #loginModal .modal-box .btn-primary {
+            background: radial-gradient(circle at 70% 30%, var(--warm-accent), var(--warm-mid));
+            border: 1px solid rgba(212,165,116,0.4);
+            transition: background-position 0.3s ease, opacity 0.2s ease, border-color 0.2s ease;
+        }
+        #loginModal .modal-box .btn-primary:hover {
+            opacity: 0.92;
+            border-color: rgba(212,165,116,0.8);
+        }
+        #loginModal .modal-box .btn-primary.is-loading {
+            pointer-events: none;
+            cursor: not-allowed;
+            animation: btnPulse 1s ease-in-out infinite;
+        }
+        @keyframes btnPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
         }
         .modal-box .btn-primary { position: relative; overflow: hidden; min-height: 44px; }
         .modal-box .btn-primary:hover { opacity: 0.92; }
@@ -305,7 +590,36 @@
         .explain-grade-bar .seg { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; font-weight: 600; }
         .btn-outline { padding: 8px 16px; border-radius: 8px; font-size: 13px; border: 1px solid rgba(196,92,38,0.4); background: var(--warm-white); color: var(--warm-mid); cursor: pointer; }
         .btn-outline:hover { background: var(--warm-gold); color: var(--warm-dark); }
-
+        /* 权限与安全：折叠面板 */
+        .perm-accordion { margin: 0; padding: 0; list-style: none; }
+        .perm-accordion-item { border: 1px solid rgba(196,92,38,0.2); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+        .perm-accordion-item:last-child { margin-bottom: 0; }
+        .perm-accordion-head { padding: 12px 14px; font-size: 14px; font-weight: 600; color: var(--warm-dark); background: rgba(196,92,38,0.06); cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
+        .perm-accordion-head:hover { background: rgba(196,92,38,0.1); }
+        .perm-accordion-head .perm-accordion-icon { transition: transform 0.25s ease; font-size: 18px; color: var(--warm-mid); }
+        .perm-accordion-item.open .perm-accordion-icon { transform: rotate(180deg); }
+        .perm-accordion-body { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+        .perm-accordion-item.open .perm-accordion-body { max-height: 1200px; }
+        .perm-accordion-body-inner { padding: 14px; border-top: 1px solid rgba(196,92,38,0.12); font-size: 13px; }
+        /* 权限开关（暖金/灰） */
+        .perm-toggle-wrap { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(196,92,38,0.08); }
+        .perm-toggle-wrap:last-child { border-bottom: none; }
+        .perm-toggle-label { color: #5c4a3a; flex: 1; }
+        .perm-toggle { width: 44px; height: 24px; border-radius: 12px; background: #c4b5a5; cursor: pointer; position: relative; transition: background 0.2s ease; flex-shrink: 0; }
+        .perm-toggle.on { background: var(--warm-gold); }
+        .perm-toggle::after { content: ''; position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #fff; top: 2px; left: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.2s ease; }
+        .perm-toggle.on::after { transform: translateX(20px); }
+        .perm-group-title { font-size: 12px; font-weight: 600; color: var(--warm-mid); margin: 12px 0 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(196,92,38,0.2); }
+        .perm-group-title:first-child { margin-top: 0; }
+        .perm-user-select-wrap { margin-bottom: 14px; }
+        .perm-user-select-wrap label { display: block; margin-bottom: 6px; color: #5c4a3a; }
+        .perm-user-select-wrap select { width: 100%; max-width: 280px; padding: 8px 10px; border: 1px solid rgba(196,92,38,0.3); border-radius: 6px; font-size: 13px; }
+        .perm-actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .perm-actions .btn-primary { width: auto; padding: 8px 18px; }
+        .perm-actions .btn-outline { padding: 8px 18px; }
+        .security-row { margin-bottom: 12px; }
+        .security-row label { display: block; margin-bottom: 4px; color: #5c4a3a; }
+        .security-row input[type="number"], .security-row select { padding: 6px 10px; border: 1px solid rgba(196,92,38,0.3); border-radius: 6px; font-size: 13px; min-width: 120px; }
         /* 左右两侧各 3 列播放带，每列占满上下，仅登录页显示 */
         .side-panel {
             position: fixed;
@@ -335,9 +649,17 @@
             filter: brightness(0.42);
             box-shadow: 0 2px 12px rgba(0,0,0,0.25);
         }
+        body.login-page .side-strip {
+            border-radius: 8px;
+            transition: filter 0.4s ease-in-out, box-shadow 0.3s ease;
+            filter: brightness(0.48) contrast(1.1);
+        }
         .side-strip:hover {
             filter: brightness(1);
             box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+        }
+        body.login-page .side-strip:hover {
+            filter: brightness(1) contrast(1);
         }
         .side-strip-track {
             display: flex;
@@ -375,6 +697,12 @@
         @media (max-width: 1200px) {
             .side-panel { display: none !important; }
         }
+        @media (max-width: 768px) {
+            .side-panel { width: min(320px, 40vw); min-width: 200px; }
+        }
+        @media (max-width: 420px) {
+            #loginModal .modal-box { width: 90vw; max-width: 90vw; }
+        }
     </style>
 </head>
 <body class="login-page">
@@ -398,14 +726,14 @@
             <h3>系统登录</h3>
             <div class="form-group">
                 <label>登录账号</label>
-                <input type="text" id="loginUsername" placeholder="请输入登录账号" autocomplete="username">
+                <input type="text" id="loginUsername" placeholder="请输入登录账号" autocomplete="username" aria-label="兰州拉面质检系统登录账号">
             </div>
             <div class="form-group">
                 <label>密码</label>
-                <input type="password" id="loginPassword" placeholder="请输入密码" autocomplete="current-password">
+                <input type="password" id="loginPassword" placeholder="请输入密码" autocomplete="current-password" aria-label="登录密码">
             </div>
-            <button type="button" class="btn-primary" id="loginBtn"><span class="login-btn-text">登录</span><span class="login-btn-spinner" aria-hidden="true"></span></button>
-            <p class="error-msg" id="loginError"></p>
+            <button type="button" class="btn-primary" id="loginBtn" aria-label="提交登录信息"><span class="login-btn-text">登录</span><span class="login-btn-spinner" aria-hidden="true"></span></button>
+            <p class="error-msg" id="loginError" role="alert"></p>
             <p class="hint">忘记密码？联系管理员重置</p>
         </div>
     </div>
@@ -414,11 +742,11 @@
         <div class="top-bar"></div>
         <nav class="nav-bar">
             <span class="user-info" id="navUserInfo">当前用户：加载中…</span>
-            <button type="button" class="btn-nav" id="btnUserManage" data-role-visible="0">用户管理</button>
-            <button type="button" class="btn-nav" id="btnSystemSetting" data-role-visible="0">系统设置</button>
-            <button type="button" class="btn-nav" id="btnTrainerStudents" data-role-visible="1">学员管理</button>
-            <button type="button" class="btn-nav" id="btnTrainerScoring" data-role-visible="1">评分标准</button>
-            <button type="button" class="btn-nav" id="btnLogout">退出</button>
+            <button type="button" class="btn-nav" id="btnUserManage" data-role-visible="0" aria-label="用户管理，管理账号与角色">用户管理</button>
+            <button type="button" class="btn-nav" id="btnSystemSetting" data-role-visible="0" aria-label="系统设置，快捷入口与参数说明">系统设置</button>
+            <button type="button" class="btn-nav" id="btnTrainerStudents" data-role-visible="1" aria-label="学员管理，查看分配的学员列表">学员管理</button>
+            <button type="button" class="btn-nav" id="btnTrainerScoring" data-role-visible="1" aria-label="评分标准，配置权重与行为参数">评分标准</button>
+            <button type="button" class="btn-nav" id="btnLogout" aria-label="退出当前账号，返回登录页">退出</button>
         </nav>
         <header class="hero">
             <h1>面向兰州拉面制作的标准化流程视觉质检系统</h1>
@@ -518,9 +846,9 @@
         <div class="modal-box wide">
             <div class="modal-head">
                 <h3>用户管理</h3>
-                <button type="button" class="btn-close" id="userManageClose">&times;</button>
+                <button type="button" class="btn-close" id="userManageClose" aria-label="关闭用户管理弹窗">&times;</button>
             </div>
-            <button type="button" class="btn-primary" id="userAddBtn" style="margin-bottom:16px;width:auto;padding:8px 16px;">新增用户</button>
+            <button type="button" class="btn-primary" id="userAddBtn" style="margin-bottom:16px;width:auto;padding:8px 16px;" aria-label="新增用户">新增用户</button>
             <div style="overflow:auto;">
                 <table class="user-table">
                     <thead><tr><th>账号</th><th>姓名</th><th>角色</th><th>所属培训师</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
@@ -534,7 +862,7 @@
         <div class="modal-box">
             <div class="modal-head">
                 <h3 id="userFormTitle">新增用户</h3>
-                <button type="button" class="btn-close" id="userFormClose">&times;</button>
+                <button type="button" class="btn-close" id="userFormClose" aria-label="关闭表单">&times;</button>
             </div>
             <input type="hidden" id="userFormId">
             <div class="form-group"><label>账号</label><input type="text" id="userFormUsername" placeholder="登录账号"></div>
@@ -543,7 +871,7 @@
             <div class="form-group" id="userFormTrainerWrap" style="display:none;"><label>所属培训师</label><select id="userFormTrainer" style="width:100%;padding:10px;border:1px solid rgba(196,92,38,0.3);border-radius:8px;"><option value="">— 未分配 —</option></select></div>
             <div class="form-group" id="userFormStatusWrap" style="display:none;"><label>状态</label><select id="userFormStatus" style="width:100%;padding:10px;border:1px solid rgba(196,92,38,0.3);border-radius:8px;"><option value="1">正常</option><option value="0">禁用</option></select></div>
             <div class="form-group"><label>真实姓名</label><input type="text" id="userFormName" placeholder="姓名"></div>
-            <button type="button" class="btn-primary" id="userFormSubmit">确定</button>
+            <button type="button" class="btn-primary" id="userFormSubmit" aria-label="保存并关闭">确定</button>
         </div>
     </div>
     <!-- 系统设置弹窗（管理员） -->
@@ -551,13 +879,15 @@
         <div class="modal-box wide">
             <div class="modal-head">
                 <h3>系统设置</h3>
-                <button type="button" class="btn-close" id="systemSettingClose">&times;</button>
+                <button type="button" class="btn-close" id="systemSettingClose" aria-label="关闭系统设置">&times;</button>
             </div>
             <div class="settings-section">
                 <h4>快捷入口</h4>
                 <p>常用管理功能可在此快速打开。</p>
                 <div class="settings-quick-wrap">
                     <button type="button" class="settings-quick-btn" id="systemSettingOpenUserManage">用户管理</button>
+                    <button type="button" class="settings-quick-btn" id="systemSettingOpenPermConfig" data-role-visible="0">用户权限配置</button>
+                    <button type="button" class="settings-quick-btn" id="systemSettingOpenSecurityRule" data-role-visible="0">安全规则配置</button>
                 </div>
             </div>
             <div class="settings-section">
@@ -567,6 +897,58 @@
                     <li><strong>检测帧率</strong>：在「抻面动作检测」「下面及捞面检测」或「实时监测」页面内设置。</li>
                     <li><strong>评分权重</strong>：由培训师在导航栏「评分标准」中维护；抻面、下面及捞面各环节权重在下次评分时自动生效。</li>
                     <li><strong>模型与阈值</strong>：各检测/评分模块内可选择模型、置信度等。</li>
+                </ul>
+            </div>
+            <div class="settings-section" id="systemSettingPermSection" data-role-visible="0">
+                <h4>权限与安全精细化管理</h4>
+                <p>仅管理员可配置。配置后对该角色或对应用户生效，不影响现有登录与会话逻辑。</p>
+                <ul class="perm-accordion">
+                    <li class="perm-accordion-item" id="permAccordionRole">
+                        <div class="perm-accordion-head" data-accordion-toggle><span>角色权限细粒度开关</span><span class="perm-accordion-icon">▼</span></div>
+                        <div class="perm-accordion-body">
+                            <div class="perm-accordion-body-inner">
+                                <p style="margin-bottom:12px;">全局角色模板：修改后对该角色下未单独配置的用户生效。单用户覆盖：先选角色、再选对应用户，仅支持逐一对单用户配置权限。</p>
+                                <div class="perm-group-title">培训师角色默认权限</div>
+                                <div id="permTemplateRole1"></div>
+                                <div class="perm-group-title">学员/厨师角色默认权限</div>
+                                <div id="permTemplateRole2"></div>
+                                <div class="perm-group-title">单用户权限覆盖</div>
+                                <div class="perm-user-select-wrap">
+                                    <label>1. 选择角色</label>
+                                    <select id="permRoleSelect" style="margin-bottom:10px;">
+                                        <option value="">— 请先选择角色 —</option>
+                                        <option value="1">培训师</option>
+                                        <option value="2">厨师/学员</option>
+                                    </select>
+                                    <label>2. 选择用户</label>
+                                    <select id="permUserSelect"><option value="">— 请选择用户 —</option></select>
+                                </div>
+                                <div id="permUserOverrides"></div>
+                                <div class="perm-actions">
+                                    <button type="button" class="btn-primary" id="permSaveBtn">保存权限配置</button>
+                                    <button type="button" class="btn-outline" id="permResetToRoleBtn">重置为角色默认权限</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="perm-accordion-item" id="permAccordionSecurity">
+                        <div class="perm-accordion-head" data-accordion-toggle><span>账号安全规则配置</span><span class="perm-accordion-icon">▼</span></div>
+                        <div class="perm-accordion-body">
+                            <div class="perm-accordion-body-inner">
+                                <p style="margin-bottom:12px;">全系统生效的账号安全规则，所有配置均有默认值，保存后二次确认生效。</p>
+                                <div class="perm-group-title">密码强度</div>
+                                <div class="security-row"><label>密码最小长度（6～20位）</label><input type="number" id="securityPwdMinLen" min="6" max="20" value="8"></div>
+                                <div class="security-row"><label>登录会话超时时间</label><select id="securitySessionTimeout"><option value="30">30分钟</option><option value="60">1小时</option><option value="120" selected>2小时</option><option value="240">4小时</option><option value="480">8小时</option><option value="1440">24小时</option><option value="10080">7天</option></select></div>
+                                <div class="perm-group-title">登录失败锁定</div>
+                                <div class="security-row"><label>连续失败阈值（3～10次）</label><input type="number" id="securityLockThreshold" min="3" max="10" value="5"></div>
+                                <div class="security-row"><label>锁定时长</label><select id="securityLockDuration"><option value="10">10分钟</option><option value="30" selected>30分钟</option><option value="60">1小时</option><option value="1440">24小时</option><option value="-1">永久（需管理员解锁）</option></select></div>
+                                <div class="perm-actions">
+                                    <button type="button" class="btn-primary" id="securitySaveBtn">保存安全规则</button>
+                                    <button type="button" class="btn-outline" id="securityResetBtn">重置为系统默认安全规则</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
             <div class="settings-section">
@@ -589,7 +971,7 @@
         <div class="modal-box wide">
             <div class="modal-head">
                 <h3>学员管理</h3>
-                <button type="button" class="btn-close" id="trainerStudentsClose">&times;</button>
+                <button type="button" class="btn-close" id="trainerStudentsClose" aria-label="关闭学员管理">&times;</button>
             </div>
             <p style="font-size:13px;color:#5c4a3a;margin-bottom:12px;">分配给当前培训师的学员列表，可查看其检测报告。</p>
             <div style="overflow:auto;">
@@ -606,7 +988,7 @@
         <div class="modal-box wide">
             <div class="modal-head">
                 <h3>评分标准</h3>
-                <button type="button" class="btn-close" id="trainerScoringClose">&times;</button>
+                <button type="button" class="btn-close" id="trainerScoringClose" aria-label="关闭评分标准">&times;</button>
             </div>
             <p style="font-size:13px;color:#5c4a3a;margin-bottom:16px;">各环节评分权重（总和须为 100%）。下方可调节评分行为参数，保存后将在<strong>下次评分时</strong>生效，无需重启服务。</p>
             <div id="scoringRulesStretch" style="margin-bottom:20px;">
@@ -631,7 +1013,7 @@
             </div>
             <p id="scoringRulesError" class="error-msg" style="display:none;"></p>
             <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
-                <button type="button" class="btn-primary" id="scoringRulesSaveBtn" style="width:auto;padding:8px 24px;">保存</button>
+                <button type="button" class="btn-primary" id="scoringRulesSaveBtn" style="width:auto;padding:8px 24px;" aria-label="保存评分标准">保存</button>
                 <button type="button" class="btn-outline" id="scoringRulesExplainBtn">评分标准说明</button>
             </div>
         </div>
@@ -642,7 +1024,7 @@
         <div class="modal-box wide explain">
             <div class="modal-head">
                 <h3>评分标准说明</h3>
-                <button type="button" class="btn-close" id="scoringExplainClose">&times;</button>
+                <button type="button" class="btn-close" id="scoringExplainClose" aria-label="关闭评分标准说明">&times;</button>
             </div>
             <div class="explain-section">
                 <h4>一、评分体系概述</h4>
@@ -755,41 +1137,93 @@
             }
             window.runLoginAnimations = function() {
                 if (!pm()) return;
+                var modal = document.getElementById('loginModal');
                 var box = document.querySelector('#loginModal .modal-box');
-                if (!box || document.getElementById('loginModal').classList.contains('hidden')) return;
+                if (!box || (modal && modal.classList.contains('hidden'))) return;
                 box.style.opacity = '0';
-                box.style.transform = 'translateY(-50px)';
-                pm().animate({ from: 0, to: 1, type: 'spring', stiffness: 45, damping: 14, onUpdate: function(v) { box.style.opacity = v; } });
-                pm().animate({ from: -50, to: 0, type: 'spring', stiffness: 45, damping: 14, onUpdate: function(v) { box.style.transform = 'translateY(' + v + 'px)'; } });
+                box.style.transform = 'translateY(-50px) scale(0.95) rotate(-1deg)';
+                pm().animate({ from: 0, to: 1, type: 'spring', stiffness: 50, damping: 12, onUpdate: function(v) {
+                    box.style.opacity = v;
+                    box.style.transform = 'translateY(' + (-50 + 50 * v) + 'px) scale(' + (0.95 + 0.05 * v) + ') rotate(' + (-1 + v) + 'deg)';
+                } });
+                var leftPanel = document.querySelector('.side-panel.left');
+                var rightPanel = document.querySelector('.side-panel.right');
+                if (leftPanel && pm()) {
+                    leftPanel.style.opacity = '0';
+                    leftPanel.style.transform = 'translateX(-20px)';
+                    pm().animate({ from: 0, to: 1, type: 'spring', stiffness: 60, damping: 14, onUpdate: function(v) {
+                        leftPanel.style.opacity = v;
+                        leftPanel.style.transform = 'translateX(' + (-20 + 20 * v) + 'px)';
+                    } });
+                }
+                if (rightPanel && pm()) {
+                    rightPanel.style.opacity = '0';
+                    rightPanel.style.transform = 'translateX(20px)';
+                    setTimeout(function() {
+                        if (!pm()) return;
+                        pm().animate({ from: 0, to: 1, type: 'spring', stiffness: 60, damping: 14, onUpdate: function(v) {
+                            rightPanel.style.opacity = v;
+                            rightPanel.style.transform = 'translateX(' + (20 - 20 * v) + 'px)';
+                        } });
+                    }, 100);
+                }
             };
             (function bindLoginAnimations() {
                 if (!pm()) return;
-                var loginBox = document.querySelector('#loginModal .modal-box');
-                if (!loginBox) return;
                 var inputs = [document.getElementById('loginUsername'), document.getElementById('loginPassword')].filter(Boolean);
                 inputs.forEach(function(inp) {
                     inp.addEventListener('focus', function() {
-                        if (!pm()) return;
-                        inp.style.transform = 'translateY(-2px)';
-                        inp.style.boxShadow = '0 4px 12px rgba(196,92,38,0.2)';
+                        inp.style.transform = 'translateY(-2px) scale(1.01)';
+                        inp.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                        inp.style.boxShadow = '0 6px 16px rgba(196,92,38,0.15)';
                     });
                     inp.addEventListener('blur', function() {
-                        inp.style.transform = '';
-                        inp.style.boxShadow = '';
+                        var el = inp;
+                        setTimeout(function() {
+                            el.style.transform = '';
+                            el.style.boxShadow = '';
+                        }, 100);
                     });
                 });
                 var loginBtn = document.getElementById('loginBtn');
                 if (loginBtn) {
                     loginBtn.style.transformOrigin = 'center';
-                    loginBtn.addEventListener('mouseenter', function() { if (pm()) pm().animate({ from: 1, to: 1.03, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ')'; } }); });
-                    loginBtn.addEventListener('mouseleave', function() { if (pm()) pm().animate({ from: 1.03, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ')'; } }); });
-                    loginBtn.addEventListener('mousedown', function() { if (pm()) pm().animate({ from: 1, to: 0.97, duration: 100, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ')'; } }); });
-                    loginBtn.addEventListener('mouseup', function() { if (pm()) pm().animate({ from: 0.97, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ')'; } }); });
+                    loginBtn.addEventListener('mouseenter', function() {
+                        if (loginBtn.classList.contains('is-loading')) return;
+                        if (pm()) pm().animate({ from: 1, to: 1.02, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ') translateY(' + (-1 * (v - 1) * 50) + 'px)'; } });
+                    });
+                    loginBtn.addEventListener('mouseleave', function() {
+                        if (pm()) pm().animate({ from: 1.02, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ') translateY(' + (-1 * (v - 1) * 50) + 'px)'; } });
+                    });
+                    loginBtn.addEventListener('mousedown', function() {
+                        if (loginBtn.classList.contains('is-loading')) return;
+                        if (pm()) pm().animate({ from: 1, to: 0.98, duration: 80, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ') translateY(' + (1 - v) * 20 + 'px)'; } });
+                    });
+                    loginBtn.addEventListener('mouseup', function() {
+                        if (pm()) pm().animate({ from: 0.98, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { loginBtn.style.transform = 'scale(' + v + ') translateY(' + ((1 - v) * 50) + 'px)'; } });
+                    });
                 }
             })();
+            window.showLoginError = function(msg) {
+                var errEl = document.getElementById('loginError');
+                if (!errEl) return;
+                errEl.textContent = msg;
+                errEl.style.display = 'block';
+                errEl.style.opacity = '0';
+                errEl.style.transform = 'translateY(10px)';
+                if (pm()) {
+                    pm().animate({ from: 0, to: 1, type: 'spring', stiffness: 40, damping: 12, onUpdate: function(v) { errEl.style.opacity = v; errEl.style.transform = 'translateY(' + (10 - 10 * v) + 'px)'; } });
+                } else { errEl.style.opacity = '1'; errEl.style.transform = ''; }
+            };
             window.runPageAnimations = function() {
                 if (!pm()) return;
-                var animate = pm().animate, easeInOut = pm().easeInOut;
+                var animate = pm().animate, easeInOut = pm().easeInOut, easeOut = pm().easeOut || function(t) { return 1 - (1 - t) * (1 - t); };
+                var topBar = document.querySelector('#mainWrap .top-bar');
+                if (topBar) {
+                    topBar.style.transform = 'scaleX(0)';
+                    topBar.style.opacity = '1';
+                    pm().animate({ from: 0, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { topBar.style.transform = 'scaleX(' + v + ')'; } });
+                }
                 var hero = document.querySelector('#mainWrap .hero');
                 if (hero) {
                     var h1 = hero.querySelector('h1');
@@ -802,44 +1236,74 @@
                             span.textContent = titleText[c];
                             span.style.opacity = '0';
                             span.style.display = 'inline-block';
-                            span.style.transform = 'translateY(10px)';
+                            span.style.transform = 'translateY(0) rotate(0deg)';
                             h1.appendChild(span);
                         }
                         var chars = h1.querySelectorAll('.hero-char');
                         chars.forEach(function(span, i) {
                             var delay = -50 * i;
                             animate({ from: 0, to: 1, duration: 320, ease: easeInOut, elapsed: delay, onUpdate: function(v) { span.style.opacity = v; } });
-                            animate({ from: 10, to: 0, duration: 320, ease: easeInOut, elapsed: delay, onUpdate: function(v) { span.style.transform = 'translateY(' + v + 'px)'; }, onComplete: function() { span.style.transform = ''; } });
+                            animate({ from: 0, to: -5, duration: 320, ease: easeInOut, elapsed: delay, onUpdate: function(v) { span.style.transform = 'translateY(' + v + 'px) rotate(0.5deg)'; }, onComplete: function() { span.style.transform = 'translateY(-5px) rotate(0.5deg)'; } });
                         });
                     }
                     var sub = hero.querySelector('.subtitle');
                     if (sub) {
                         sub.style.opacity = '0';
-                        var subDelay = (h1 && h1.querySelectorAll('.hero-char').length) * 50 + 200;
+                        var subDelay = 800;
                         animate({ from: 0, to: 1, duration: 500, ease: easeInOut, elapsed: -subDelay, onUpdate: function(v) { sub.style.opacity = v; } });
                     }
                 }
-                var cards = document.querySelectorAll('#mainWrap .card-grid .card');
-                cards.forEach(function(card, i) {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(24px)';
-                    var delay = -70 * i;
-                    animate({ from: 0, to: 1, duration: 360, ease: easeInOut, elapsed: delay, onUpdate: function(v) { card.style.opacity = v; } });
-                    animate({ from: 24, to: 0, duration: 360, ease: easeInOut, elapsed: delay, onUpdate: function(v) { card.style.transform = 'translateY(' + v + 'px)'; }, onComplete: function() { card.style.transform = ''; } });
-                });
                 var role = document.body.classList.contains('role-0') ? 0 : document.body.classList.contains('role-1') ? 1 : document.body.classList.contains('role-2') ? 2 : null;
-                var hoverY = role === 0 ? -6 : role === 1 ? -10 : -8;
-                var stiffness = role === 1 ? 120 : 100;
+                var hoverY = role === 0 ? -8 : role === 1 ? -12 : -10;
+                var springStiff = 100, springDamp = 18;
+                var sections = document.querySelectorAll('#mainWrap .section');
+                sections.forEach(function(section) {
+                    var sectionAnimated = false;
+                    var line = section.querySelector('.section-title .section-title-line');
+                    var cardsInSection = section.querySelectorAll('.card-grid .card');
+                    var io = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(e) {
+                            if (!e.isIntersecting || !pm()) return;
+                            var sec = e.target;
+                            if (!sectionAnimated) {
+                                sectionAnimated = true;
+                                sec.style.opacity = '0';
+                                sec.style.transform = 'translateY(15px)';
+                                pm().animate({ from: 0, to: 1, duration: 380, ease: easeOut, onUpdate: function(v) { sec.style.opacity = v; } });
+                                pm().animate({ from: 15, to: 0, duration: 380, ease: easeOut, onUpdate: function(v) { sec.style.transform = 'translateY(' + v + 'px)'; }, onComplete: function() { sec.style.transform = ''; } });
+                                if (line && line.getAttribute('data-animated') !== 'true') {
+                                    line.setAttribute('data-animated', 'true');
+                                    pm().animate({ from: 0, to: 1, duration: 400, ease: easeOut, onUpdate: function(v) { line.style.width = (v * 100) + '%'; } });
+                                }
+                                cardsInSection.forEach(function(card, ci) {
+                                    card.style.opacity = '0';
+                                    card.style.transform = 'scale(0.98)';
+                                    var delay = 80 * ci;
+                                    setTimeout(function() {
+                                        if (!pm()) return;
+                                        pm().animate({ from: 0, to: 1, duration: 320, ease: easeOut, onUpdate: function(v) { card.style.opacity = v; } });
+                                        pm().animate({ from: 0.98, to: 1, duration: 320, ease: easeOut, onUpdate: function(v) { card.style.transform = 'scale(' + v + ')'; }, onComplete: function() { card.style.transform = ''; } });
+                                    }, delay);
+                                });
+                            }
+                        });
+                    }, { threshold: 0.15, rootMargin: '0px' });
+                    io.observe(section);
+                });
+                var cards = document.querySelectorAll('#mainWrap .card-grid .card');
                 cards.forEach(function(card) {
                     card.style.willChange = 'transform';
                     card.addEventListener('mouseenter', function() {
                         if (!pm()) return;
-                        pm().animate({ from: 0, to: hoverY, type: 'spring', stiffness: stiffness, damping: 14, onUpdate: function(v) { card.style.transform = 'translateY(' + v + 'px)'; card.style.boxShadow = '0 ' + (8 + (-v/2)) + 'px 32px rgba(44,24,16,0.18)'; } });
+                        pm().animate({ from: 0, to: hoverY, type: 'spring', stiffness: springStiff, damping: springDamp, onUpdate: function(v) {
+                            card.style.transform = 'translateY(' + v + 'px) rotate(' + (v < 0 ? 0.8 : 0) + 'deg)';
+                            card.style.boxShadow = '0 ' + (8 + (-v/2)) + 'px 32px rgba(44,24,16,0.18)';
+                        } });
                     });
                     card.addEventListener('mouseleave', function() {
                         if (!pm()) return;
-                        pm().animate({ from: hoverY, to: 0, type: 'spring', stiffness: stiffness, damping: 14, onUpdate: function(v) {
-                            card.style.transform = 'translateY(' + v + 'px)';
+                        pm().animate({ from: hoverY, to: 0, type: 'spring', stiffness: springStiff, damping: springDamp, onUpdate: function(v) {
+                            card.style.transform = 'translateY(' + v + 'px) rotate(' + (v < 0 ? 0.8 : 0) + 'deg)';
                             card.style.boxShadow = v >= 0 ? '' : '0 ' + (8 + (-v/2)) + 'px 32px rgba(44,24,16,0.18)';
                         } });
                     });
@@ -865,26 +1329,38 @@
                         if (pm()) pm().animate({ from: 0.97, to: 1, type: 'spring', stiffness: 120, damping: 15, onUpdate: function(v) { btn.style.transform = 'scale(' + v + ')'; } });
                     });
                 });
-                var sections = document.querySelectorAll('#mainWrap .section');
-                sections.forEach(function(section) {
-                    var title = section.querySelector('.section-title');
-                    var line = title && title.querySelector('.section-title-line');
-                    if (!line) return;
-                    var io = new IntersectionObserver(function(entries) {
-                        entries.forEach(function(e) {
-                            if (!e.isIntersecting || !pm()) return;
-                            var t = e.target.querySelector('.section-title .section-title-line');
-                            if (!t || t.getAttribute('data-animated') === 'true') return;
-                            t.setAttribute('data-animated', 'true');
-                            pm().animate({ from: 0, to: 1, duration: 400, ease: easeInOut, onUpdate: function(v) {
-                                t.style.width = (v * 100) + '%';
-                            } });
-                        });
-                    }, { threshold: 0.2, rootMargin: '0px' });
-                    io.observe(section);
-                });
             };
 
+            function openModal(modalId) {
+                var el = document.getElementById(modalId);
+                if (!el) return;
+                el.classList.remove('hidden');
+                var box = el.querySelector('.modal-box');
+                if (box && pm()) {
+                    box.style.opacity = '0';
+                    box.style.transform = 'scale(0.95) translateY(20px)';
+                    requestAnimationFrame(function() {
+                        pm().animate({ from: 0, to: 1, type: 'spring', stiffness: 100, damping: 18, onUpdate: function(v) { box.style.opacity = v; } });
+                        pm().animate({ from: 0.95, to: 1, type: 'spring', stiffness: 100, damping: 18, onUpdate: function(v) { box.style.transform = 'scale(' + v + ') translateY(' + (20 * (1 - v)) + 'px)'; } });
+                    });
+                }
+            }
+            function closeModal(modalId, onDone) {
+                var el = document.getElementById(modalId);
+                var box = el && el.querySelector('.modal-box');
+                if (!box || !pm()) {
+                    if (el) el.classList.add('hidden');
+                    if (onDone) onDone();
+                    return;
+                }
+                pm().animate({ from: 1, to: 0, type: 'spring', stiffness: 100, damping: 18, onUpdate: function(v) { box.style.opacity = v; } });
+                pm().animate({ from: 1, to: 0.98, type: 'spring', stiffness: 100, damping: 18, onUpdate: function(v) { box.style.transform = 'scale(' + v + ') translateY(' + (10 * (1 - v)) + 'px)'; }, onComplete: function() {
+                    el.classList.add('hidden');
+                    box.style.opacity = '';
+                    box.style.transform = '';
+                    if (onDone) onDone();
+                } });
+            }
             function applyRoleVisibility() {
                 var role = currentUser ? currentUser.role : null;
                 document.querySelectorAll('[data-role-visible]').forEach(function(el) {
@@ -894,7 +1370,7 @@
             }
             var ROLE_COPY = {
                 0: {
-                    heroSubtitle: '流程监管与配置 · 用户与评分规则管理 · 全模块入口',
+                    heroSubtitle: '全流程质检数据管控与权限管理',
                     sections: { 'section-process': '流程检测与监管', 'section-annotation': '标注与数据管理', 'section-scoring': '综合评分与报告', 'section-pose': '姿态与视频资源' },
                     cards: {
                         stretch: { title: '抻面动作检测', desc: '上传抻面视频进行检测，查看结果与可视化，用于流程监管与质量把控。' },
@@ -928,7 +1404,7 @@
                     }
                 },
                 2: {
-                    heroSubtitle: '我的检测与评分 · 历史记录查看 · 手部姿态参考',
+                    heroSubtitle: '个人实操评分与历史记录查询',
                     sections: { 'section-process': '我的检测任务', 'section-annotation': '标注工具', 'section-scoring': '我的评分与记录', 'section-pose': '姿态与视频' },
                     cards: {
                         stretch: { title: '抻面动作检测', desc: '上传抻面视频，完成动作与类别检测并查看自己的检测结果。' },
@@ -1012,9 +1488,10 @@
                 var btn = document.getElementById('loginBtn');
                 errEl.style.display = 'none';
                 if (!username || !password) {
-                    errEl.textContent = '请输入账号和密码';
-                    errEl.style.display = 'block';
+                    if (window.showLoginError) showLoginError('请输入账号和密码'); else { errEl.textContent = '请输入账号和密码'; errEl.style.display = 'block'; }
                     if (window.showToast) showToast('请输入账号和密码', 'error');
+                    var u = document.getElementById('loginUsername'), p = document.getElementById('loginPassword');
+                    [u, p].forEach(function(inp) { if (inp) { inp.classList.add('input-flash'); setTimeout(function() { inp.classList.remove('input-flash'); }, 500); } });
                     return;
                 }
                 if (btn.classList.contains('is-loading')) return;
@@ -1053,8 +1530,7 @@
                         doAfterRestore(function() { showMain(true); });
                     } else {
                         restoreBtn();
-                        errEl.textContent = data.error || '登录失败';
-                        errEl.style.display = 'block';
+                        if (window.showLoginError) showLoginError(data.error || '登录失败'); else { errEl.textContent = data.error || '登录失败'; errEl.style.display = 'block'; }
                         if (window.showToast) showToast(data.error || '登录失败', 'error');
                         var box = document.querySelector('#loginModal .modal-box');
                         if (box && pm()) pm().animate({ from: [0, -5, 5, -3, 3, 0], duration: 300, onUpdate: function(v) { box.style.transform = 'translateY(0) translateX(' + v + 'px)'; } });
@@ -1067,8 +1543,7 @@
                         if (pm()) pm().animate({ from: 44, to: w, duration: 400, ease: pm().easeInOut, onUpdate: function(v) { btn.style.width = v + 'px'; }, onComplete: function() { btn.style.width = ''; } });
                         else btn.style.width = '';
                     }, wait);
-                    errEl.textContent = '网络错误';
-                    errEl.style.display = 'block';
+                    if (window.showLoginError) showLoginError('网络错误'); else { errEl.textContent = '网络错误'; errEl.style.display = 'block'; }
                     if (window.showToast) showToast('网络错误', 'error');
                     var box = document.querySelector('#loginModal .modal-box');
                     if (box && pm()) pm().animate({ from: [0, -5, 5, -3, 3, 0], duration: 300, onUpdate: function(v) { box.style.transform = 'translateY(0) translateX(' + v + 'px)'; } });
@@ -1082,7 +1557,7 @@
 
             document.getElementById('btnUserManage').onclick = function() {
                 if (!currentUser || currentUser.role !== 0) return;
-                document.getElementById('userManageModal').classList.remove('hidden');
+                openModal('userManageModal');
                 loadUserList();
             };
             document.getElementById('userFormRole').onchange = function() {
@@ -1091,7 +1566,7 @@
                 wrap.style.display = role === 2 ? 'block' : 'none';
                 if (role === 2) loadTrainersIntoSelect(document.getElementById('userFormTrainer'));
             };
-            document.getElementById('userManageClose').onclick = function() { document.getElementById('userManageModal').classList.add('hidden'); };
+            document.getElementById('userManageClose').onclick = function() { closeModal('userManageModal'); };
 
             var trainersCache = [];
             function loadTrainersIntoSelect(sel, selectedId) {
@@ -1134,7 +1609,7 @@
             }
 
             document.getElementById('userAddBtn').onclick = function() { openUserForm(null); };
-            document.getElementById('userFormClose').onclick = function() { document.getElementById('userFormModal').classList.add('hidden'); };
+            document.getElementById('userFormClose').onclick = function() { closeModal('userFormModal'); };
             document.getElementById('userFormSubmit').onclick = function() {
                 var id = document.getElementById('userFormId').value;
                 var username = document.getElementById('userFormUsername').value.trim();
@@ -1154,12 +1629,12 @@
                     body.status = parseInt(document.getElementById('userFormStatus').value, 10);
                     fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(body) })
                         .then(function(r) { return r.json(); }).then(function(data) {
-                            if (data.success) { document.getElementById('userFormModal').classList.add('hidden'); loadUserList(); } else alert(data.error || '更新失败');
+                            if (data.success) { closeModal('userFormModal', loadUserList); } else alert(data.error || '更新失败');
                         });
                 } else {
                     fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(body) })
                         .then(function(r) { return r.json(); }).then(function(data) {
-                            if (data.success) { document.getElementById('userFormModal').classList.add('hidden'); loadUserList(); } else alert(data.error || '创建失败');
+                            if (data.success) { closeModal('userFormModal', loadUserList); } else alert(data.error || '创建失败');
                         });
                 }
             };
@@ -1175,7 +1650,7 @@
                 var roleVal = parseInt(document.getElementById('userFormRole').value, 10);
                 document.getElementById('userFormTrainerWrap').style.display = roleVal === 2 ? 'block' : 'none';
                 if (roleVal === 2) loadTrainersIntoSelect(document.getElementById('userFormTrainer'));
-                document.getElementById('userFormModal').classList.remove('hidden');
+                openModal('userFormModal');
                 if (uid) {
                     fetch('/api/users', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
                         if (data.success && data.users) {
@@ -1209,19 +1684,251 @@
                 });
             }
 
-            document.getElementById('btnSystemSetting').onclick = function() { document.getElementById('systemSettingModal').classList.remove('hidden'); };
-            document.getElementById('systemSettingClose').onclick = function() { document.getElementById('systemSettingModal').classList.add('hidden'); };
+            document.getElementById('btnSystemSetting').onclick = function() { openModal('systemSettingModal'); initPermSection(); };
+            document.getElementById('systemSettingClose').onclick = function() { closeModal('systemSettingModal'); };
             document.getElementById('systemSettingOpenUserManage').onclick = function() {
                 if (!currentUser || currentUser.role !== 0) return;
-                document.getElementById('systemSettingModal').classList.add('hidden');
-                document.getElementById('userManageModal').classList.remove('hidden');
+                closeModal('systemSettingModal');
+                openModal('userManageModal');
                 loadUserList();
             };
+            (function() {
+                var PERM_STORAGE = 'ramen_perm_config', SECURITY_STORAGE = 'ramen_security_config';
+                var PERM_ROLE1 = [
+                    { key: 'export_detect', label: '导出学员检测记录数据', def: true },
+                    { key: 'export_annot', label: '导出标注数据集', def: true },
+                    { key: 'config_scoring', label: '配置评分标准/环节权重参数', def: true },
+                    { key: 'export_score', label: '导出全量学员评分报告', def: true },
+                    { key: 'download_pose_video', label: '下载姿态视频源文件', def: true }
+                ];
+                var PERM_ROLE2 = [
+                    { key: 'history_range', label: '个人历史记录查看时长', def: 'unlimited' },
+                    { key: 'delete_own_record', label: '删除个人检测记录/姿态视频', def: true },
+                    { key: 'export_own_report', label: '导出个人检测报告', def: true },
+                    { key: 'export_own_score', label: '导出个人评分报告', def: true }
+                ];
+                function getPermConfig() { try { return JSON.parse(localStorage.getItem(PERM_STORAGE) || '{}'); } catch (e) { return {}; } }
+                function setPermConfig(o) { try { localStorage.setItem(PERM_STORAGE, JSON.stringify(o)); } catch (e) {} }
+                function getSecurityConfig() { try { return JSON.parse(localStorage.getItem(SECURITY_STORAGE) || '{}'); } catch (e) { return {}; } }
+                function setSecurityConfig(o) { try { localStorage.setItem(SECURITY_STORAGE, JSON.stringify(o)); } catch (e) {} }
+                function renderPermToggles(containerId, role, config) {
+                    var list = role === 1 ? PERM_ROLE1 : PERM_ROLE2;
+                    var container = document.getElementById(containerId);
+                    if (!container) return;
+                    container.innerHTML = '';
+                    list.forEach(function(item) {
+                        var val = config[item.key];
+                        if (val === undefined) val = item.def;
+                        var wrap = document.createElement('div');
+                        wrap.className = 'perm-toggle-wrap';
+                        if (item.key === 'history_range') {
+                            wrap.innerHTML = '<span class="perm-toggle-label">' + item.label + '</span><select data-perm-key="' + item.key + '" data-perm-role="' + role + '"><option value="unlimited">无限制</option><option value="1m">近1个月</option><option value="3m">近3个月</option><option value="6m">近6个月</option><option value="1y">近1年</option></select>';
+                            var sel = wrap.querySelector('select');
+                            sel.value = typeof val === 'string' ? val : 'unlimited';
+                        } else {
+                            var on = val === true || val === 'true';
+                            wrap.innerHTML = '<span class="perm-toggle-label">' + item.label + '</span><div class="perm-toggle' + (on ? ' on' : '') + '" data-perm-key="' + item.key + '" data-perm-role="' + role + '" role="button" tabindex="0"></div>';
+                            wrap.querySelector('.perm-toggle').onclick = function() {
+                                var t = this; var isOn = t.classList.toggle('on'); t.setAttribute('aria-pressed', isOn);
+                            };
+                        }
+                        container.appendChild(wrap);
+                    });
+                }
+                function bindPermToggleClicks(containerEl) {
+                    if (!containerEl) return;
+                    containerEl.querySelectorAll('.perm-toggle').forEach(function(t) {
+                        t.onclick = function() { this.classList.toggle('on'); };
+                    });
+                }
+                function collectPermFromContainer(containerId) {
+                    var out = {};
+                    var container = document.getElementById(containerId);
+                    if (!container) return out;
+                    container.querySelectorAll('[data-perm-key]').forEach(function(el) {
+                        var key = el.getAttribute('data-perm-key');
+                        if (el.tagName === 'SELECT') out[key] = el.value; else out[key] = el.classList.contains('on');
+                    });
+                    return out;
+                }
+                function loadPermUserSelect(role) {
+                    var sel = document.getElementById('permUserSelect');
+                    if (!sel) return;
+                    if (!role || role === '') {
+                        sel.innerHTML = '<option value="">— 请选择用户 —</option>';
+                        document.getElementById('permUserOverrides').innerHTML = '';
+                        document.getElementById('permUserOverrides').removeAttribute('data-current-role');
+                        return;
+                    }
+                    sel.innerHTML = '<option value="">加载中…</option>';
+                    fetch('/api/users', { credentials: 'include' })
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            sel.innerHTML = '<option value="">— 请选择用户 —</option>';
+                            var roleNum = parseInt(role, 10);
+                            var list = (data.users || []).filter(function(u) { return Number(u.role) === roleNum; });
+                            list.forEach(function(u) {
+                                var opt = document.createElement('option');
+                                opt.value = u.id;
+                                opt.textContent = (u.username || '') + ' ' + (u.name || '');
+                                sel.appendChild(opt);
+                            });
+                            if (list.length === 0) {
+                                var empty = document.createElement('option');
+                                empty.value = '';
+                                empty.disabled = true;
+                                empty.textContent = '该角色下暂无账号，请先在「用户管理」中创建';
+                                sel.appendChild(empty);
+                            }
+                        })
+                        .catch(function() {
+                            sel.innerHTML = '<option value="">— 请选择用户 —</option><option value="" disabled>加载失败，请重试</option>';
+                        });
+                }
+                function initPermSection() {
+                    var cfg = getPermConfig();
+                    var role1Tpl = cfg.role1 || {};
+                    var role2Tpl = cfg.role2 || {};
+                    PERM_ROLE1.forEach(function(p) { if (role1Tpl[p.key] === undefined) role1Tpl[p.key] = p.def; });
+                    PERM_ROLE2.forEach(function(p) { if (role2Tpl[p.key] === undefined) role2Tpl[p.key] = (p.key === 'history_range' ? 'unlimited' : p.def); });
+                    renderPermToggles('permTemplateRole1', 1, role1Tpl);
+                    renderPermToggles('permTemplateRole2', 2, role2Tpl);
+                    bindPermToggleClicks(document.getElementById('permTemplateRole1'));
+                    bindPermToggleClicks(document.getElementById('permTemplateRole2'));
+                    var sec = getSecurityConfig();
+                    document.getElementById('securityPwdMinLen').value = sec.pwdMinLen !== undefined ? sec.pwdMinLen : 8;
+                    document.getElementById('securitySessionTimeout').value = sec.sessionTimeout !== undefined ? String(sec.sessionTimeout) : '120';
+                    document.getElementById('securityLockThreshold').value = sec.lockThreshold !== undefined ? sec.lockThreshold : 5;
+                    document.getElementById('securityLockDuration').value = sec.lockDuration !== undefined ? String(sec.lockDuration) : '30';
+                    var roleSel = document.getElementById('permRoleSelect');
+                    var userSel = document.getElementById('permUserSelect');
+                    if (roleSel) roleSel.value = '';
+                    if (userSel) userSel.innerHTML = '<option value="">— 请选择用户 —</option>';
+                    document.getElementById('permUserOverrides').innerHTML = '';
+                }
+                document.getElementById('permRoleSelect').onchange = function() {
+                    var role = this.value;
+                    loadPermUserSelect(role);
+                    document.getElementById('permUserSelect').value = '';
+                    document.getElementById('permUserOverrides').innerHTML = '';
+                    document.getElementById('permUserOverrides').removeAttribute('data-current-role');
+                };
+                document.querySelectorAll('.perm-accordion-head[data-accordion-toggle]').forEach(function(head) {
+                    head.onclick = function() {
+                        var item = head.closest('.perm-accordion-item');
+                        if (item) item.classList.toggle('open');
+                    };
+                });
+                document.getElementById('systemSettingOpenPermConfig').onclick = function() {
+                    openModal('systemSettingModal');
+                    initPermSection();
+                    var el = document.getElementById('permAccordionRole');
+                    if (el) { el.classList.add('open'); el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+                };
+                document.getElementById('systemSettingOpenSecurityRule').onclick = function() {
+                    openModal('systemSettingModal');
+                    initPermSection();
+                    var el = document.getElementById('permAccordionSecurity');
+                    if (el) { el.classList.add('open'); el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+                };
+                document.getElementById('permSaveBtn').onclick = function() {
+                    if (!confirm('修改后将覆盖该用户的全局角色权限，是否确认？')) return;
+                    var cfg = getPermConfig();
+                    cfg.role1 = collectPermFromContainer('permTemplateRole1');
+                    cfg.role2 = collectPermFromContainer('permTemplateRole2');
+                    var uid = document.getElementById('permUserSelect').value;
+                    if (uid) {
+                        cfg.userOverrides = cfg.userOverrides || {};
+                        var overrideRole = document.getElementById('permUserOverrides').getAttribute('data-current-role');
+                        if (overrideRole) { cfg.userOverrides[uid] = cfg.userOverrides[uid] || {}; cfg.userOverrides[uid]['role' + overrideRole] = collectPermFromContainer('permUserOverrides'); }
+                    }
+                    setPermConfig(cfg);
+                    if (window.showToast) showToast('权限配置已保存', 'success'); else alert('已保存');
+                };
+                document.getElementById('permResetToRoleBtn').onclick = function() {
+                    var uid = document.getElementById('permUserSelect').value;
+                    if (!uid) { alert('请先选择用户'); return; }
+                    if (!confirm('确定将该用户权限重置为角色默认？')) return;
+                    var cfg = getPermConfig();
+                    if (cfg.userOverrides) { delete cfg.userOverrides[uid]; setPermConfig(cfg); }
+                    document.getElementById('permUserSelect').dispatchEvent(new Event('change'));
+                    if (window.showToast) showToast('已重置为角色默认', 'success'); else alert('已重置');
+                };
+                document.getElementById('permUserSelect').onchange = function() {
+                    var uid = this.value;
+                    var roleEl = document.getElementById('permRoleSelect');
+                    var role = roleEl && roleEl.value ? parseInt(roleEl.value, 10) : 1;
+                    var cfg = getPermConfig();
+                    var overrides = (cfg.userOverrides || {})[uid];
+                    var container = document.getElementById('permUserOverrides');
+                    container.innerHTML = '';
+                    container.removeAttribute('data-current-role');
+                    if (!uid) return;
+                    container.setAttribute('data-current-role', role);
+                    if (overrides) {
+                            var list = role === 1 ? PERM_ROLE1 : PERM_ROLE2;
+                            var data = role === 1 ? overrides.role1 : overrides.role2;
+                            if (!data) data = {};
+                            list.forEach(function(p) {
+                                var wrap = document.createElement('div');
+                                wrap.className = 'perm-toggle-wrap';
+                                var val = data[p.key];
+                                if (val === undefined) val = p.def;
+                                if (p.key === 'history_range') {
+                                    wrap.innerHTML = '<span class="perm-toggle-label">' + p.label + '</span><select data-perm-key="' + p.key + '" data-perm-role="' + role + '"><option value="unlimited">无限制</option><option value="1m">近1个月</option><option value="3m">近3个月</option><option value="6m">近6个月</option><option value="1y">近1年</option></select>';
+                                    wrap.querySelector('select').value = typeof val === 'string' ? val : 'unlimited';
+                                } else {
+                                    var on = val === true || val === 'true';
+                                    wrap.innerHTML = '<span class="perm-toggle-label">' + p.label + '</span><div class="perm-toggle' + (on ? ' on' : '') + '" data-perm-key="' + p.key + '" data-perm-role="' + role + '"></div>';
+                                    wrap.querySelector('.perm-toggle').onclick = function() { this.classList.toggle('on'); };
+                                }
+                                container.appendChild(wrap);
+                            });
+                        } else {
+                            var tpl = role === 1 ? (cfg.role1 || {}) : (cfg.role2 || {});
+                            var list = role === 1 ? PERM_ROLE1 : PERM_ROLE2;
+                            list.forEach(function(p) {
+                                var wrap = document.createElement('div');
+                                wrap.className = 'perm-toggle-wrap';
+                                var val = tpl[p.key];
+                                if (val === undefined) val = p.def;
+                                if (p.key === 'history_range') {
+                                    wrap.innerHTML = '<span class="perm-toggle-label">' + p.label + '</span><select data-perm-key="' + p.key + '" data-perm-role="' + role + '"><option value="unlimited">无限制</option><option value="1m">近1个月</option><option value="3m">近3个月</option><option value="6m">近6个月</option><option value="1y">近1年</option></select>';
+                                    wrap.querySelector('select').value = typeof val === 'string' ? val : 'unlimited';
+                                } else {
+                                    wrap.innerHTML = '<span class="perm-toggle-label">' + p.label + '</span><div class="perm-toggle' + (val ? ' on' : '') + '" data-perm-key="' + p.key + '" data-perm-role="' + role + '"></div>';
+                                    wrap.querySelector('.perm-toggle').onclick = function() { this.classList.toggle('on'); };
+                                }
+                                container.appendChild(wrap);
+                            });
+                        }
+                };
+                document.getElementById('securitySaveBtn').onclick = function() {
+                    if (!confirm('修改后将对全系统所有用户生效，是否确认？')) return;
+                    var len = parseInt(document.getElementById('securityPwdMinLen').value, 10);
+                    if (len < 6 || len > 20) { alert('密码长度需在 6～20 位之间'); return; }
+                    setSecurityConfig({
+                        pwdMinLen: len,
+                        sessionTimeout: document.getElementById('securitySessionTimeout').value,
+                        lockThreshold: parseInt(document.getElementById('securityLockThreshold').value, 10),
+                        lockDuration: document.getElementById('securityLockDuration').value
+                    });
+                    if (window.showToast) showToast('安全规则已保存', 'success'); else alert('已保存');
+                };
+                document.getElementById('securityResetBtn').onclick = function() {
+                    document.getElementById('securityPwdMinLen').value = 8;
+                    document.getElementById('securitySessionTimeout').value = '120';
+                    document.getElementById('securityLockThreshold').value = 5;
+                    document.getElementById('securityLockDuration').value = '30';
+                    setSecurityConfig({});
+                    if (window.showToast) showToast('已重置为系统默认', 'success'); else alert('已重置');
+                };
+            })();
             document.getElementById('btnTrainerStudents').onclick = function() {
-                document.getElementById('trainerStudentsModal').classList.remove('hidden');
+                openModal('trainerStudentsModal');
                 loadTrainerStudents();
             };
-            document.getElementById('trainerStudentsClose').onclick = function() { document.getElementById('trainerStudentsModal').classList.add('hidden'); };
+            document.getElementById('trainerStudentsClose').onclick = function() { closeModal('trainerStudentsModal'); };
             function loadTrainerStudents() {
                 fetch('/api/trainer/students', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
                     var tbody = document.getElementById('trainerStudentsTableBody');
@@ -1241,12 +1948,12 @@
                 });
             }
             document.getElementById('btnTrainerScoring').onclick = function() {
-                document.getElementById('trainerScoringModal').classList.remove('hidden');
+                openModal('trainerScoringModal');
                 document.getElementById('scoringRulesError').style.display = 'none';
                 loadScoringRules();
             };
-            document.getElementById('trainerScoringClose').onclick = function() { document.getElementById('trainerScoringModal').classList.add('hidden'); };
-            document.getElementById('scoringExplainClose').onclick = function() { document.getElementById('scoringExplainModal').classList.add('hidden'); };
+            document.getElementById('trainerScoringClose').onclick = function() { closeModal('trainerScoringModal'); };
+            document.getElementById('scoringExplainClose').onclick = function() { closeModal('scoringExplainModal'); };
             function renderExplainBars(weights, labels, containerId) {
                 var container = document.getElementById(containerId);
                 if (!container) return;
@@ -1287,7 +1994,7 @@
                 }
             }
             document.getElementById('scoringRulesExplainBtn').onclick = function() {
-                document.getElementById('scoringExplainModal').classList.remove('hidden');
+                openModal('scoringExplainModal');
                 var defaultStretch = { overall_weights: { noodle_rope: 0.6, hand: 0.3, noodle_bundle: 0.1 }, labels: { noodle_rope: '面绳', hand: '手部', noodle_bundle: '面束' } };
                 var defaultBoiling = { overall_weights: { noodle_rope: 0.35, hand: 0.35, tools_noodle: 0.15, soup_noodle: 0.15 }, labels: { noodle_rope: '面绳', hand: '手部', tools_noodle: '工具面', soup_noodle: '汤面' } };
                 fetch('/api/scoring-rules?stage=stretch', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
