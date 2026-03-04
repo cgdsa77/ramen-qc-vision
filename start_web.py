@@ -321,9 +321,35 @@ try:
                 "stage": stage,
                 "overall_weights": weights,
                 "labels": labels,
+                "min_confidence": data.get("min_confidence", 0.3),
+                "min_frame_ratio": data.get("min_frame_ratio", 0.1),
+                "pass_threshold": data.get("pass_threshold", 60),
+                "excellent_threshold": data.get("excellent_threshold", 85),
             })
         except Exception as e:
             return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+    def _score_100_and_grade(stage: str, average_overall_score_1_5: float) -> tuple:
+        """根据规则中的及格线/优秀线，将 1-5 分制转为百分制并得到等级。"""
+        path = _scoring_rules_paths.get(stage)
+        if not path or not path.exists():
+            return round((average_overall_score_1_5 - 1) / 4 * 100, 1), None
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            return round((average_overall_score_1_5 - 1) / 4 * 100, 1), None
+        pass_t = float(data.get("pass_threshold", 60))
+        excellent_t = float(data.get("excellent_threshold", 85))
+        score_100 = (average_overall_score_1_5 - 1) / 4 * 100
+        score_100 = round(max(0, min(100, score_100)), 1)
+        if score_100 >= excellent_t:
+            grade = "优秀"
+        elif score_100 >= pass_t:
+            grade = "良好"
+        else:
+            grade = "不及格"
+        return score_100, grade
 
     @app.put("/api/scoring-rules")
     async def api_scoring_rules_put(request: Request):
@@ -346,6 +372,29 @@ try:
             return JSONResponse(content={"success": False, "error": "权重须为数字"})
         if abs(total - 1.0) > 1e-6:
             return JSONResponse(content={"success": False, "error": "权重总和须为 100%（即 1.0），当前为 " + str(round(total * 100, 1)) + "%"})
+        # 可选：评分行为参数
+        min_confidence = body.get("min_confidence")
+        min_frame_ratio = body.get("min_frame_ratio")
+        pass_threshold = body.get("pass_threshold")
+        excellent_threshold = body.get("excellent_threshold")
+        if min_confidence is not None:
+            v = float(min_confidence)
+            if v < 0 or v > 1:
+                return JSONResponse(content={"success": False, "error": "最低参与置信度须在 0～1 之间"})
+        if min_frame_ratio is not None:
+            v = float(min_frame_ratio)
+            if v < 0 or v > 1:
+                return JSONResponse(content={"success": False, "error": "视频有效帧比例须在 0～1 之间"})
+        if pass_threshold is not None:
+            v = float(pass_threshold)
+            if v < 0 or v > 100:
+                return JSONResponse(content={"success": False, "error": "及格线须在 0～100 之间"})
+        if excellent_threshold is not None:
+            v = float(excellent_threshold)
+            if v < 0 or v > 100:
+                return JSONResponse(content={"success": False, "error": "优秀线须在 0～100 之间"})
+        if pass_threshold is not None and excellent_threshold is not None and float(excellent_threshold) < float(pass_threshold):
+            return JSONResponse(content={"success": False, "error": "优秀线不得低于及格线"})
         path = _scoring_rules_paths[stage]
         if not path.exists():
             return JSONResponse(content={"success": False, "error": "规则文件不存在"})
@@ -353,6 +402,14 @@ try:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             data["overall_weights"] = {k: float(v) for k, v in new_weights.items()}
+            if min_confidence is not None:
+                data["min_confidence"] = float(min_confidence)
+            if min_frame_ratio is not None:
+                data["min_frame_ratio"] = float(min_frame_ratio)
+            if pass_threshold is not None:
+                data["pass_threshold"] = float(pass_threshold)
+            if excellent_threshold is not None:
+                data["excellent_threshold"] = float(excellent_threshold)
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
             return JSONResponse(content={"success": True, "message": "已保存"})
@@ -997,13 +1054,16 @@ try:
                                 video_detections.append({'frame_index': frame_data.get('frame_index', 0), 'detections': frame_detections})
                             video_score_result = scorer.score_video(video_detections, video_path=str(tmp_path))
                             model_path = getattr(detector, "model_path", None) or ""
+                            avg = video_score_result.get('average_overall_score', 0)
+                            score_100, grade = _score_100_and_grade("stretch", avg)
                             out = {
                                 "success": True, "stage": stage, "total_frames": total_frames,
                                 "scored_frames": video_score_result.get('scored_frames', 0),
-                                "average_overall_score": round(video_score_result.get('average_overall_score', 0), 2),
+                                "average_overall_score": round(avg, 2),
+                                "score_100": score_100, "grade": grade,
                                 "class_average_scores": {k: round(v, 2) for k, v in video_score_result.get('class_average_scores', {}).items()},
                                 "scores": {k: round(v, 2) for k, v in video_score_result.get('class_average_scores', {}).items()},
-                                "total_score": round(video_score_result.get('average_overall_score', 0), 2),
+                                "total_score": round(avg, 2),
                                 "details": video_score_result.get('class_average_scores', {}),
                                 "rules_used": "基于标准数据集的评分规则和阈值",
                                 "frame_scores_sample": video_score_result.get('frame_scores', [])[:5],
@@ -1032,13 +1092,16 @@ try:
                                     })
                                 video_detections.append({'frame_index': frame_data.get('frame_index', 0), 'detections': frame_detections})
                             video_score_result = scorer.score_video(video_detections, video_path=str(tmp_path))
+                            avg = video_score_result.get('average_overall_score', 0)
+                            score_100, grade = _score_100_and_grade("boiling", avg)
                             out = {
                                 "success": True, "stage": stage, "total_frames": total_frames,
                                 "scored_frames": video_score_result.get('scored_frames', 0),
-                                "average_overall_score": round(video_score_result.get('average_overall_score', 0), 2),
+                                "average_overall_score": round(avg, 2),
+                                "score_100": score_100, "grade": grade,
                                 "class_average_scores": {k: round(v, 2) for k, v in video_score_result.get('class_average_scores', {}).items()},
                                 "scores": {k: round(v, 2) for k, v in video_score_result.get('class_average_scores', {}).items()},
-                                "total_score": round(video_score_result.get('average_overall_score', 0), 2),
+                                "total_score": round(avg, 2),
                                 "details": video_score_result.get('class_average_scores', {}),
                                 "rules_used": "下面及捞面规则（scoring_rules.json）",
                                 "frame_scores_sample": video_score_result.get('frame_scores', [])[:5],
@@ -1178,19 +1241,23 @@ try:
                     # 进行评分（传入视频路径以提取图像特征）
                     video_score_result = scorer.score_video(video_detections, video_path=str(tmp_path))
                     model_path = getattr(detector, "model_path", None) or ""
+                    avg = video_score_result.get('average_overall_score', 0)
+                    score_100, grade = _score_100_and_grade("stretch", avg)
                     return {
                         "success": True,
                         "stage": stage,
                         "total_frames": total_frames,
                         "scored_frames": video_score_result.get('scored_frames', 0),
-                        "average_overall_score": round(video_score_result.get('average_overall_score', 0), 2),
+                        "average_overall_score": round(avg, 2),
+                        "score_100": score_100,
+                        "grade": grade,
                         "class_average_scores": {
                             k: round(v, 2) for k, v in video_score_result.get('class_average_scores', {}).items()
                         },
                         "scores": {
                             k: round(v, 2) for k, v in video_score_result.get('class_average_scores', {}).items()
                         },
-                        "total_score": round(video_score_result.get('average_overall_score', 0), 2),
+                        "total_score": round(avg, 2),
                         "details": video_score_result.get('class_average_scores', {}),
                         "rules_used": "基于标准数据集的评分规则和阈值",
                         "frame_scores_sample": video_score_result.get('frame_scores', [])[:5],
@@ -1222,13 +1289,16 @@ try:
                             })
                         video_detections.append({'frame_index': frame_data.get('frame_index', 0), 'detections': frame_detections})
                     video_score_result = scorer.score_video(video_detections, video_path=str(tmp_path))
+                    avg = video_score_result.get('average_overall_score', 0)
+                    score_100, grade = _score_100_and_grade("boiling", avg)
                     return {
                         "success": True, "stage": stage, "total_frames": total_frames,
                         "scored_frames": video_score_result.get('scored_frames', 0),
-                        "average_overall_score": round(video_score_result.get('average_overall_score', 0), 2),
+                        "average_overall_score": round(avg, 2),
+                        "score_100": score_100, "grade": grade,
                         "class_average_scores": {k: round(v, 2) for k, v in video_score_result.get('class_average_scores', {}).items()},
                         "scores": {k: round(v, 2) for k, v in video_score_result.get('class_average_scores', {}).items()},
-                        "total_score": round(video_score_result.get('average_overall_score', 0), 2),
+                        "total_score": round(avg, 2),
                         "details": video_score_result.get('class_average_scores', {}),
                         "rules_used": "下面及捞面规则（scoring_rules.json）",
                         "frame_scores_sample": video_score_result.get('frame_scores', [])[:5],

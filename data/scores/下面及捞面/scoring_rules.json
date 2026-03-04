@@ -306,5 +306,9 @@
     "hand": 0.35,
     "tools_noodle": 0.15,
     "soup_noodle": 0.15
-  }
+  },
+  "min_confidence": 0.3,
+  "min_frame_ratio": 0.1,
+  "pass_threshold": 60,
+  "excellent_threshold": 85
 }

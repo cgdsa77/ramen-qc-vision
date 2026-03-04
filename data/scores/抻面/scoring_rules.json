@@ -277,5 +277,9 @@
     "noodle_rope": 0.6,
     "hand": 0.3,
     "noodle_bundle": 0.1
-  }
+  },
+  "min_confidence": 0.3,
+  "min_frame_ratio": 0.1,
+  "pass_threshold": 60,
+  "excellent_threshold": 85
 }

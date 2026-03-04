@@ -31,10 +31,18 @@
             background: linear-gradient(rgba(44, 24, 16, 0.35), rgba(44, 24, 16, 0.35)),
                 url('/data/web_background_images/web1_bg.jpg') center center / contain no-repeat fixed;
         }
-        /* 顶部装饰条 */
+        /* 顶部装饰条（角色主题覆盖其渐变，此处为默认） */
         .top-bar {
             height: 4px;
             background: linear-gradient(90deg, var(--warm-accent), var(--warm-gold), var(--warm-mid));
+            transform-origin: left;
+        }
+        body.main-page .top-bar {
+            animation: topBarReveal 0.6s ease-out forwards;
+        }
+        @keyframes topBarReveal {
+            from { transform: scaleX(0); opacity: 0.6; }
+            to { transform: scaleX(1); opacity: 1; }
         }
         .hero {
             background: linear-gradient(165deg, var(--warm-dark) 0%, #3d2318 40%, var(--warm-mid) 100%);
@@ -140,6 +148,36 @@
             font-size: 13px;
             color: #7d6b5a;
         }
+        /* 角色主题：管理员 - 深棕/金，沉稳管控感 */
+        body.role-0 .top-bar { background: linear-gradient(90deg, #5c4033, #8b6914, #5c4033); }
+        body.role-0 .hero { background: linear-gradient(165deg, #2c1810 0%, #3d2818 35%, #4a3520 70%, #5c4033 100%); }
+        body.role-0 .container { background: linear-gradient(180deg, #f8f4ef 0%, #f0ebe3 100%); }
+        body.role-0 .section-title { color: #5c4033; border-bottom-color: rgba(139,105,20,0.25); }
+        body.role-0 .card { background: #fffcf9; border-color: rgba(92,64,51,0.18); box-shadow: 0 8px 28px rgba(44,24,16,0.1); }
+        body.role-0 .card:hover { box-shadow: 0 14px 42px rgba(44,24,16,0.14); }
+        body.role-0 .card .btn { background: linear-gradient(135deg, #6b5344, #8b6914); }
+        body.role-0 .nav-bar { background: rgba(44,24,16,0.96); }
+        body.role-0 .footer { color: #6b5a4a; }
+        /* 角色主题：培训师 - 偏蓝色调，冷静教学感 */
+        body.role-1 .top-bar { background: linear-gradient(90deg, #2c5282, #3182ce, #2c5282); }
+        body.role-1 .hero { background: linear-gradient(165deg, #1a365d 0%, #2c5282 40%, #2b6cb0 70%, #3182ce 100%); }
+        body.role-1 .container { background: linear-gradient(180deg, #e6f0f7 0%, #dae8f2 100%); }
+        body.role-1 .section-title { color: #2c5282; border-bottom-color: rgba(49,130,206,0.35); }
+        body.role-1 .card { background: #f0f7fc; border-color: rgba(44,82,130,0.18); box-shadow: 0 8px 30px rgba(26,54,93,0.08); }
+        body.role-1 .card:hover { box-shadow: 0 14px 44px rgba(26,54,93,0.12); }
+        body.role-1 .card .btn { background: linear-gradient(135deg, #2b6cb0, #3182ce); }
+        body.role-1 .nav-bar { background: rgba(26,54,93,0.95); }
+        body.role-1 .footer { color: #2c5282; }
+        /* 角色主题：厨师/学员 - 浅绿/青，清爽操作感 */
+        body.role-2 .top-bar { background: linear-gradient(90deg, #2d5a4a, #4a7c59, #2d5a4a); }
+        body.role-2 .hero { background: linear-gradient(165deg, #1e3c32 0%, #2d5a4a 45%, #3d6b5a 80%, #4a7c59 100%); }
+        body.role-2 .container { background: linear-gradient(180deg, #f4faf6 0%, #e8f4ee 100%); }
+        body.role-2 .section-title { color: #2d5a4a; border-bottom-color: rgba(74,124,89,0.3); }
+        body.role-2 .card { background: #fff; border-color: rgba(45,90,74,0.15); box-shadow: 0 8px 28px rgba(45,90,74,0.08); }
+        body.role-2 .card:hover { box-shadow: 0 14px 40px rgba(45,90,74,0.12); }
+        body.role-2 .card .btn { background: linear-gradient(135deg, #2d5a4a, #4a7c59); }
+        body.role-2 .nav-bar { background: rgba(30,60,50,0.95); }
+        body.role-2 .footer { color: #3d6b5a; }
         /* 毕设：导航栏（角色按钮 + 退出） */
         .nav-bar {
             background: rgba(44, 24, 16, 0.95);
@@ -224,6 +262,16 @@
         .modal-box .btn-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #5c4a3a; }
         /* 用户管理弹窗 */
         .modal-box.wide { max-width: 600px; max-height: 90vh; overflow: auto; }
+        .settings-section { margin-bottom: 20px; }
+        .settings-section h4 { font-size: 14px; color: var(--warm-mid); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid rgba(196,92,38,0.2); }
+        .settings-section p { font-size: 13px; color: #5c4a3a; line-height: 1.6; margin-bottom: 8px; }
+        .settings-quick-wrap { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+        .settings-quick-btn { padding: 10px 18px; border-radius: 8px; font-size: 13px; border: 1px solid rgba(196,92,38,0.4); background: var(--warm-white); color: var(--warm-mid); cursor: pointer; transition: background 0.2s, color 0.2s; }
+        .settings-quick-btn:hover { background: var(--warm-gold); color: var(--warm-dark); }
+        .settings-list { list-style: none; padding: 0; margin: 0; font-size: 13px; color: #5c4a3a; }
+        .settings-list li { padding: 6px 0; padding-left: 1em; position: relative; }
+        .settings-list li::before { content: '·'; position: absolute; left: 0; color: var(--warm-mid); }
+        .settings-about { font-size: 12px; color: #7d6b5a; margin-top: 4px; }
         .user-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .user-table th, .user-table td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(196,92,38,0.15); }
         .user-table th { color: var(--warm-mid); font-weight: 600; }
@@ -234,6 +282,29 @@
         .scoring-weight-fields .weight-row label { font-size: 13px; color: #5c4a3a; min-width: 72px; }
         .scoring-weight-fields .weight-row input { width: 64px; padding: 6px 8px; border: 1px solid rgba(196,92,38,0.3); border-radius: 6px; }
         .hidden { display: none !important; }
+        /* 评分标准说明弹窗 */
+        .modal-box.explain { max-width: 720px; max-height: 90vh; overflow: auto; }
+        .explain-section { margin-bottom: 24px; }
+        .explain-section h4 { font-size: 15px; color: var(--warm-mid); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid rgba(196,92,38,0.25); }
+        .explain-section p, .explain-section li { font-size: 13px; color: #5c4a3a; line-height: 1.65; margin-bottom: 8px; }
+        .explain-section ul { margin: 8px 0 12px 1.2em; padding: 0; }
+        .explain-chart-wrap { margin: 12px 0; padding: 12px; background: rgba(196,92,38,0.06); border-radius: 8px; }
+        .explain-bar-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; }
+        .explain-bar-row .label { min-width: 72px; color: #5c4a3a; }
+        .explain-bar-track { flex: 1; height: 20px; background: rgba(196,92,38,0.12); border-radius: 4px; overflow: hidden; }
+        .explain-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--warm-mid), var(--warm-accent)); transition: width 0.25s ease; }
+        .explain-bar-pct { min-width: 40px; text-align: right; color: var(--warm-mid); font-weight: 600; }
+        .explain-demo { margin: 16px 0; padding: 16px; background: #faf8f5; border: 1px solid rgba(196,92,38,0.2); border-radius: 10px; }
+        .explain-demo h5 { font-size: 14px; color: var(--warm-dark); margin-bottom: 12px; }
+        .explain-demo-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        .explain-demo-row label { font-size: 13px; color: #5c4a3a; }
+        .explain-demo-row input[type="number"] { width: 70px; padding: 6px 8px; border: 1px solid rgba(196,92,38,0.3); border-radius: 6px; }
+        .explain-demo-result { margin-top: 14px; padding: 12px; background: #fff; border-radius: 8px; border: 1px solid rgba(196,92,38,0.15); font-size: 14px; }
+        .explain-demo-result strong { color: var(--warm-mid); }
+        .explain-grade-bar { display: flex; height: 28px; border-radius: 6px; overflow: hidden; margin: 12px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .explain-grade-bar .seg { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; font-weight: 600; }
+        .btn-outline { padding: 8px 16px; border-radius: 8px; font-size: 13px; border: 1px solid rgba(196,92,38,0.4); background: var(--warm-white); color: var(--warm-mid); cursor: pointer; }
+        .btn-outline:hover { background: var(--warm-gold); color: var(--warm-dark); }
 
         /* 左右两侧各 3 列播放带，每列占满上下，仅登录页显示 */
         .side-panel {
@@ -351,85 +422,85 @@
         </nav>
         <header class="hero">
             <h1>面向兰州拉面制作的标准化流程视觉质检系统</h1>
-            <p class="subtitle">抻面 · 下面 · 捞面 全流程检测与评分 · 手部姿态与骨架可视化</p>
+            <p class="subtitle" id="heroSubtitle">抻面 · 下面 · 捞面 全流程检测与评分 · 手部姿态与骨架可视化</p>
         </header>
         <main class="container">
-            <section class="section" data-role-visible="0,1,2">
-                <h2 class="section-title">流程检测<span class="section-title-line"></span></h2>
+            <section id="section-process" class="section" data-role-visible="0,1,2">
+                <h2 class="section-title"><span id="title-process">流程检测</span><span class="section-title-line"></span></h2>
                 <div class="card-grid">
-                    <div class="card">
+                    <div class="card" data-card="stretch">
                         <h3>抻面动作检测</h3>
                         <p>上传抻面视频，进行动作与类别检测，输出检测结果与可视化。</p>
                         <a href="/stretch-detection" class="btn">进入</a>
                     </div>
-                    <div class="card">
+                    <div class="card" data-card="boiling">
                         <h3>下面及捞面检测</h3>
                         <p>针对下面、捞面环节的视频检测，识别关键动作与状态。</p>
                         <a href="/boiling-detection" class="btn">进入</a>
                     </div>
-                    <div class="card">
+                    <div class="card" data-card="realtime">
                         <h3>实时监测</h3>
                         <p>使用电脑摄像头或外接设备（如手机 USB）进行视频流实时解析与检测。</p>
                         <a href="/realtime-monitor" class="btn">进入</a>
                     </div>
                 </div>
             </section>
-            <section class="section" data-role-visible="0,1">
-                <h2 class="section-title">标注工具<span class="section-title-line"></span></h2>
+            <section id="section-annotation" class="section" data-role-visible="0,1">
+                <h2 class="section-title"><span id="title-annotation">标注工具</span><span class="section-title-line"></span></h2>
                 <div class="card-grid">
-                    <div class="card">
+                    <div class="card" data-card="annotate-stretch">
                         <h3>抻面评分标注工具</h3>
                         <p>对关键帧进行手部、面条等维度的人工标注与评分，支撑模型训练与评估。</p>
                         <a href="/scoring-tool" class="btn">进入</a>
                     </div>
-                    <div class="card">
+                    <div class="card" data-card="annotate-boiling">
                         <h3>下面及捞面评分标注工具</h3>
                         <p>对 xl 标注视频中的面条、手部、面条工具、汤面四类目标进行手动评分（粗细/弹性/熟度等）。</p>
                         <a href="/scoring-tool-boiling" class="btn">进入</a>
                     </div>
-                    <div class="card">
+                    <div class="card" data-card="annotate-product">
                         <h3>兰州拉面成品评估标注</h3>
                         <p>对成品图片标注面条质感、红汤/清汤、辣椒、辅料（牛肉/鸡蛋/蒜苗碎），构建标准数据集。</p>
                         <a href="/product-annotation" class="btn">进入</a>
                     </div>
                 </div>
             </section>
-            <section class="section" data-role-visible="0,1,2">
-                <h2 class="section-title">综合评分<span class="section-title-line"></span></h2>
+            <section id="section-scoring" class="section" data-role-visible="0,1,2">
+                <h2 class="section-title"><span id="title-scoring">综合评分</span><span class="section-title-line"></span></h2>
                 <div class="card-grid" data-role-visible="0,1">
-                    <div class="card">
+                    <div class="card" data-card="score-stretch">
                         <h3>抻面综合评分可视化</h3>
                         <p>多维度图表展示抻面评分结果，支持 AI 智能分析报告与问答。</p>
                         <a href="/scoring-visualization" class="btn">进入</a>
                     </div>
-                    <div class="card">
+                    <div class="card" data-card="score-boiling">
                         <h3>下面及捞面综合评分可视化</h3>
                         <p>骨架线与标注融合，多维度展示 xl 视频的手部/面条/操作规范得分。</p>
                         <a href="/web/scoring_visualization_boiling.html" class="btn">进入</a>
                     </div>
-                    <div class="card">
+                    <div class="card" data-card="score-product">
                         <h3>兰州拉面成品综合评分</h3>
                         <p>上传成品图评分、多维度报告与图表，代表样本展示，支持 AI 智能分析。</p>
                         <a href="/product-scoring-visualization" class="btn">进入</a>
                     </div>
                 </div>
                 <div class="card-grid" data-role-visible="2">
-                    <div class="card">
+                    <div class="card" data-card="chef-history">
                         <h3>历史记录查看</h3>
                         <p>查看个人检测与评分历史记录。</p>
                         <a href="/scoring-visualization" class="btn">进入</a>
                     </div>
                 </div>
             </section>
-            <section class="section" data-role-visible="0,1">
-                <h2 class="section-title">姿态与视频展示<span class="section-title-line"></span></h2>
+            <section id="section-pose" class="section" data-role-visible="0,1">
+                <h2 class="section-title"><span id="title-pose">姿态与视频展示</span><span class="section-title-line"></span></h2>
                 <div class="card-grid">
-                    <div class="card">
+                    <div class="card" data-card="pose-stretch">
                         <h3>抻面手部姿态视频（预处理）</h3>
                         <p>浏览已预处理的带骨架线抻面视频列表并播放。</p>
                         <a href="/video-skeleton" class="btn">进入</a>
                     </div>
-                    <div class="card">
+                    <div class="card" data-card="pose-boiling">
                         <h3>下面及捞面手部姿态视频（预处理）</h3>
                         <p>浏览已预处理的带骨架线 xl 视频列表并播放，视频比例适配界面。</p>
                         <a href="/video-skeleton-boiling" class="btn">进入</a>
@@ -475,14 +546,42 @@
             <button type="button" class="btn-primary" id="userFormSubmit">确定</button>
         </div>
     </div>
-    <!-- 系统设置弹窗（简易） -->
+    <!-- 系统设置弹窗（管理员） -->
     <div id="systemSettingModal" class="modal-overlay hidden">
-        <div class="modal-box">
+        <div class="modal-box wide">
             <div class="modal-head">
                 <h3>系统设置</h3>
                 <button type="button" class="btn-close" id="systemSettingClose">&times;</button>
             </div>
-            <p style="font-size:13px;color:#5c4a3a;margin-bottom:12px;">检测帧率、评分权重等参数可在各检测/评分模块内调整，此处为占位入口。</p>
+            <div class="settings-section">
+                <h4>快捷入口</h4>
+                <p>常用管理功能可在此快速打开。</p>
+                <div class="settings-quick-wrap">
+                    <button type="button" class="settings-quick-btn" id="systemSettingOpenUserManage">用户管理</button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h4>参数说明</h4>
+                <p>以下参数均在对应功能模块内调整，无需在此统一配置：</p>
+                <ul class="settings-list">
+                    <li><strong>检测帧率</strong>：在「抻面动作检测」「下面及捞面检测」或「实时监测」页面内设置。</li>
+                    <li><strong>评分权重</strong>：由培训师在导航栏「评分标准」中维护；抻面、下面及捞面各环节权重在下次评分时自动生效。</li>
+                    <li><strong>模型与阈值</strong>：各检测/评分模块内可选择模型、置信度等。</li>
+                </ul>
+            </div>
+            <div class="settings-section">
+                <h4>功能入口一览</h4>
+                <p>流程检测与标注入口对应关系：</p>
+                <ul class="settings-list">
+                    <li>流程检测 → 抻面动作检测、下面及捞面检测、实时监测</li>
+                    <li>标注工具 → 抻面评分标注工具、下面及捞面评分标注工具</li>
+                    <li>成品评分 → 拉面成品评分（含 AI 评分与人工评分）</li>
+                </ul>
+            </div>
+            <div class="settings-section">
+                <h4>关于</h4>
+                <p class="settings-about">兰州拉面质检系统 · 用于流程检测、标注与成品评分的 Web 端管理界面。</p>
+            </div>
         </div>
     </div>
     <!-- 培训师：学员管理弹窗 -->
@@ -509,17 +608,107 @@
                 <h3>评分标准</h3>
                 <button type="button" class="btn-close" id="trainerScoringClose">&times;</button>
             </div>
-            <p style="font-size:13px;color:#5c4a3a;margin-bottom:16px;">各环节评分权重（总和须为 100%）。保存后，<strong>抻面</strong>与<strong>下面及捞面</strong>的检测/评分模块会在<strong>下次评分时</strong>自动采用新权重，无需重启服务。</p>
+            <p style="font-size:13px;color:#5c4a3a;margin-bottom:16px;">各环节评分权重（总和须为 100%）。下方可调节评分行为参数，保存后将在<strong>下次评分时</strong>生效，无需重启服务。</p>
             <div id="scoringRulesStretch" style="margin-bottom:20px;">
                 <h4 style="font-size:14px;color:var(--warm-mid);margin-bottom:8px;">抻面</h4>
                 <div id="scoringRulesStretchFields" class="scoring-weight-fields"></div>
+                <div class="scoring-params-wrap" data-stage="stretch" style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13px;">
+                    <label>最低参与置信度 (0～1)<input type="number" data-stage="stretch" data-param="min_confidence" min="0" max="1" step="0.05" value="0.3" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
+                    <label>视频有效帧比例 (0～1)<input type="number" data-stage="stretch" data-param="min_frame_ratio" min="0" max="1" step="0.05" value="0.1" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
+                    <label>及格线 (0～100)<input type="number" data-stage="stretch" data-param="pass_threshold" min="0" max="100" step="1" value="60" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
+                    <label>优秀线 (0～100)<input type="number" data-stage="stretch" data-param="excellent_threshold" min="0" max="100" step="1" value="85" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
+                </div>
             </div>
             <div id="scoringRulesBoiling" style="margin-bottom:16px;">
                 <h4 style="font-size:14px;color:var(--warm-mid);margin-bottom:8px;">下面及捞面</h4>
                 <div id="scoringRulesBoilingFields" class="scoring-weight-fields"></div>
+                <div class="scoring-params-wrap" data-stage="boiling" style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13px;">
+                    <label>最低参与置信度 (0～1)<input type="number" data-stage="boiling" data-param="min_confidence" min="0" max="1" step="0.05" value="0.3" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
+                    <label>视频有效帧比例 (0～1)<input type="number" data-stage="boiling" data-param="min_frame_ratio" min="0" max="1" step="0.05" value="0.1" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
+                    <label>及格线 (0～100)<input type="number" data-stage="boiling" data-param="pass_threshold" min="0" max="100" step="1" value="60" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
+                    <label>优秀线 (0～100)<input type="number" data-stage="boiling" data-param="excellent_threshold" min="0" max="100" step="1" value="85" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
+                </div>
             </div>
             <p id="scoringRulesError" class="error-msg" style="display:none;"></p>
-            <button type="button" class="btn-primary" id="scoringRulesSaveBtn" style="width:auto;padding:8px 24px;">保存</button>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+                <button type="button" class="btn-primary" id="scoringRulesSaveBtn" style="width:auto;padding:8px 24px;">保存</button>
+                <button type="button" class="btn-outline" id="scoringRulesExplainBtn">评分标准说明</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 评分标准说明弹窗（大篇幅 + 可视化 + 动态演示） -->
+    <div id="scoringExplainModal" class="modal-overlay hidden">
+        <div class="modal-box wide explain">
+            <div class="modal-head">
+                <h3>评分标准说明</h3>
+                <button type="button" class="btn-close" id="scoringExplainClose">&times;</button>
+            </div>
+            <div class="explain-section">
+                <h4>一、评分体系概述</h4>
+                <p>本系统对<strong>抻面</strong>与<strong>下面及捞面</strong>两个环节分别维护一套评分规则。每套规则包含：<strong>各维度权重</strong>（决定各类别在总分中的占比）、<strong>评分行为参数</strong>（决定哪些检测参与计分、如何判定有效类别）、以及<strong>等级线</strong>（将百分制总分映射为优秀/良好/不及格）。</p>
+                <p>视频上传后，系统按帧检测目标（面绳、手部、面束等），对每帧按规则计算加权分，再在视频层面按有效类别加权得到<strong>平均分（1～5 分制）</strong>，并换算为<strong>百分制</strong>与<strong>等级</strong>。以下说明各参数含义及对结果的影响。</p>
+            </div>
+            <div class="explain-section">
+                <h4>二、各环节权重</h4>
+                <p>权重表示该类别在<strong>视频级总分</strong>中所占比例，所有类别权重之和须为 100%。调整某一类权重会直接改变该类对最终分数的影响程度。</p>
+                <p><strong>抻面</strong>：面绳、手部、面束三类；<strong>下面及捞面</strong>：面绳、手部、工具面、汤面四类。当前配置的可视化如下（打开说明时从当前规则读取）：</p>
+                <div class="explain-chart-wrap" id="explainChartStretch">
+                    <p style="font-size:13px;color:var(--warm-mid);margin-bottom:8px;">抻面 · 类别权重</p>
+                    <div id="explainBarStretch"></div>
+                </div>
+                <div class="explain-chart-wrap" id="explainChartBoiling">
+                    <p style="font-size:13px;color:var(--warm-mid);margin-bottom:8px;">下面及捞面 · 类别权重</p>
+                    <div id="explainBarBoiling"></div>
+                </div>
+            </div>
+            <div class="explain-section">
+                <h4>三、评分行为参数</h4>
+                <ul>
+                    <li><strong>最低参与置信度 (0～1)</strong>：检测框置信度低于该值的框<strong>不参与</strong>该帧的评分。提高该值会过滤更多低置信度检测，分数更保守；降低则更多框参与，分数更容易受噪声影响。</li>
+                    <li><strong>视频有效帧比例 (0～1)</strong>：某类别至少在视频总帧数中该比例以上的帧里出现，才会被计入视频级加权。例如 0.1 表示至少 10% 的帧出现该类才参与总分。提高该值会减少“偶现”类别对总分的影响。</li>
+                    <li><strong>及格线 (0～100)</strong>：百分制总分 ≥ 及格线且 &lt; 优秀线时，等级为「良好」；低于及格线为「不及格」。</li>
+                    <li><strong>优秀线 (0～100)</strong>：百分制总分 ≥ 优秀线时，等级为「优秀」。优秀线须 ≥ 及格线。</li>
+                </ul>
+            </div>
+            <div class="explain-section">
+                <h4>四、百分制与等级换算</h4>
+                <p>系统先将 1～5 分制的<strong>平均分</strong>线性换算为 0～100：<code>百分制 = (平均分 - 1) / 4 × 100</code>。再根据当前规则中的及格线、优秀线判定等级。</p>
+                <div class="explain-grade-bar" id="explainGradeBar">
+                    <span class="seg" style="background:#8b4513;">不及格</span>
+                    <span class="seg" style="background:#c45c26;">良好</span>
+                    <span class="seg" style="background:#2d5a27;">优秀</span>
+                </div>
+                <p>下图示意：随及格线、优秀线变化，同一百分制分数会落在不同区间，从而得到不同等级。</p>
+            </div>
+            <div class="explain-section">
+                <h4>五、动态演示：调整参数看对结果的影响</h4>
+                <p>在下方输入「假设平均分（1～5 分制）」以及「及格线」「优秀线」，可实时看到换算后的百分制分数与等级，便于理解参数对结果的影响。</p>
+                <div class="explain-demo">
+                    <h5>参数与结果</h5>
+                    <div class="explain-demo-row">
+                        <label>假设平均分 (1～5)</label>
+                        <input type="number" id="explainDemoAvg" min="1" max="5" step="0.1" value="3.5">
+                    </div>
+                    <div class="explain-demo-row">
+                        <label>及格线 (0～100)</label>
+                        <input type="number" id="explainDemoPass" min="0" max="100" value="60">
+                    </div>
+                    <div class="explain-demo-row">
+                        <label>优秀线 (0～100)</label>
+                        <input type="number" id="explainDemoExcellent" min="0" max="100" value="85">
+                    </div>
+                    <div class="explain-demo-result" id="explainDemoResult">
+                        百分制：<strong id="explainDemoScore100">62.5</strong> &nbsp; 等级：<strong id="explainDemoGrade">良好</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="explain-section">
+                <h4>六、流程小结</h4>
+                <p>① 每帧：按检测框置信度过滤（≥ 最低参与置信度）→ 按类别与属性权重得到该帧各类别分与总分。<br>
+                ② 视频：按「视频有效帧比例」确定有效类别 → 对有效类别按「各环节权重」加权平均得到 1～5 分制平均分。<br>
+                ③ 输出：平均分换算为百分制，再根据及格线/优秀线得到等级。保存规则后，下次评分将自动采用新参数。</p>
+            </div>
         </div>
     </div>
 
@@ -638,15 +827,18 @@
                     animate({ from: 0, to: 1, duration: 360, ease: easeInOut, elapsed: delay, onUpdate: function(v) { card.style.opacity = v; } });
                     animate({ from: 24, to: 0, duration: 360, ease: easeInOut, elapsed: delay, onUpdate: function(v) { card.style.transform = 'translateY(' + v + 'px)'; }, onComplete: function() { card.style.transform = ''; } });
                 });
+                var role = document.body.classList.contains('role-0') ? 0 : document.body.classList.contains('role-1') ? 1 : document.body.classList.contains('role-2') ? 2 : null;
+                var hoverY = role === 0 ? -6 : role === 1 ? -10 : -8;
+                var stiffness = role === 1 ? 120 : 100;
                 cards.forEach(function(card) {
                     card.style.willChange = 'transform';
                     card.addEventListener('mouseenter', function() {
                         if (!pm()) return;
-                        pm().animate({ from: 0, to: -8, type: 'spring', stiffness: 100, damping: 14, onUpdate: function(v) { card.style.transform = 'translateY(' + v + 'px)'; card.style.boxShadow = '0 ' + (8 + (-v/2)) + 'px 32px rgba(44,24,16,0.18)'; } });
+                        pm().animate({ from: 0, to: hoverY, type: 'spring', stiffness: stiffness, damping: 14, onUpdate: function(v) { card.style.transform = 'translateY(' + v + 'px)'; card.style.boxShadow = '0 ' + (8 + (-v/2)) + 'px 32px rgba(44,24,16,0.18)'; } });
                     });
                     card.addEventListener('mouseleave', function() {
                         if (!pm()) return;
-                        pm().animate({ from: -8, to: 0, type: 'spring', stiffness: 100, damping: 14, onUpdate: function(v) {
+                        pm().animate({ from: hoverY, to: 0, type: 'spring', stiffness: stiffness, damping: 14, onUpdate: function(v) {
                             card.style.transform = 'translateY(' + v + 'px)';
                             card.style.boxShadow = v >= 0 ? '' : '0 ' + (8 + (-v/2)) + 'px 32px rgba(44,24,16,0.18)';
                         } });
@@ -700,16 +892,100 @@
                     el.style.display = (role !== null && allowed.indexOf(role) !== -1) ? '' : 'none';
                 });
             }
+            var ROLE_COPY = {
+                0: {
+                    heroSubtitle: '流程监管与配置 · 用户与评分规则管理 · 全模块入口',
+                    sections: { 'section-process': '流程检测与监管', 'section-annotation': '标注与数据管理', 'section-scoring': '综合评分与报告', 'section-pose': '姿态与视频资源' },
+                    cards: {
+                        stretch: { title: '抻面动作检测', desc: '上传抻面视频进行检测，查看结果与可视化，用于流程监管与质量把控。' },
+                        boiling: { title: '下面及捞面检测', desc: '对下面、捞面环节视频进行检测，识别关键动作与状态，支撑监管与统计。' },
+                        realtime: { title: '实时监测', desc: '通过摄像头或外接设备对制面流程进行实时解析与检测，便于现场监管。' },
+                        'annotate-stretch': { title: '抻面评分标注工具', desc: '对关键帧进行手部、面条等维度的人工标注与评分，支撑模型训练与数据管理。' },
+                        'annotate-boiling': { title: '下面及捞面评分标注工具', desc: '对视频中面条、手部、工具、汤面等目标进行手动评分，用于标注数据建设。' },
+                        'annotate-product': { title: '兰州拉面成品评估标注', desc: '对成品图进行质感、汤色、辅料等标注，构建标准数据集供模型与报告使用。' },
+                        'score-stretch': { title: '抻面综合评分可视化', desc: '多维度图表与 AI 分析展示抻面评分结果，用于监管决策与报告导出。' },
+                        'score-boiling': { title: '下面及捞面综合评分可视化', desc: '骨架与标注融合的多维度评分展示，支持 xl 视频的评分报告与对比。' },
+                        'score-product': { title: '兰州拉面成品综合评分', desc: '成品图上传评分、多维度报告与代表样本展示，支持 AI 智能分析。' },
+                        'pose-stretch': { title: '抻面手部姿态视频（预处理）', desc: '浏览已预处理的带骨架线抻面视频，用于监管与教学资源查看。' },
+                        'pose-boiling': { title: '下面及捞面手部姿态视频（预处理）', desc: '浏览带骨架线的 xl 预处理视频列表并播放，支持比例适配。' }
+                    }
+                },
+                1: {
+                    heroSubtitle: '教学与评分标准 · 学员管理与标注 · 多维度评分展示',
+                    sections: { 'section-process': '流程检测与教学', 'section-annotation': '标注与评分工具', 'section-scoring': '综合评分可视化', 'section-pose': '姿态与示范视频' },
+                    cards: {
+                        stretch: { title: '抻面动作检测', desc: '上传抻面视频进行动作与类别检测，用于教学演示与学员练习结果查看。' },
+                        boiling: { title: '下面及捞面检测', desc: '针对下面、捞面环节的视频检测，帮助学员理解关键动作与评分依据。' },
+                        realtime: { title: '实时监测', desc: '使用摄像头或外接设备进行实时解析与检测，便于课堂或现场示范。' },
+                        'annotate-stretch': { title: '抻面评分标注工具', desc: '对关键帧进行手部、面条等维度的人工标注与评分，支撑教学与模型迭代。' },
+                        'annotate-boiling': { title: '下面及捞面评分标注工具', desc: '对视频中四类目标进行手动评分（粗细/弹性/熟度等），用于教学与数据标注。' },
+                        'annotate-product': { title: '兰州拉面成品评估标注', desc: '对成品图进行标注，构建标准数据集，支撑成品评分标准与教学案例。' },
+                        'score-stretch': { title: '抻面综合评分可视化', desc: '多维度图表与 AI 分析展示抻面评分，便于制定与讲解评分标准。' },
+                        'score-boiling': { title: '下面及捞面综合评分可视化', desc: '骨架与标注融合的多维度得分展示，用于学员评分解读与标准对照。' },
+                        'score-product': { title: '兰州拉面成品综合评分', desc: '成品图评分、多维度报告与代表样本展示，支持 AI 智能分析与教学。' },
+                        'pose-stretch': { title: '抻面手部姿态视频（预处理）', desc: '浏览带骨架线的抻面预处理视频，作为教学示范与姿态参考。' },
+                        'pose-boiling': { title: '下面及捞面手部姿态视频（预处理）', desc: '浏览带骨架线的 xl 预处理视频，用于操作规范与姿态教学。' }
+                    }
+                },
+                2: {
+                    heroSubtitle: '我的检测与评分 · 历史记录查看 · 手部姿态参考',
+                    sections: { 'section-process': '我的检测任务', 'section-annotation': '标注工具', 'section-scoring': '我的评分与记录', 'section-pose': '姿态与视频' },
+                    cards: {
+                        stretch: { title: '抻面动作检测', desc: '上传抻面视频，完成动作与类别检测并查看自己的检测结果。' },
+                        boiling: { title: '下面及捞面检测', desc: '上传下面、捞面视频进行检测，查看关键动作与状态识别结果。' },
+                        realtime: { title: '实时监测', desc: '使用电脑摄像头或外接设备进行实时检测，即时查看制面过程反馈。' },
+                        'annotate-stretch': { title: '抻面评分标注', desc: '对关键帧进行手部、面条等维度的标注与评分，参与数据标注任务。' },
+                        'annotate-boiling': { title: '下面及捞面评分标注', desc: '对视频中面条、手部、工具、汤面等进行手动评分练习。' },
+                        'annotate-product': { title: '成品评估标注', desc: '对成品图进行质感、汤色、辅料等标注，参与标准数据集建设。' },
+                        'score-stretch': { title: '抻面评分结果', desc: '查看抻面评分多维度结果与 AI 分析，了解自己的得分与改进方向。' },
+                        'score-boiling': { title: '下面及捞面评分结果', desc: '查看下面及捞面视频的评分与多维度展示，对照标准改进操作。' },
+                        'score-product': { title: '成品综合评分', desc: '上传成品图获取评分与报告，查看代表样本与 AI 分析建议。' },
+                        'chef-history': { title: '我的历史记录', desc: '查看个人检测与评分历史，追踪练习进度与成绩变化。' },
+                        'pose-stretch': { title: '抻面手部姿态视频', desc: '浏览带骨架线的抻面预处理视频，作为动作与姿态参考。' },
+                        'pose-boiling': { title: '下面及捞面手部姿态视频', desc: '浏览带骨架线的 xl 视频，学习规范操作与手部姿态。' }
+                    }
+                }
+            };
+            function applyRoleCopy(role) {
+                if (role === null || role === undefined || !ROLE_COPY[role]) return;
+                var copy = ROLE_COPY[role];
+                var subEl = document.getElementById('heroSubtitle');
+                if (subEl && copy.heroSubtitle) subEl.textContent = copy.heroSubtitle;
+                if (copy.sections) {
+                    ['section-process', 'section-annotation', 'section-scoring', 'section-pose'].forEach(function(sid) {
+                        var titleId = 'title-' + sid.replace('section-', '');
+                        var titleEl = document.getElementById(titleId);
+                        if (titleEl && copy.sections[sid]) titleEl.textContent = copy.sections[sid];
+                    });
+                }
+                if (copy.cards) {
+                    document.querySelectorAll('#mainWrap .card[data-card]').forEach(function(card) {
+                        var key = card.getAttribute('data-card');
+                        var c = copy.cards[key];
+                        if (!c) return;
+                        var h3 = card.querySelector('h3');
+                        var p = card.querySelector('p');
+                        if (h3) h3.textContent = c.title;
+                        if (p) p.textContent = c.desc;
+                    });
+                }
+            }
 
             function showMain(show) {
                 document.getElementById('mainWrap').classList.toggle('hidden', !show);
                 document.getElementById('loginModal').classList.toggle('hidden', show);
                 document.body.classList.toggle('login-page', !show);
                 if (show) {
+                    document.body.classList.add('main-page');
+                    var r = currentUser && currentUser.role !== undefined ? currentUser.role : null;
+                    document.body.classList.remove('role-0', 'role-1', 'role-2');
+                    if (r !== null) document.body.classList.add('role-' + r);
                     document.getElementById('navUserInfo').textContent = '当前用户：' + (currentUser ? (currentUser.name || currentUser.username) + '（' + ROLE_NAMES[currentUser.role] + '）' : '');
                     applyRoleVisibility();
+                    applyRoleCopy(r);
                     setTimeout(function() { if (window.runPageAnimations) window.runPageAnimations(); }, 80);
                 } else {
+                    document.body.classList.remove('main-page', 'role-0', 'role-1', 'role-2');
                     setTimeout(function() { if (window.runLoginAnimations) window.runLoginAnimations(); }, 50);
                 }
             }
@@ -935,6 +1211,12 @@
 
             document.getElementById('btnSystemSetting').onclick = function() { document.getElementById('systemSettingModal').classList.remove('hidden'); };
             document.getElementById('systemSettingClose').onclick = function() { document.getElementById('systemSettingModal').classList.add('hidden'); };
+            document.getElementById('systemSettingOpenUserManage').onclick = function() {
+                if (!currentUser || currentUser.role !== 0) return;
+                document.getElementById('systemSettingModal').classList.add('hidden');
+                document.getElementById('userManageModal').classList.remove('hidden');
+                loadUserList();
+            };
             document.getElementById('btnTrainerStudents').onclick = function() {
                 document.getElementById('trainerStudentsModal').classList.remove('hidden');
                 loadTrainerStudents();
@@ -964,6 +1246,68 @@
                 loadScoringRules();
             };
             document.getElementById('trainerScoringClose').onclick = function() { document.getElementById('trainerScoringModal').classList.add('hidden'); };
+            document.getElementById('scoringExplainClose').onclick = function() { document.getElementById('scoringExplainModal').classList.add('hidden'); };
+            function renderExplainBars(weights, labels, containerId) {
+                var container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = '';
+                var keys = Object.keys(weights || {});
+                if (!keys.length) return;
+                keys.forEach(function(key) {
+                    var pct = (weights[key] * 100).toFixed(1);
+                    var label = (labels && labels[key]) ? labels[key] : key;
+                    var row = document.createElement('div');
+                    row.className = 'explain-bar-row';
+                    row.innerHTML = '<span class="label">' + label + '</span><div class="explain-bar-track"><div class="explain-bar-fill" style="width:' + pct + '%"></div></div><span class="explain-bar-pct">' + pct + '%</span>';
+                    container.appendChild(row);
+                });
+            }
+            function updateExplainDemo() {
+                var avgEl = document.getElementById('explainDemoAvg');
+                var passEl = document.getElementById('explainDemoPass');
+                var excellentEl = document.getElementById('explainDemoExcellent');
+                var avg = parseFloat(avgEl && avgEl.value) || 3.5;
+                var pass = parseFloat(passEl && passEl.value) || 60;
+                var excellent = parseFloat(excellentEl && excellentEl.value) || 85;
+                avg = Math.max(1, Math.min(5, avg));
+                if (excellent < pass) excellent = pass;
+                var score100 = (avg - 1) / 4 * 100;
+                score100 = Math.round(Math.max(0, Math.min(100, score100)) * 10) / 10;
+                var grade = score100 >= excellent ? '优秀' : score100 >= pass ? '良好' : '不及格';
+                var scoreEl = document.getElementById('explainDemoScore100');
+                var gradeEl = document.getElementById('explainDemoGrade');
+                if (scoreEl) scoreEl.textContent = score100;
+                if (gradeEl) gradeEl.textContent = grade;
+                var barWrap = document.getElementById('explainGradeBar');
+                if (barWrap) {
+                    var p1 = Math.max(0, Math.min(100, pass));
+                    var p2 = Math.max(0, Math.min(100, excellent - pass));
+                    var p3 = Math.max(0, 100 - p1 - p2);
+                    barWrap.innerHTML = '<span class="seg" style="background:#8b4513;flex:none;width:' + p1 + '%">不及格</span><span class="seg" style="background:#c45c26;flex:none;width:' + p2 + '%">良好</span><span class="seg" style="background:#2d5a27;flex:none;width:' + p3 + '%">优秀</span>';
+                }
+            }
+            document.getElementById('scoringRulesExplainBtn').onclick = function() {
+                document.getElementById('scoringExplainModal').classList.remove('hidden');
+                var defaultStretch = { overall_weights: { noodle_rope: 0.6, hand: 0.3, noodle_bundle: 0.1 }, labels: { noodle_rope: '面绳', hand: '手部', noodle_bundle: '面束' } };
+                var defaultBoiling = { overall_weights: { noodle_rope: 0.35, hand: 0.35, tools_noodle: 0.15, soup_noodle: 0.15 }, labels: { noodle_rope: '面绳', hand: '手部', tools_noodle: '工具面', soup_noodle: '汤面' } };
+                fetch('/api/scoring-rules?stage=stretch', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
+                    var w = (data.success && data.overall_weights) ? data.overall_weights : defaultStretch.overall_weights;
+                    var l = (data.success && data.labels) ? data.labels : defaultStretch.labels;
+                    renderExplainBars(w, l, 'explainBarStretch');
+                    if (data.success && data.pass_threshold != null) document.getElementById('explainDemoPass').value = data.pass_threshold;
+                    if (data.success && data.excellent_threshold != null) document.getElementById('explainDemoExcellent').value = data.excellent_threshold;
+                    updateExplainDemo();
+                }).catch(function() { renderExplainBars(defaultStretch.overall_weights, defaultStretch.labels, 'explainBarStretch'); updateExplainDemo(); });
+                fetch('/api/scoring-rules?stage=boiling', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
+                    var w = (data.success && data.overall_weights) ? data.overall_weights : defaultBoiling.overall_weights;
+                    var l = (data.success && data.labels) ? data.labels : defaultBoiling.labels;
+                    renderExplainBars(w, l, 'explainBarBoiling');
+                }).catch(function() { renderExplainBars(defaultBoiling.overall_weights, defaultBoiling.labels, 'explainBarBoiling'); });
+            };
+            ['explainDemoAvg', 'explainDemoPass', 'explainDemoExcellent'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.addEventListener('input', updateExplainDemo);
+            });
             function renderWeightFields(containerId, stage, weights, labels) {
                 var container = document.getElementById(containerId);
                 container.innerHTML = '';
@@ -976,12 +1320,23 @@
                     container.appendChild(row);
                 }
             }
+            var scoringParamDefaults = { min_confidence: 0.3, min_frame_ratio: 0.1, pass_threshold: 60, excellent_threshold: 85 };
+            function fillScoringParams(stage, data) {
+                var q = '[data-stage="' + stage + '"][data-param]';
+                document.querySelectorAll(q).forEach(function(inp) {
+                    var p = inp.getAttribute('data-param');
+                    var val = data && (data[p] !== undefined && data[p] !== null) ? Number(data[p]) : scoringParamDefaults[p];
+                    inp.value = String(val);
+                });
+            }
             function loadScoringRules() {
                 fetch('/api/scoring-rules?stage=stretch', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
                     if (data.success && data.overall_weights) renderWeightFields('scoringRulesStretchFields', 'stretch', data.overall_weights, data.labels || {});
+                    if (data.success) fillScoringParams('stretch', data);
                 });
                 fetch('/api/scoring-rules?stage=boiling', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
                     if (data.success && data.overall_weights) renderWeightFields('scoringRulesBoilingFields', 'boiling', data.overall_weights, data.labels || {});
+                    if (data.success) fillScoringParams('boiling', data);
                 });
             }
             document.getElementById('scoringRulesSaveBtn').onclick = function() {
@@ -1015,13 +1370,29 @@
                     errEl.style.display = 'block';
                     return;
                 }
-                if (!confirm('是否确认保存？\n\n修改后将影响「抻面」与「下面及捞面」的评分权重，下次进行检测/评分时将自动采用新权重。')) return;
-                function saveOne(stage, weights) {
-                    return fetch('/api/scoring-rules', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ stage: stage, overall_weights: weights }) }).then(function(r) { return r.json(); });
+                if (!confirm('是否确认保存？\n\n修改后将影响「抻面」与「下面及捞面」的评分权重与行为参数，下次进行检测/评分时将自动采用。')) return;
+                function collectParams(stage) {
+                    var out = {};
+                    document.querySelectorAll('[data-stage="' + stage + '"][data-param]').forEach(function(inp) {
+                        var p = inp.getAttribute('data-param');
+                        var v = parseFloat(inp.value);
+                        if (!isNaN(v)) out[p] = v;
+                    });
+                    return out;
+                }
+                function saveOne(stage, weights, params) {
+                    var body = { stage: stage, overall_weights: weights };
+                    if (params && Object.keys(params).length) {
+                        if (params.min_confidence != null) body.min_confidence = params.min_confidence;
+                        if (params.min_frame_ratio != null) body.min_frame_ratio = params.min_frame_ratio;
+                        if (params.pass_threshold != null) body.pass_threshold = params.pass_threshold;
+                        if (params.excellent_threshold != null) body.excellent_threshold = params.excellent_threshold;
+                    }
+                    return fetch('/api/scoring-rules', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(body) }).then(function(r) { return r.json(); });
                 }
                 var promises = [];
-                if (Object.keys(byStage.stretch || {}).length) promises.push(saveOne('stretch', byStage.stretch));
-                if (Object.keys(byStage.boiling || {}).length) promises.push(saveOne('boiling', byStage.boiling));
+                if (Object.keys(byStage.stretch || {}).length) promises.push(saveOne('stretch', byStage.stretch, collectParams('stretch')));
+                if (Object.keys(byStage.boiling || {}).length) promises.push(saveOne('boiling', byStage.boiling, collectParams('boiling')));
                 if (!promises.length) { alert('暂无权重数据'); return; }
                 Promise.all(promises).then(function(results) {
                     var fail = results.find(function(r) { return r && !r.success; });

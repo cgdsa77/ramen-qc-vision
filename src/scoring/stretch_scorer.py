@@ -290,9 +290,7 @@ class StretchScorer:
         
         class_scores = {}
         overall_weights = self.rules.get('overall_weights', {})
-        
-        # 边界规则：仅置信度 >= 0.3 的检测框参与评分
-        min_conf = 0.3
+        min_conf = float(self.rules.get('min_confidence', 0.3))
         for det in detections:
             class_name = det.get('class', '')
             if not class_name:
@@ -407,9 +405,8 @@ class StretchScorer:
                 else:
                     class_avg_scores[class_name] = 0.0
             
-            # 视频级有效类别：该类别在至少 10% 的帧中出现才参与加权（兼顾出现较少的视频仍能出分）
             total_frames = len(frame_scores_list)
-            min_frame_ratio = 0.10
+            min_frame_ratio = float(self.rules.get('min_frame_ratio', 0.10))
             present_classes = []
             for c in stretch_classes:
                 appear_count = sum(1 for fs in frame_scores_list if fs.get('class_scores', {}).get(c, 0) > 0)

@@ -188,8 +188,7 @@ class BoilingScoopingScorer:
         }
         overall_weights = self.rules.get("overall_weights", {})
         class_scores: Dict[str, List[float]] = {}
-
-        min_conf = 0.3  # 边界规则：仅置信度 >= 0.3 的检测框参与评分
+        min_conf = float(self.rules.get("min_confidence", 0.3))
         for det in detections:
             class_name = det.get("class", "")
             if not class_name or class_name not in CLASSES:
@@ -273,8 +272,7 @@ class BoilingScoopingScorer:
             vals = [f["class_scores"][cls] for f in frame_scores_list if cls in f.get("class_scores", {})]
             class_avg[cls] = sum(vals) / len(vals) if vals else 0.0
 
-        # 视频级有效类别：该类别在至少 10% 的帧中出现才参与加权（兼顾 xl1 等面条出现较少的视频仍能出分）
-        min_frame_ratio = 0.10
+        min_frame_ratio = float(self.rules.get("min_frame_ratio", 0.10))
         present_classes = []
         for c in CLASSES:
             appear_count = sum(1 for f in frame_scores_list if f.get("class_scores", {}).get(c, 0) > 0)
