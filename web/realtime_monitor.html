@@ -3,41 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>实时监测</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <title>实时监测（检测+骨架线双画面）</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 12px;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 96vh;
         }
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 24px 30px;
+            padding: 14px 20px;
             text-align: center;
+            flex-shrink: 0;
         }
-        .header h1 { font-size: 26px; margin-bottom: 4px; }
-        .header p { font-size: 14px; opacity: 0.95; }
-        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); text-align: left; }
+        .header h1 { font-size: 22px; margin-bottom: 2px; }
+        .header p { font-size: 13px; opacity: 0.95; }
+        .nav-home-wrap { padding: 6px 16px; background: rgba(0,0,0,0.06); text-align: left; flex-shrink: 0; }
         .nav-home { color: #333; text-decoration: none; font-size: 14px; }
         .nav-home:hover { text-decoration: underline; }
-        .content { padding: 24px 30px; }
+        .content { padding: 12px 20px 20px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
         .controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px 20px;
+            gap: 10px 16px;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
         }
         .controls label { font-weight: bold; color: #333; font-size: 14px; }
         .controls select {
@@ -61,28 +68,25 @@
         .btn-stop:disabled { background: #ccc; cursor: not-allowed; }
         .btn-detect { padding: 8px 14px; font-size: 13px; border: 1px solid #666; border-radius: 8px; background: #f5f5f5; cursor: pointer; }
         .btn-detect:hover { background: #eee; }
-        .video-wrapper {
-            width: 100%;
-            max-height: 70vh;
-            background: #111;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .video-wrapper img {
-            max-width: 100%;
-            max-height: 70vh;
-            object-fit: contain;
-            display: block;
-        }
+        .video-row { display: flex; width: 100%; margin-bottom: 6px; background: #0a0a0a; border-radius: 12px; overflow: hidden; flex: 1; min-height: 0; }
+        .video-two-panels { display: flex; width: 100%; min-height: 500px; height: 100%; position: relative; align-items: center; justify-content: center; }
+        .video-combined-wrap { width: 100%; display: flex; align-items: center; justify-content: center; min-height: 500px; height: 100%; position: relative; }
+        .video-combined-wrap img { display: block; max-width: 100%; max-height: 78vh; width: auto; height: auto; object-fit: contain; }
+        .video-two-panels .panel-label { position: absolute; top: 12px; z-index: 2; background: rgba(0,0,0,0.75); color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 14px; pointer-events: none; }
+        .video-two-panels .panel-label.left { left: 12%; }
+        .video-two-panels .panel-label.right { left: 62%; }
+        .video-divider { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: #ffc107; z-index: 1; pointer-events: none; }
+        .video-box .placeholder { color: #888; padding: 40px; text-align: center; font-size: 14px; }
+        .video-labels-row { display: flex; width: 100%; margin-top: 4px; flex-shrink: 0; }
+        .video-labels-row span { flex: 1; text-align: center; font-size: 13px; color: #555; padding: 4px; }
+        .video-wrapper { width: 100%; max-height: 70vh; background: #111; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .video-wrapper img { max-width: 100%; max-height: 70vh; object-fit: contain; display: block; }
         .video-wrapper .placeholder { color: #888; padding: 40px; text-align: center; }
-        .status { margin-top: 10px; color: #666; font-size: 13px; }
-        .tip-one { font-size: 12px; color: #666; margin-bottom: 14px; }
+        .status { margin-top: 6px; color: #666; font-size: 13px; flex-shrink: 0; }
+        .tip-one { font-size: 11px; color: #666; margin-bottom: 8px; flex-shrink: 0; }
         .checkbox-wrap { font-weight: normal; display: inline-flex; align-items: center; gap: 5px; font-size: 14px; }
         .controls .checkbox-wrap input { margin: 0; }
-        .ivcam-section { margin-top: 24px; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e0e0e0; }
+        .ivcam-section { margin-top: 12px; padding: 14px 18px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e0e0e0; flex-shrink: 0; }
         .ivcam-section h3 { font-size: 15px; color: #333; margin-bottom: 8px; }
         .ivcam-section .hint { font-size: 12px; color: #666; margin-bottom: 14px; }
         .ivcam-btns-row { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -110,7 +114,7 @@
     <div class="container">
         <div class="header">
             <h1>实时监测</h1>
-            <p>摄像头视频流 · 手部/头部外源模型 · 抻面/下面及捞面</p>
+            <p>摄像头视频流 · 检测画面 + 骨架线画面双框展示 · 手部/身体骨架与阶段目标检测</p>
         </div>
         <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
         <div class="content">
@@ -133,9 +137,20 @@
                 <button class="btn-start" id="btnStart">开始</button>
                 <button class="btn-stop" id="btnStop" disabled>停止</button>
             </div>
-            <div class="video-wrapper">
-                <img id="streamImg" src="" alt="实时画面" style="display: none;" />
-                <div class="placeholder" id="placeholder">选择后点击「开始」</div>
+            <div class="video-row" id="videoRow">
+                <div class="video-two-panels" id="videoTwoPanels">
+                    <div class="video-divider" id="videoDivider" style="display: none;"></div>
+                    <span class="panel-label left" id="labelLeft" style="display: none;">检测画面（左）</span>
+                    <span class="panel-label right" id="labelRight" style="display: none;">骨架线画面（右）</span>
+                    <div class="video-combined-wrap" style="width:100%;">
+                        <img id="streamImg" src="" alt="左:检测 右:骨架线" style="display: none;" />
+                        <div class="placeholder" id="placeholder">选择摄像头后点击「开始」，将同时显示左侧检测画面与右侧骨架线画面（一张图内左右并排）</div>
+                    </div>
+                </div>
+            </div>
+            <div class="video-labels-row" id="videoLabelsRow" style="display: none;">
+                <span>左：检测画面（手部/头部框与阶段目标）</span>
+                <span>右：骨架线画面（手部+身体骨架线）</span>
             </div>
             <div class="status" id="status"></div>
 
@@ -156,6 +171,7 @@
                     <div id="ivcamModalActions" class="ivcam-modal-actions" style="display:none;">
                         <a href="#" id="ivcamModalBtnStretch">1. 抻面部分</a>
                         <a href="#" id="ivcamModalBtnBoiling">2. 下面及捞面部分</a>
+                        <a href="#" id="ivcamModalBtnSkeleton">3. 骨架线检测（本地视频）</a>
                         <a href="#" id="ivcamModalBtnProduct" style="display:none;">兰州拉面成品综合评分</a>
                     </div>
                 </div>
@@ -174,6 +190,7 @@
             var useMediaPipeFace = document.getElementById('useMediaPipeFace');
             var btnDetect = document.getElementById('btnDetect');
             var status = document.getElementById('status');
+            var videoLabelsRow = document.getElementById('videoLabelsRow');
             var currentStreamId = null;
 
             if (btnDetect) {
@@ -197,17 +214,25 @@
             }
 
             btnStart.addEventListener('click', function () {
-                currentStreamId = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2);
-                var url = '/api/realtime-stream?device=' + encodeURIComponent(device.value) + '&stage=' + encodeURIComponent(stage.value)
+                currentStreamId = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2);
+                var url = '/api/realtime-combined-stream?device=' + encodeURIComponent(device.value) + '&stage=' + encodeURIComponent(stage.value)
                     + '&use_mediapipe_hands=' + (useMediaPipeHands.checked ? 'true' : 'false')
                     + '&use_mediapipe_face=' + (useMediaPipeFace.checked ? 'true' : 'false')
-                    + '&stream_id=' + encodeURIComponent(currentStreamId);
+                    + '&stream_id=' + encodeURIComponent(currentStreamId)
+                    + '&t=' + Date.now();
                 streamImg.src = url;
                 streamImg.style.display = 'block';
                 placeholder.style.display = 'none';
+                var div = document.getElementById('videoDivider');
+                if (div) div.style.display = 'block';
+                var lblLeft = document.getElementById('labelLeft');
+                var lblRight = document.getElementById('labelRight');
+                if (lblLeft) lblLeft.style.display = 'block';
+                if (lblRight) lblRight.style.display = 'block';
+                if (videoLabelsRow) videoLabelsRow.style.display = 'flex';
                 setRunning(true);
                 status.textContent = '连接中…';
-                streamImg.onload = function () { status.textContent = '已连接'; };
+                streamImg.onload = function () { status.textContent = '已连接（左：检测 右：骨架线）'; };
                 streamImg.onerror = function () { status.textContent = '连接失败，请关闭占用摄像头的应用后重试'; };
             });
 
@@ -219,6 +244,13 @@
                 streamImg.src = '';
                 streamImg.style.display = 'none';
                 placeholder.style.display = 'block';
+                var div = document.getElementById('videoDivider');
+                if (div) div.style.display = 'none';
+                var lblLeft = document.getElementById('labelLeft');
+                var lblRight = document.getElementById('labelRight');
+                if (lblLeft) lblLeft.style.display = 'none';
+                if (lblRight) lblRight.style.display = 'none';
+                if (videoLabelsRow) videoLabelsRow.style.display = 'none';
                 setRunning(false);
                 status.textContent = '已停止';
             }
@@ -238,6 +270,7 @@
                 var modalActions = document.getElementById('ivcamModalActions');
                 var btnStretch = document.getElementById('ivcamModalBtnStretch');
                 var btnBoiling = document.getElementById('ivcamModalBtnBoiling');
+                var btnSkeleton = document.getElementById('ivcamModalBtnSkeleton');
                 var btnProduct = document.getElementById('ivcamModalBtnProduct');
                 var selectedName = null;
                 var currentMode = null;
@@ -251,6 +284,7 @@
                     modalActions.style.display = 'none';
                     btnStretch.style.display = mode === 'video' ? 'inline-block' : 'none';
                     btnBoiling.style.display = mode === 'video' ? 'inline-block' : 'none';
+                    btnSkeleton.style.display = mode === 'video' ? 'inline-block' : 'none';
                     btnProduct.style.display = mode === 'image' ? 'inline-block' : 'none';
                     modalTitle.textContent = mode === 'video' ? '选择视频文件（data\\ivcam）' : '选择图片文件（data\\ivcam）';
                     modal.classList.add('show');
@@ -273,6 +307,7 @@
                                 if (mode === 'video') {
                                     btnStretch.href = '/stretch-detection?ivcam=' + encodeURIComponent(selectedName);
                                     btnBoiling.href = '/boiling-detection?ivcam=' + encodeURIComponent(selectedName);
+                                    btnSkeleton.href = '/video-skeleton-ivcam?ivcam=' + encodeURIComponent(selectedName);
                                 } else {
                                     btnProduct.href = '/product-scoring-visualization?ivcam=' + encodeURIComponent(selectedName);
                                 }

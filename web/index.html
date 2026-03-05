@@ -823,12 +823,12 @@
             <section id="section-pose" class="section" data-role-visible="0,1">
                 <h2 class="section-title"><span id="title-pose">姿态与视频展示</span><span class="section-title-line"></span></h2>
                 <div class="card-grid">
-                    <div class="card" data-card="pose-stretch">
+                    <div class="card" data-card="pose-stretch" data-role-visible="0,1">
                         <h3>抻面手部姿态视频（预处理）</h3>
                         <p>浏览已预处理的带骨架线抻面视频列表并播放。</p>
                         <a href="/video-skeleton" class="btn">进入</a>
                     </div>
-                    <div class="card" data-card="pose-boiling">
+                    <div class="card" data-card="pose-boiling" data-role-visible="0,1">
                         <h3>下面及捞面手部姿态视频（预处理）</h3>
                         <p>浏览已预处理的带骨架线 xl 视频列表并播放，视频比例适配界面。</p>
                         <a href="/video-skeleton-boiling" class="btn">进入</a>
@@ -847,6 +847,15 @@
             <div class="modal-head">
                 <h3>用户管理</h3>
                 <button type="button" class="btn-close" id="userManageClose" aria-label="关闭用户管理弹窗">&times;</button>
+            </div>
+            <div class="perm-user-select-wrap" style="margin-bottom:14px;">
+                <label>选择角色</label>
+                <select id="userManageRoleSelect" style="max-width:220px;">
+                    <option value="">— 请选择角色 —</option>
+                    <option value="0">管理员</option>
+                    <option value="1">培训师</option>
+                    <option value="2">厨师/学员</option>
+                </select>
             </div>
             <button type="button" class="btn-primary" id="userAddBtn" style="margin-bottom:16px;width:auto;padding:8px 16px;" aria-label="新增用户">新增用户</button>
             <div style="overflow:auto;">
@@ -1558,6 +1567,7 @@
             document.getElementById('btnUserManage').onclick = function() {
                 if (!currentUser || currentUser.role !== 0) return;
                 openModal('userManageModal');
+                document.getElementById('userManageRoleSelect').value = '';
                 loadUserList();
             };
             document.getElementById('userFormRole').onchange = function() {
@@ -1584,15 +1594,24 @@
                 });
             }
             function loadUserList() {
+                var roleVal = document.getElementById('userManageRoleSelect').value;
+                var tbody = document.getElementById('userTableBody');
+                tbody.innerHTML = '';
+                if (roleVal === '') {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td colspan="7" style="text-align:center;color:#7d6b5a;padding:24px;">请先选择角色</td>';
+                    tbody.appendChild(tr);
+                    return;
+                }
+                var roleNum = parseInt(roleVal, 10);
                 fetch('/api/users', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
                     if (!data.success) return;
                     fetch('/api/trainers', { credentials: 'include' }).then(function(r2) { return r2.json(); }).then(function(tdata) {
                         var trainers = (tdata.success && tdata.trainers) ? tdata.trainers : [];
                         var tmap = {};
                         trainers.forEach(function(t) { tmap[t.id] = (t.name || t.username) || ''; });
-                        var tbody = document.getElementById('userTableBody');
-                        tbody.innerHTML = '';
-                        (data.users || []).forEach(function(u) {
+                        var list = (data.users || []).filter(function(u) { return Number(u.role) === roleNum; });
+                        list.forEach(function(u) {
                             var tr = document.createElement('tr');
                             var trainerCell = u.role === 2 && u.assigned_trainer_id ? (tmap[u.assigned_trainer_id] || 'ID:' + u.assigned_trainer_id) : '—';
                             tr.innerHTML = '<td>' + (u.username || '') + '</td><td>' + (u.name || '') + '</td><td>' + ROLE_NAMES[u.role] + '</td><td>' + trainerCell + '</td><td>' + (u.status === 1 ? '正常' : '禁用') + '</td><td>' + (u.create_time || '') + '</td><td>' +
@@ -1601,12 +1620,19 @@
                                 '<button class="btn-sm btn-del" data-id="' + u.id + '">删除</button></td>';
                             tbody.appendChild(tr);
                         });
-                        tbody.querySelectorAll('.btn-edit').forEach(function(btn) { btn.onclick = function() { openUserForm(parseInt(btn.getAttribute('data-id'), 10)); }; });
-                        tbody.querySelectorAll('.btn-reset').forEach(function(btn) { btn.onclick = function() { doResetPassword(parseInt(btn.getAttribute('data-id'), 10)); }; });
-                        tbody.querySelectorAll('.btn-del').forEach(function(btn) { btn.onclick = function() { doDeleteUser(parseInt(btn.getAttribute('data-id'), 10)); }; });
+                        if (list.length === 0) {
+                            var emptyTr = document.createElement('tr');
+                            emptyTr.innerHTML = '<td colspan="7" style="text-align:center;color:#7d6b5a;padding:16px;">该角色下暂无用户</td>';
+                            tbody.appendChild(emptyTr);
+                        } else {
+                            tbody.querySelectorAll('.btn-edit').forEach(function(btn) { btn.onclick = function() { openUserForm(parseInt(btn.getAttribute('data-id'), 10)); }; });
+                            tbody.querySelectorAll('.btn-reset').forEach(function(btn) { btn.onclick = function() { doResetPassword(parseInt(btn.getAttribute('data-id'), 10)); }; });
+                            tbody.querySelectorAll('.btn-del').forEach(function(btn) { btn.onclick = function() { doDeleteUser(parseInt(btn.getAttribute('data-id'), 10)); }; });
+                        }
                     });
                 });
             }
+            document.getElementById('userManageRoleSelect').onchange = function() { loadUserList(); };
 
             document.getElementById('userAddBtn').onclick = function() { openUserForm(null); };
             document.getElementById('userFormClose').onclick = function() { closeModal('userFormModal'); };
@@ -1690,6 +1716,7 @@
                 if (!currentUser || currentUser.role !== 0) return;
                 closeModal('systemSettingModal');
                 openModal('userManageModal');
+                document.getElementById('userManageRoleSelect').value = '';
                 loadUserList();
             };
             (function() {

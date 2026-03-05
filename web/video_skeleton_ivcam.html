@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地视频骨架线分析</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 24px 30px; text-align: center; }
+        .header h1 { font-size: 26px; margin-bottom: 4px; }
+        .header p { font-size: 14px; opacity: 0.95; }
+        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); }
+        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .nav-home:hover { text-decoration: underline; }
+        .content { padding: 24px 30px; }
+        .video-wrapper { width: 100%; max-height: 70vh; background: #111; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+        .video-wrapper video { max-width: 100%; max-height: 70vh; display: none; }
+        .video-wrapper canvas { max-width: 100%; max-height: 70vh; display: block; }
+        .video-wrapper .placeholder { color: #888; padding: 40px; text-align: center; }
+        .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }
+        .btn { padding: 10px 20px; border-radius: 8px; font-size: 14px; border: none; cursor: pointer; }
+        .btn-play { background: #28a745; color: white; }
+        .btn-pause { background: #ffc107; color: #333; }
+        .status { margin-top: 10px; color: #666; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>本地视频骨架线分析</h1>
+            <p>使用本地模型对手部+身体骨架进行逐帧分析 · 从 data\ivcam 选择视频</p>
+        </div>
+        <div class="nav-home-wrap"><a href="/realtime-skeleton" class="nav-home">← 返回实时检测骨架线</a></div>
+        <div class="content">
+            <div class="video-wrapper">
+                <video id="video" crossorigin="anonymous" playsinline></video>
+                <canvas id="overlay"></canvas>
+                <div class="placeholder" id="placeholder">加载中…</div>
+            </div>
+            <div class="controls">
+                <button type="button" class="btn btn-play" id="btnPlay">播放</button>
+                <button type="button" class="btn btn-pause" id="btnPause" disabled>暂停</button>
+            </div>
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var ivcam = params.get('ivcam');
+            var video = document.getElementById('video');
+            var overlay = document.getElementById('overlay');
+            var placeholder = document.getElementById('placeholder');
+            var btnPlay = document.getElementById('btnPlay');
+            var btnPause = document.getElementById('btnPause');
+            var status = document.getElementById('status');
+            var lastOverlayTime = 0;
+            var overlayInterval = 120;
+
+            if (!ivcam) {
+                placeholder.textContent = '请从「实时检测骨架线」页选择本地视频后进入';
+                status.textContent = '缺少参数 ivcam';
+                return;
+            }
+
+            function drawOverlay() {
+                if (video.readyState < 2 || video.paused) return;
+                var now = Date.now();
+                if (now - lastOverlayTime < overlayInterval) return;
+                lastOverlayTime = now;
+                var w = video.videoWidth;
+                var h = video.videoHeight;
+                if (w <= 0 || h <= 0) return;
+                if (overlay.width !== w || overlay.height !== h) {
+                    overlay.width = w;
+                    overlay.height = h;
+                }
+                var ctx = overlay.getContext('2d');
+                ctx.drawImage(video, 0, 0, w, h);
+                overlay.toBlob(function (blob) {
+                    if (!blob) return;
+                    var fd = new FormData();
+                    fd.append('file', blob, 'frame.jpg');
+                    fetch('/api/skeleton_overlay_frame', { method: 'POST', body: fd })
+                        .then(function (r) {
+                            if (!r.ok) return null;
+                            return r.blob();
+                        })
+                        .then(function (blob) {
+                            if (!blob) return;
+                            var url = URL.createObjectURL(blob);
+                            var img = new Image();
+                            img.onload = function () {
+                                ctx.drawImage(img, 0, 0, w, h);
+                                URL.revokeObjectURL(url);
+                            };
+                            img.src = url;
+                        })
+                        .catch(function () {});
+                }, 'image/jpeg', 0.85);
+            }
+
+            fetch('/api/ivcam/file/' + encodeURIComponent(ivcam))
+                .then(function (r) {
+                    if (!r.ok) throw new Error('无法加载视频');
+                    return r.blob();
+                })
+                .then(function (blob) {
+                    var url = URL.createObjectURL(blob);
+                    video.src = url;
+                    placeholder.style.display = 'none';
+                    overlay.style.display = 'block';
+                    status.textContent = '已加载：' + ivcam + '，点击播放后将逐帧叠加骨架线（本地模型）';
+                })
+                .catch(function (e) {
+                    placeholder.textContent = '加载失败，请确认 data\\ivcam 下存在该文件';
+                    status.textContent = '错误：' + (e.message || '未知');
+                });
+
+            video.addEventListener('play', function () {
+                btnPlay.disabled = true;
+                btnPause.disabled = false;
+                function tick() {
+                    if (video.paused) return;
+                    drawOverlay();
+                    requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+            });
+            video.addEventListener('pause', function () {
+                btnPlay.disabled = false;
+                btnPause.disabled = true;
+            });
+            video.addEventListener('ended', function () {
+                btnPlay.disabled = false;
+                btnPause.disabled = true;
+            });
+
+            btnPlay.addEventListener('click', function () { video.play(); });
+            btnPause.addEventListener('click', function () { video.pause(); });
+        })();
+    </script>
+</body>
+</html>

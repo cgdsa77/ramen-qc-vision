@@ -51,7 +51,7 @@ try:
     # 导入FastAPI
     from fastapi import FastAPI, UploadFile, File, Request, Query, HTTPException
     from fastapi.staticfiles import StaticFiles
-    from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+    from fastapi.responses import FileResponse, JSONResponse, StreamingResponse, Response
     from fastapi.middleware.cors import CORSMiddleware
     import uvicorn
     import json
@@ -477,6 +477,14 @@ try:
             return FileResponse(str(web_file))
         return {"message": "实时监测页面未找到"}
 
+    @app.get("/realtime-skeleton")
+    async def realtime_skeleton():
+        """实时检测骨架线页面（摄像头 + 手部骨架线叠加）"""
+        web_file = web_dir / "realtime_skeleton.html"
+        if web_file.exists():
+            return FileResponse(str(web_file))
+        return {"message": "实时骨架线页面未找到"}
+
     # ivcam 目录：使用 ivcam 录制/拍摄的视频或图片（data/ivcam）
     ivcam_dir = project_root / "data" / "ivcam"
     _video_ext = {".mp4", ".avi", ".mov", ".mkv", ".wmv"}
@@ -569,6 +577,527 @@ try:
                     pass
                 print("[realtime-stream] 摄像头已释放 stream_id=%s" % stream_id)
 
+    def _realtime_combined_stream_generator(device_index: int, stage: str, conf: float, stream_id: str, use_mediapipe_hands: bool = True, use_mediapipe_face: bool = True):
+        """单摄像头一次打开，每帧同时做检测与骨架叠加，左右拼接为一帧输出，避免同一摄像头开两次。"""
+        import cv2
+        import sys
+        import mediapipe as mp
+        cap = None
+        try:
+            if sys.platform == "win32":
+                cap = cv2.VideoCapture(int(device_index), cv2.CAP_DSHOW)
+            else:
+                cap = cv2.VideoCapture(int(device_index))
+            if not cap.isOpened():
+                if sys.platform == "win32":
+                    try:
+                        cap.release()
+                    except Exception:
+                        pass
+                    cap = cv2.VideoCapture(int(device_index))
+                if not cap.isOpened():
+                    print("[realtime-combined] 无法打开摄像头 device=%s" % device_index)
+                    yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + b"\r\n")
+                    return
+            if stage == "boiling_scooping":
+                from src.api.video_detection_api import get_boiling_scooping_detector
+                detector = get_boiling_scooping_detector(model_type="cpu")
+            else:
+                from src.api.video_detection_api import get_detector
+                detector = get_detector(model_type="cpu")
+            hand_landmarker = get_mediapipe_landmarker()
+            pose_landmarker = get_mediapipe_pose_landmarker()
+            target_h = 360
+            while True:
+                if _realtime_stream_cancel.get(stream_id):
+                    break
+                ret, frame = cap.read()
+                if not ret or frame is None:
+                    break
+                if _realtime_stream_cancel.get(stream_id):
+                    break
+                H, W = frame.shape[:2]
+                frame_det = frame.copy()
+                try:
+                    annotated, _ = detector.detect_frame(frame_det, conf_threshold=conf, draw_boxes=True, use_mediapipe_hands=use_mediapipe_hands, use_mediapipe_face=use_mediapipe_face, stage=stage)
+                    frame_det = annotated
+                except Exception:
+                    pass
+                frame_skel = frame.copy()
+                try:
+                    import time
+                    now = time.time()
+                    te = 1.0 / 30.0
+                    if stream_id in _realtime_skeleton_last_te:
+                        dt = now - _realtime_skeleton_last_te[stream_id]
+                        if 0.005 <= dt <= 0.2:
+                            te = dt
+                    _realtime_skeleton_last_te[stream_id] = now
+                    rgb = cv2.cvtColor(frame_skel, cv2.COLOR_BGR2RGB)
+                    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
+                    hand_result = None
+                    if hand_landmarker is not None:
+                        try:
+                            hand_result = hand_landmarker.detect(mp_image)
+                        except Exception:
+                            hand_result = None
+                    smoothed_hands = _smooth_hand_landmarks_one_euro(stream_id, hand_result, te) if hand_result else []
+                    left_wrist_xy = right_wrist_xy = None
+                    hands_xy_for_draw = []
+                    for hand_side, points_21 in smoothed_hands:
+                        hands_xy_for_draw.append(points_21)
+                        if len(points_21) > 0:
+                            w = points_21[0]
+                            if "LEFT" in hand_side:
+                                left_wrist_xy = w
+                            elif "RIGHT" in hand_side:
+                                right_wrist_xy = w
+                    if pose_landmarker is not None:
+                        try:
+                            pose_result = pose_landmarker.detect(mp_image)
+                            if getattr(pose_result, "pose_landmarks", None):
+                                smoothed = _smooth_pose_one_euro(stream_id, pose_result.pose_landmarks, te)
+                                if smoothed:
+                                    persons_xy = [list(p) for p in smoothed]
+                                    if persons_xy and len(persons_xy[0]) >= 17:
+                                        if left_wrist_xy is not None:
+                                            persons_xy[0][15] = left_wrist_xy
+                                        if right_wrist_xy is not None:
+                                            persons_xy[0][16] = right_wrist_xy
+                                    frame_skel = _draw_pose_skeleton_frame_from_normalized(frame_skel, persons_xy, H, W)
+                        except Exception:
+                            pass
+                    if hands_xy_for_draw:
+                        try:
+                            frame_skel = _draw_hand_skeleton_frame_from_normalized(frame_skel, hands_xy_for_draw, H, W)
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
+                if frame_det.shape[0] != target_h or frame_det.shape[1] != int(W * target_h / H):
+                    frame_det = cv2.resize(frame_det, (int(W * target_h / H), target_h))
+                if frame_skel.shape[0] != target_h or frame_skel.shape[1] != int(W * target_h / H):
+                    frame_skel = cv2.resize(frame_skel, (int(W * target_h / H), target_h))
+                w1 = frame_det.shape[1]
+                combined = cv2.hconcat([frame_det, frame_skel])
+                mid = w1
+                cv2.line(combined, (mid, 0), (mid, combined.shape[0]), (0, 255, 255), 2)
+                cv2.putText(combined, "Left:Det", (10, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                cv2.putText(combined, "Right:Skeleton", (mid + 10, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                if _realtime_stream_cancel.get(stream_id):
+                    break
+                _, jpeg = cv2.imencode(".jpg", combined)
+                yield (b"--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %d\r\n\r\n" % len(jpeg) + jpeg.tobytes() + b"\r\n")
+        except GeneratorExit:
+            pass
+        except Exception as e:
+            print(f"[realtime-combined] 错误: {e}")
+        finally:
+            _realtime_stream_cancel.pop(stream_id, None)
+            _realtime_skeleton_pose_prev.pop(stream_id, None)
+            _realtime_skeleton_1euro_pose.pop(stream_id, None)
+            _realtime_skeleton_1euro_hand.pop(stream_id, None)
+            _realtime_skeleton_last_te.pop(stream_id, None)
+            if cap is not None:
+                try:
+                    cap.release()
+                except Exception:
+                    pass
+                print("[realtime-combined] 摄像头已释放 stream_id=%s" % stream_id)
+
+    # MediaPipe Pose 33 点连接关系（身体骨架）。不含手腕到手指的连线，手部仅由 HandLandmarker 绿色骨架展示。
+    POSE_CONNECTIONS = [
+        (0, 1), (1, 2), (2, 3), (3, 7), (0, 4), (4, 5), (5, 6), (6, 8), (9, 10),
+        (11, 12), (11, 13), (13, 15), (12, 14), (14, 16),  # 躯干与手臂（到手腕为止）
+        (11, 23), (12, 24), (23, 24), (23, 25), (25, 27), (24, 26), (26, 28),
+        (27, 29), (29, 31), (28, 30), (30, 32),
+        # 不绘制 (15,17),(15,19),(15,21),(16,18),(16,20),(16,22)，避免与绿色手部骨架重复
+    ]
+    # 身体模型中手部关键点索引（15~22 为手腕与手指），不绘制蓝点，仅保留绿色手部骨架
+    POSE_HAND_INDICES = {15, 16, 17, 18, 19, 20, 21, 22}
+
+    # 各 stream 上一帧平滑后的身体关键点，用于时序平滑（list of list of (x,y) per person）
+    _realtime_skeleton_pose_prev = {}
+    # One Euro Filter 状态：身体 33 点 * 2 坐标；手部 2 手 * 21 点 * 2 坐标
+    _realtime_skeleton_1euro_pose = {}
+    _realtime_skeleton_1euro_hand = {}
+    _realtime_skeleton_last_te = {}  # 用于估算 dt（秒）
+
+    class _OneEuroFilter:
+        """One Euro Filter：根据速度自适应平滑，快速运动时减少滞后、慢速时减少抖动。"""
+        def __init__(self, min_cutoff=1.2, beta=0.5, d_cutoff=1.0):
+            self.min_cutoff = min_cutoff
+            self.beta = beta
+            self.d_cutoff = d_cutoff
+            self._x_prev = None
+            self._d_prev = 0.0
+
+        def filter(self, x, te=1.0 / 30.0):
+            if self._x_prev is None:
+                self._x_prev = x
+                return x
+            import math
+            d = (x - self._x_prev) / te if te > 0 else 0.0
+            d_filtered = self._smooth_alpha(te, self.d_cutoff)(d, self._d_prev)
+            cutoff = self.min_cutoff + self.beta * abs(d_filtered)
+            x_filtered = self._smooth_alpha(te, cutoff)(x, self._x_prev)
+            self._d_prev = d_filtered
+            self._x_prev = x_filtered
+            return x_filtered
+
+        def _smooth_alpha(self, te, cutoff):
+            tau = 1.0 / (2.0 * 3.14159265359 * cutoff) if cutoff > 0 else 0.0
+            alpha = 1.0 / (1.0 + tau / te) if te > 0 else 1.0
+            def f(x, x_prev):
+                return alpha * x + (1.0 - alpha) * x_prev
+            return f
+
+    def _ensure_1euro_pose(stream_id):
+        """确保当前 stream 的身体 One Euro Filter 已初始化（33 点 * x,y）。"""
+        if stream_id not in _realtime_skeleton_1euro_pose:
+            _realtime_skeleton_1euro_pose[stream_id] = [
+                [_OneEuroFilter(min_cutoff=1.0, beta=0.6), _OneEuroFilter(min_cutoff=1.0, beta=0.6)]
+                for _ in range(33)
+            ]
+        return _realtime_skeleton_1euro_pose[stream_id]
+
+    def _smooth_pose_one_euro(stream_id, pose_landmarks_list, te=1.0 / 30.0):
+        """用 One Euro Filter 平滑身体关键点，快速运动时更跟手、慢速时更稳。"""
+        if not pose_landmarks_list:
+            return None
+        filters = _ensure_1euro_pose(stream_id)
+        out = []
+        for person in pose_landmarks_list:
+            try:
+                landmarks = list(person) if hasattr(person, "__iter__") else list(getattr(person, "landmark", []))
+            except Exception:
+                continue
+            if len(landmarks) < 33:
+                continue
+            smoothed = []
+            for i in range(33):
+                x = getattr(landmarks[i], "x", 0)
+                y = getattr(landmarks[i], "y", 0)
+                sx = filters[i][0].filter(x, te)
+                sy = filters[i][1].filter(y, te)
+                smoothed.append((sx, sy, getattr(landmarks[i], "z", 0)))
+            out.append(smoothed)
+        return out
+
+    def _ensure_1euro_hand(stream_id):
+        if stream_id not in _realtime_skeleton_1euro_hand:
+            hand_filters = []
+            for _ in range(2):
+                hand_filters.append([
+                    [_OneEuroFilter(min_cutoff=1.2, beta=0.7), _OneEuroFilter(min_cutoff=1.2, beta=0.7)]
+                    for _ in range(21)
+                ])
+            _realtime_skeleton_1euro_hand[stream_id] = hand_filters
+        return _realtime_skeleton_1euro_hand[stream_id]
+
+    def _smooth_hand_landmarks_one_euro(stream_id, hand_result, te=1.0 / 30.0):
+        """用 One Euro Filter 平滑手部 21 点，返回 [(hand_side, list of 21 (x,y)), ...]。手与身体共用同一平滑手腕，贴合度更好。"""
+        if not hand_result or not getattr(hand_result, "hand_landmarks", None):
+            return []
+        filters_list = _ensure_1euro_hand(stream_id)
+        out = []
+        for hi, hand_pts in enumerate(hand_result.hand_landmarks):
+            if len(hand_pts) < 21:
+                continue
+            hand_side = ""
+            try:
+                if getattr(hand_result, "handedness", None) and hi < len(hand_result.handedness):
+                    cat = hand_result.handedness[hi]
+                    hand_side = (getattr(cat, "category_name", None) or getattr(cat, "display_name", None) or "").strip().upper()
+            except Exception:
+                pass
+            filters = filters_list[hi % 2]
+            smoothed = []
+            for i in range(21):
+                x = getattr(hand_pts[i], "x", 0)
+                y = getattr(hand_pts[i], "y", 0)
+                sx = filters[i][0].filter(x, te)
+                sy = filters[i][1].filter(y, te)
+                smoothed.append((sx, sy))
+            out.append((hand_side, smoothed))
+        return out
+
+    def _smooth_pose_landmarks(stream_id, pose_landmarks_list, alpha=0.45):
+        """对身体关键点做指数移动平均，减少抖动、更贴合姿态变化。alpha 越大越平滑、延迟略增。"""
+        if not pose_landmarks_list:
+            return None
+        prev_all = _realtime_skeleton_pose_prev.get(stream_id)
+        out = []
+        for pi, person in enumerate(pose_landmarks_list):
+            try:
+                landmarks = list(person) if hasattr(person, "__iter__") else list(getattr(person, "landmark", []))
+            except Exception:
+                continue
+            if len(landmarks) < 33:
+                continue
+            curr = [(getattr(lm, "x", 0), getattr(lm, "y", 0), getattr(lm, "z", 0)) for lm in landmarks]
+            prev_one = prev_all[pi] if prev_all and pi < len(prev_all) and len(prev_all[pi]) == len(curr) else None
+            if prev_one is not None:
+                curr = [
+                    (alpha * p[0] + (1 - alpha) * c[0], alpha * p[1] + (1 - alpha) * c[1], alpha * p[2] + (1 - alpha) * c[2])
+                    for p, c in zip(prev_one, curr)
+                ]
+            out.append(curr)
+        if out:
+            _realtime_skeleton_pose_prev[stream_id] = out
+        return out
+
+    def _draw_pose_skeleton_frame_from_normalized(frame_bgr, persons_xy, H, W):
+        """根据已归一化的身体关键点绘制骨架（persons_xy: 每人 33 个 (x,y)，0~1）。不绘手部蓝点。"""
+        import cv2
+        for points_norm in (persons_xy or []):
+            if len(points_norm) < 33:
+                continue
+            points = [(int(p[0] * W), int(p[1] * H)) for p in points_norm]
+            for (i, j) in POSE_CONNECTIONS:
+                if i < len(points) and j < len(points):
+                    cv2.line(frame_bgr, points[i], points[j], (255, 165, 0), 2)
+            for idx, pt in enumerate(points):
+                if idx not in POSE_HAND_INDICES:
+                    cv2.circle(frame_bgr, pt, 3, (255, 0, 0), -1)
+        return frame_bgr
+
+    def _draw_pose_skeleton_frame(frame_bgr, pose_landmarks_list, H, W):
+        """在 BGR 帧上绘制身体骨架线。不绘制手腕与手指的蓝点/连线，手部由 HandLandmarker 绿色展示。"""
+        import cv2
+        for pose_landmarks in (pose_landmarks_list or []):
+            try:
+                landmarks = list(pose_landmarks) if hasattr(pose_landmarks, "__iter__") else list(getattr(pose_landmarks, "landmark", []))
+            except Exception:
+                landmarks = []
+            if len(landmarks) < 33:
+                continue
+            points = []
+            for lm in landmarks:
+                x = int(getattr(lm, "x", 0) * W)
+                y = int(getattr(lm, "y", 0) * H)
+                points.append((x, y))
+            for (i, j) in POSE_CONNECTIONS:
+                if i < len(points) and j < len(points):
+                    cv2.line(frame_bgr, points[i], points[j], (255, 165, 0), 2)  # 身体用橙色
+            for idx, pt in enumerate(points):
+                if idx not in POSE_HAND_INDICES:  # 手部关键点不画蓝点，避免与绿色手部骨架重叠
+                    cv2.circle(frame_bgr, pt, 3, (255, 0, 0), -1)  # 身体关键点蓝色
+        return frame_bgr
+
+    HAND_CONNECTIONS = [
+        (0, 1), (1, 2), (2, 3), (3, 4), (0, 5), (5, 6), (6, 7), (7, 8),
+        (0, 9), (9, 10), (10, 11), (11, 12), (0, 13), (13, 14), (14, 15), (15, 16),
+        (0, 17), (17, 18), (18, 19), (19, 20),
+    ]
+
+    def _draw_hand_skeleton_frame_from_normalized(frame_bgr, hands_xy_list, H, W):
+        """根据已归一化的手部关键点绘制骨架。hands_xy_list: 每手 21 个 (x,y)，0~1。用于平滑后的手部绘制。"""
+        import cv2
+        for hand_xy in (hands_xy_list or []):
+            if len(hand_xy) < 21:
+                continue
+            points = [(int(p[0] * W), int(p[1] * H)) for p in hand_xy]
+            for (i, j) in HAND_CONNECTIONS:
+                if i < len(points) and j < len(points):
+                    cv2.line(frame_bgr, points[i], points[j], (0, 255, 0), 2)
+            for pt in points:
+                cv2.circle(frame_bgr, pt, 3, (0, 0, 255), -1)
+        return frame_bgr
+
+    def _skeleton_overlay_single_frame(frame_bgr):
+        """对单帧做手部+身体骨架叠加（不依赖 stream 状态，用于本地视频逐帧分析）。返回绘制后的 BGR 帧。"""
+        import cv2
+        import mediapipe as mp
+        H, W = frame_bgr.shape[:2]
+        rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
+        out = frame_bgr.copy()
+        pose_landmarker = get_mediapipe_pose_landmarker()
+        hand_landmarker = get_mediapipe_landmarker()
+        persons_xy = None
+        if pose_landmarker:
+            try:
+                pose_result = pose_landmarker.detect(mp_image)
+                if getattr(pose_result, "pose_landmarks", None):
+                    pl = pose_result.pose_landmarks
+                    persons_xy = []
+                    for person in pl:
+                        try:
+                            lm = list(person) if hasattr(person, "__iter__") else list(getattr(person, "landmark", []))
+                        except Exception:
+                            continue
+                        if len(lm) < 33:
+                            continue
+                        persons_xy.append([(getattr(lm[i], "x", 0), getattr(lm[i], "y", 0), getattr(lm[i], "z", 0)) for i in range(33)])
+            except Exception:
+                pass
+        left_wrist_xy = right_wrist_xy = None
+        hands_xy_for_draw = []
+        if hand_landmarker:
+            try:
+                hand_result = hand_landmarker.detect(mp_image)
+                if getattr(hand_result, "hand_landmarks", None):
+                    for hi, hand_pts in enumerate(hand_result.hand_landmarks):
+                        if len(hand_pts) < 21:
+                            continue
+                        hand_side = ""
+                        if getattr(hand_result, "handedness", None) and hi < len(hand_result.handedness):
+                            cat = hand_result.handedness[hi]
+                            hand_side = (getattr(cat, "category_name", None) or getattr(cat, "display_name", None) or "").strip().upper()
+                        pts = [(getattr(hand_pts[i], "x", 0), getattr(hand_pts[i], "y", 0)) for i in range(21)]
+                        hands_xy_for_draw.append(pts)
+                        if pts and "LEFT" in hand_side:
+                            left_wrist_xy = pts[0]
+                        elif pts and "RIGHT" in hand_side:
+                            right_wrist_xy = pts[0]
+            except Exception:
+                pass
+        if persons_xy and len(persons_xy[0]) >= 17:
+            if left_wrist_xy is not None:
+                persons_xy[0][15] = left_wrist_xy
+            if right_wrist_xy is not None:
+                persons_xy[0][16] = right_wrist_xy
+            out = _draw_pose_skeleton_frame_from_normalized(out, persons_xy, H, W)
+        if hands_xy_for_draw:
+            out = _draw_hand_skeleton_frame_from_normalized(out, hands_xy_for_draw, H, W)
+        return out
+
+    def _draw_hand_skeleton_frame(frame_bgr, hands_landmarks_list, H, W):
+        """在 BGR 帧上绘制手部骨架线（关键点+连线）。hands_landmarks_list 为 MediaPipe 返回的 hand_landmarks 列表，坐标为归一化。"""
+        import cv2
+        for hand_landmarks in (hands_landmarks_list or []):
+            points = []
+            for lm in hand_landmarks:
+                x = int(lm.x * W)
+                y = int(lm.y * H)
+                points.append((x, y))
+            if len(points) < 21:
+                continue
+            for (i, j) in HAND_CONNECTIONS:
+                if i < len(points) and j < len(points):
+                    cv2.line(frame_bgr, points[i], points[j], (0, 255, 0), 2)
+            for pt in points:
+                cv2.circle(frame_bgr, pt, 3, (0, 0, 255), -1)
+        return frame_bgr
+
+    def _realtime_skeleton_stream_generator(device_index: int, stream_id: str):
+        """生成手部+身体骨架线的 MJPEG 流，支持 ivcam 等外接摄像头。先绘身体再绘手部。"""
+        import cv2
+        import sys
+        import mediapipe as mp
+        cap = None
+        try:
+            if sys.platform == "win32":
+                cap = cv2.VideoCapture(int(device_index), cv2.CAP_DSHOW)
+            else:
+                cap = cv2.VideoCapture(int(device_index))
+            if not cap.isOpened():
+                if sys.platform == "win32":
+                    try:
+                        cap.release()
+                    except Exception:
+                        pass
+                    cap = cv2.VideoCapture(int(device_index))
+                if not cap.isOpened():
+                    print("[realtime-skeleton-stream] 无法打开摄像头 device=%s" % device_index)
+                    yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + b"\r\n")
+                    return
+            hand_landmarker = get_mediapipe_landmarker()
+            pose_landmarker = get_mediapipe_pose_landmarker()
+            if hand_landmarker is None and pose_landmarker is None:
+                print("[realtime-skeleton-stream] 未找到骨架模型，请放置 weights/mediapipe/ 下 hand_landmarker.task 或 pose_landmarker_lite.task")
+                ret, frame = cap.read()
+                if ret and frame is not None:
+                    cv2.putText(frame, "Place hand_landmarker.task or pose_landmarker_lite.task", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+                    _, jpeg = cv2.imencode(".jpg", frame)
+                    yield (b"--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %d\r\n\r\n" % len(jpeg) + jpeg.tobytes() + b"\r\n")
+                return
+            while True:
+                if _realtime_stream_cancel.get(stream_id):
+                    break
+                ret, frame = cap.read()
+                if not ret or frame is None:
+                    break
+                if _realtime_stream_cancel.get(stream_id):
+                    break
+                H, W = frame.shape[:2]
+                import time
+                now = time.time()
+                te = 1.0 / 30.0
+                if stream_id in _realtime_skeleton_last_te:
+                    dt = now - _realtime_skeleton_last_te[stream_id]
+                    if 0.005 <= dt <= 0.2:
+                        te = dt
+                _realtime_skeleton_last_te[stream_id] = now
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
+                hand_result = None
+                if hand_landmarker is not None:
+                    try:
+                        hand_result = hand_landmarker.detect(mp_image)
+                    except Exception:
+                        hand_result = None
+                smoothed_hands = _smooth_hand_landmarks_one_euro(stream_id, hand_result, te) if hand_result else []
+                left_wrist_xy = right_wrist_xy = None
+                hands_xy_for_draw = []
+                for hand_side, points_21 in smoothed_hands:
+                    hands_xy_for_draw.append(points_21)
+                    if len(points_21) > 0:
+                        w = points_21[0]
+                        if "LEFT" in hand_side:
+                            left_wrist_xy = w
+                        elif "RIGHT" in hand_side:
+                            right_wrist_xy = w
+                if pose_landmarker is not None:
+                    try:
+                        pose_result = pose_landmarker.detect(mp_image)
+                        if getattr(pose_result, "pose_landmarks", None):
+                            smoothed = _smooth_pose_one_euro(stream_id, pose_result.pose_landmarks, te)
+                            if smoothed:
+                                persons_xy = [list(p) for p in smoothed]
+                                if persons_xy and len(persons_xy[0]) >= 17:
+                                    if left_wrist_xy is not None:
+                                        persons_xy[0][15] = left_wrist_xy
+                                    if right_wrist_xy is not None:
+                                        persons_xy[0][16] = right_wrist_xy
+                                frame = _draw_pose_skeleton_frame_from_normalized(frame.copy(), persons_xy, H, W)
+                            else:
+                                frame = _draw_pose_skeleton_frame(frame.copy(), pose_result.pose_landmarks, H, W)
+                    except Exception:
+                        pass
+                if hands_xy_for_draw:
+                    try:
+                        frame = _draw_hand_skeleton_frame_from_normalized(frame, hands_xy_for_draw, H, W)
+                    except Exception:
+                        if hand_result and getattr(hand_result, "hand_landmarks", None):
+                            frame = _draw_hand_skeleton_frame(frame, hand_result.hand_landmarks, H, W)
+                elif hand_result and getattr(hand_result, "hand_landmarks", None):
+                    try:
+                        frame = _draw_hand_skeleton_frame(frame, hand_result.hand_landmarks, H, W)
+                    except Exception:
+                        pass
+                if _realtime_stream_cancel.get(stream_id):
+                    break
+                _, jpeg = cv2.imencode(".jpg", frame)
+                yield (b"--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %d\r\n\r\n" % len(jpeg) + jpeg.tobytes() + b"\r\n")
+        except GeneratorExit:
+            pass
+        except Exception as e:
+            print(f"[realtime-skeleton-stream] 错误: {e}")
+        finally:
+            _realtime_stream_cancel.pop(stream_id, None)
+            _realtime_skeleton_pose_prev.pop(stream_id, None)
+            _realtime_skeleton_1euro_pose.pop(stream_id, None)
+            _realtime_skeleton_1euro_hand.pop(stream_id, None)
+            _realtime_skeleton_last_te.pop(stream_id, None)
+            if cap is not None:
+                try:
+                    cap.release()
+                except Exception:
+                    pass
+                print("[realtime-skeleton-stream] 摄像头已释放 stream_id=%s" % stream_id)
+
     @app.get("/api/realtime-stream/stop")
     async def api_realtime_stream_stop(stream_id: str = ""):
         """通知指定实时流停止，便于服务端立即释放摄像头。"""
@@ -619,6 +1148,64 @@ try:
             _realtime_stream_generator(device_index, stage, conf, stream_id, use_mediapipe_hands, use_mediapipe_face, model_type if model_type in ("cpu", "gpu") else "cpu"),
             media_type="multipart/x-mixed-replace; boundary=frame",
         )
+
+    @app.get("/api/realtime-skeleton-stream")
+    async def api_realtime_skeleton_stream(device: int = 0, stream_id: str = ""):
+        """实时骨架线 MJPEG 流：仅绘制手部骨架，支持 ivcam/外接摄像头。与实时监测共用 stop 接口。"""
+        if not stream_id:
+            import uuid
+            stream_id = str(uuid.uuid4())
+        device_index = int(device)
+        if device_index in (0, 1):
+            import sys
+            if sys.platform == "win32":
+                device_index = 1 if device_index == 0 else 0
+        return StreamingResponse(
+            _realtime_skeleton_stream_generator(device_index, stream_id),
+            media_type="multipart/x-mixed-replace; boundary=frame",
+        )
+
+    @app.get("/api/realtime-combined-stream")
+    async def api_realtime_combined_stream(device: int = 0, stage: str = "stretch", conf: float = 0.4, stream_id: str = "", use_mediapipe_hands: bool = True, use_mediapipe_face: bool = True):
+        """单路合并流：一次打开摄像头，每帧左半检测、右半骨架线，避免摄像头被占只显一个画面。"""
+        if not stream_id:
+            import uuid
+            stream_id = str(uuid.uuid4())
+        device_index = int(device)
+        if device_index in (0, 1):
+            import sys
+            if sys.platform == "win32":
+                device_index = 1 if device_index == 0 else 0
+        return StreamingResponse(
+            _realtime_combined_stream_generator(device_index, stage, conf, stream_id, use_mediapipe_hands, use_mediapipe_face),
+            media_type="multipart/x-mixed-replace; boundary=frame",
+        )
+
+    @app.post("/api/skeleton_overlay_frame")
+    async def api_skeleton_overlay_frame(file: UploadFile = File(...)):
+        """接收一帧图像，返回叠加手部+身体骨架后的 JPEG。用于本地视频骨架线逐帧分析。使用本地 hand/pose 模型。"""
+        import cv2
+        import numpy as np
+        try:
+            data = await file.read()
+            nparr = np.frombuffer(data, np.uint8)
+            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            if frame is None:
+                return Response(status_code=400, content=b"Invalid image")
+            out = _skeleton_overlay_single_frame(frame)
+            _, jpeg = cv2.imencode(".jpg", out)
+            return Response(content=jpeg.tobytes(), media_type="image/jpeg")
+        except Exception as e:
+            print(f"[skeleton_overlay_frame] {e}")
+            return Response(status_code=500, content=b"Server error")
+
+    @app.get("/video-skeleton-ivcam")
+    async def video_skeleton_ivcam():
+        """本地视频骨架线分析页（从 ivcam 选择视频，逐帧叠加骨架后播放）。"""
+        web_file = web_dir / "video_skeleton_ivcam.html"
+        if web_file.exists():
+            return FileResponse(str(web_file))
+        return {"message": "页面未找到"}
 
     @app.get("/api/check_processed_video/{video_name}")
     async def check_processed_video(video_name: str, stage: str = "stretch"):
@@ -1593,6 +2180,7 @@ th {{ background: #f8f9fa; }}
 
     # ========== MediaPipe单例（优化性能） ==========
     _mediapipe_landmarker = None
+    _mediapipe_pose_landmarker = None
     _mediapipe_lock = threading.Lock()
     
     def get_mediapipe_landmarker():
@@ -1624,6 +2212,35 @@ th {{ background: #f8f9fa; }}
                 return None
         
         return _mediapipe_landmarker
+
+    def get_mediapipe_pose_landmarker():
+        """获取MediaPipe PoseLandmarker单例（身体 33 点），用于实时骨架线身体部分。"""
+        global _mediapipe_pose_landmarker
+        if _mediapipe_pose_landmarker is None:
+            from mediapipe.tasks.python import vision
+            from mediapipe.tasks.python import BaseOptions
+            model_dir = project_root / "weights" / "mediapipe"
+            model_dir.mkdir(parents=True, exist_ok=True)
+            # 优先使用 heavy（更准），其次 lite（更快），最后 pose_landmarker.task
+            for name in ("pose_landmarker_heavy.task", "pose_landmarker_lite.task", "pose_landmarker.task"):
+                model_path = model_dir / name
+                if model_path.exists():
+                    break
+            else:
+                return None
+            try:
+                base_options = BaseOptions(model_asset_path=str(model_path))
+                options = vision.PoseLandmarkerOptions(
+                    base_options=base_options,
+                    num_poses=2,
+                    running_mode=vision.RunningMode.IMAGE,
+                )
+                _mediapipe_pose_landmarker = vision.PoseLandmarker.create_from_options(options)
+                print("[OK] MediaPipe PoseLandmarker单例已创建")
+            except Exception as e:
+                print(f"[提示] PoseLandmarker 未加载（仅显示手部骨架）: {e}")
+                return None
+        return _mediapipe_pose_landmarker
     
     # 检测+姿态估计API（可选功能，预留接口）
     @app.post("/api/detect_with_pose")
