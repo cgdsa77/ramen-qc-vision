@@ -520,6 +520,10 @@ try:
 
     # 实时流取消标记：前端点击「停止」时设置，生成器检查后退出并释放摄像头
     _realtime_stream_cancel = {}
+    # 检测框 EMA 平滑：stream_id -> {"hand": [x1,y1,x2,y2], "head": [x1,y1,x2,y2]}，使框更跟手、更稳
+    _realtime_det_prev_boxes = {}
+    # 缺检时沿用上一帧框的帧数：stream_id -> {"hand": n, "head": n}，最多延续 2 帧，减少闪烁、提升跟随感
+    _realtime_det_hold_count = {}
 
     def _realtime_stream_generator(device_index: int, stage: str, conf: float, stream_id: str, use_mediapipe_hands: bool = True, use_mediapipe_face: bool = True, model_type: str = "cpu"):
         """生成 MJPEG 流：打开摄像头，逐帧检测并绘制；收到 stream_id 取消信号时退出并 release。model_type: cpu|gpu 预留。"""
@@ -619,10 +623,36 @@ try:
                 H, W = frame.shape[:2]
                 frame_det = frame.copy()
                 try:
-                    annotated, _ = detector.detect_frame(frame_det, conf_threshold=conf, draw_boxes=True, use_mediapipe_hands=use_mediapipe_hands, use_mediapipe_face=use_mediapipe_face, stage=stage)
-                    frame_det = annotated
+                    _, detections = detector.detect_frame(frame_det, conf_threshold=conf, draw_boxes=False, use_mediapipe_hands=use_mediapipe_hands, use_mediapipe_face=use_mediapipe_face, stage=stage)
+                    prev = _realtime_det_prev_boxes.setdefault(stream_id, {})
+                    hold_count = _realtime_det_hold_count.setdefault(stream_id, {})
+                    ema_alpha = 0.62
+                    smoothed_list = []
+                    seen_hand_head = set()
+                    for d in (detections or []):
+                        cls = (d.get("class") or "").strip().lower()
+                        xyxy = list(d.get("xyxy", [0, 0, 0, 0]))
+                        if cls in ("hand", "head"):
+                            seen_hand_head.add(cls)
+                            hold_count[cls] = 0
+                            if len(xyxy) == 4 and prev.get(cls) is not None:
+                                p = prev[cls]
+                                xyxy = [ema_alpha * xyxy[i] + (1.0 - ema_alpha) * p[i] for i in range(4)]
+                            prev[cls] = xyxy
+                        smoothed_list.append({**d, "xyxy": xyxy})
+                    for cls in ("hand", "head"):
+                        if cls not in seen_hand_head and prev.get(cls) is not None:
+                            n = hold_count.get(cls, 0)
+                            if n < 2:
+                                smoothed_list.append({"class": cls, "class_id": -1 if cls == "hand" else -2, "conf": 0.5, "xyxy": list(prev[cls])})
+                                hold_count[cls] = n + 1
+                    frame_det = detector._draw_detections(frame_det, smoothed_list)
                 except Exception:
-                    pass
+                    try:
+                        annotated, _ = detector.detect_frame(frame_det, conf_threshold=conf, draw_boxes=True, use_mediapipe_hands=use_mediapipe_hands, use_mediapipe_face=use_mediapipe_face, stage=stage)
+                        frame_det = annotated
+                    except Exception:
+                        pass
                 frame_skel = frame.copy()
                 try:
                     import time
@@ -678,12 +708,7 @@ try:
                     frame_det = cv2.resize(frame_det, (int(W * target_h / H), target_h))
                 if frame_skel.shape[0] != target_h or frame_skel.shape[1] != int(W * target_h / H):
                     frame_skel = cv2.resize(frame_skel, (int(W * target_h / H), target_h))
-                w1 = frame_det.shape[1]
                 combined = cv2.hconcat([frame_det, frame_skel])
-                mid = w1
-                cv2.line(combined, (mid, 0), (mid, combined.shape[0]), (0, 255, 255), 2)
-                cv2.putText(combined, "Left:Det", (10, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-                cv2.putText(combined, "Right:Skeleton", (mid + 10, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 if _realtime_stream_cancel.get(stream_id):
                     break
                 _, jpeg = cv2.imencode(".jpg", combined)
@@ -698,6 +723,8 @@ try:
             _realtime_skeleton_1euro_pose.pop(stream_id, None)
             _realtime_skeleton_1euro_hand.pop(stream_id, None)
             _realtime_skeleton_last_te.pop(stream_id, None)
+            _realtime_det_prev_boxes.pop(stream_id, None)
+            _realtime_det_hold_count.pop(stream_id, None)
             if cap is not None:
                 try:
                     cap.release()
@@ -753,10 +780,11 @@ try:
             return f
 
     def _ensure_1euro_pose(stream_id):
-        """确保当前 stream 的身体 One Euro Filter 已初始化（33 点 * x,y）。"""
+        """确保当前 stream 的身体 One Euro Filter 已初始化（33 点 * x,y）。参数偏跟手、略减滞后。"""
         if stream_id not in _realtime_skeleton_1euro_pose:
+            # min_cutoff 略高、beta 略高：快速运动时更跟手，位置更贴合
             _realtime_skeleton_1euro_pose[stream_id] = [
-                [_OneEuroFilter(min_cutoff=1.0, beta=0.6), _OneEuroFilter(min_cutoff=1.0, beta=0.6)]
+                [_OneEuroFilter(min_cutoff=1.4, beta=0.75, d_cutoff=1.0), _OneEuroFilter(min_cutoff=1.4, beta=0.75, d_cutoff=1.0)]
                 for _ in range(33)
             ]
         return _realtime_skeleton_1euro_pose[stream_id]
@@ -786,10 +814,11 @@ try:
 
     def _ensure_1euro_hand(stream_id):
         if stream_id not in _realtime_skeleton_1euro_hand:
+            # 手部同样提高跟随性，减少滞后
             hand_filters = []
             for _ in range(2):
                 hand_filters.append([
-                    [_OneEuroFilter(min_cutoff=1.2, beta=0.7), _OneEuroFilter(min_cutoff=1.2, beta=0.7)]
+                    [_OneEuroFilter(min_cutoff=1.5, beta=0.8, d_cutoff=1.0), _OneEuroFilter(min_cutoff=1.5, beta=0.8, d_cutoff=1.0)]
                     for _ in range(21)
                 ])
             _realtime_skeleton_1euro_hand[stream_id] = hand_filters
@@ -2236,7 +2265,7 @@ th {{ background: #f8f9fa; }}
                     running_mode=vision.RunningMode.IMAGE,
                 )
                 _mediapipe_pose_landmarker = vision.PoseLandmarker.create_from_options(options)
-                print("[OK] MediaPipe PoseLandmarker单例已创建")
+                print("[OK] MediaPipe PoseLandmarker 已创建（模型: %s，身体骨架更准请使用 pose_landmarker_heavy.task）" % model_path.name)
             except Exception as e:
                 print(f"[提示] PoseLandmarker 未加载（仅显示手部骨架）: {e}")
                 return None

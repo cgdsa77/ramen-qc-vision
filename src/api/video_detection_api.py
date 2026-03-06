@@ -78,7 +78,7 @@ def _get_mediapipe_hands():
                 base_options=BaseOptions(model_asset_path=str(task_file)),
                 running_mode=VisionRunningMode.VIDEO,
                 num_hands=2,
-                min_hand_detection_confidence=0.5,
+                min_hand_detection_confidence=0.4,
             )
             _mp_hands = HandLandmarker.create_from_options(options)
             _mp_hands_mode = "tasks"
@@ -92,8 +92,8 @@ def _get_mediapipe_hands():
         _mp_hands = mp.solutions.hands.Hands(
             static_image_mode=False,
             max_num_hands=2,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.4,
+            min_detection_confidence=0.4,
+            min_tracking_confidence=0.35,
         )
         _mp_hands_mode = "solutions"
         print("[OK] MediaPipe Hands 已加载（solutions API）")
@@ -112,10 +112,11 @@ def _hand_landmarks_to_boxes(landmarks_list, h: int, w: int) -> List[Dict]:
             points = hand_landmarks
         xs = [p.x for p in points]
         ys = [p.y for p in points]
-        x_min = max(0, int(min(xs) * w) - 10)
-        x_max = min(w, int(max(xs) * w) + 10)
-        y_min = max(0, int(min(ys) * h) - 10)
-        y_max = min(h, int(max(ys) * h) + 10)
+        pad = 6
+        x_min = max(0, int(min(xs) * w) - pad)
+        x_max = min(w, int(max(xs) * w) + pad)
+        y_min = max(0, int(min(ys) * h) - pad)
+        y_max = min(h, int(max(ys) * h) + pad)
         if x_max <= x_min or y_max <= y_min:
             continue
         out.append({
@@ -174,10 +175,10 @@ def _get_mediapipe_face_detector():
             FaceDetector = mp.tasks.vision.FaceDetector
             FaceDetectorOptions = mp.tasks.vision.FaceDetectorOptions
             VisionRunningMode = mp.tasks.vision.RunningMode
-            options = FaceDetectorOptions(
+            options =             FaceDetectorOptions(
                 base_options=BaseOptions(model_asset_path=str(task_file)),
                 running_mode=VisionRunningMode.VIDEO,
-                min_detection_confidence=0.5,
+                min_detection_confidence=0.4,
             )
             _mp_face_detector = FaceDetector.create_from_options(options)
             print("[OK] MediaPipe Face 已加载（头部检测）")

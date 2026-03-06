@@ -12,18 +12,19 @@
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 12px;
+            padding: 6px;
         }
         .container {
-            max-width: 1600px;
+            max-width: 98%;
+            width: 100%;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 96vh;
+            min-height: 98vh;
         }
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -37,7 +38,7 @@
         .nav-home-wrap { padding: 6px 16px; background: rgba(0,0,0,0.06); text-align: left; flex-shrink: 0; }
         .nav-home { color: #333; text-decoration: none; font-size: 14px; }
         .nav-home:hover { text-decoration: underline; }
-        .content { padding: 12px 20px 20px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+        .content { padding: 10px 14px 14px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -68,21 +69,20 @@
         .btn-stop:disabled { background: #ccc; cursor: not-allowed; }
         .btn-detect { padding: 8px 14px; font-size: 13px; border: 1px solid #666; border-radius: 8px; background: #f5f5f5; cursor: pointer; }
         .btn-detect:hover { background: #eee; }
-        .video-row { display: flex; width: 100%; margin-bottom: 6px; background: #0a0a0a; border-radius: 12px; overflow: hidden; flex: 1; min-height: 0; }
-        .video-two-panels { display: flex; width: 100%; min-height: 500px; height: 100%; position: relative; align-items: center; justify-content: center; }
-        .video-combined-wrap { width: 100%; display: flex; align-items: center; justify-content: center; min-height: 500px; height: 100%; position: relative; }
-        .video-combined-wrap img { display: block; max-width: 100%; max-height: 78vh; width: auto; height: auto; object-fit: contain; }
-        .video-two-panels .panel-label { position: absolute; top: 12px; z-index: 2; background: rgba(0,0,0,0.75); color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 14px; pointer-events: none; }
-        .video-two-panels .panel-label.left { left: 12%; }
-        .video-two-panels .panel-label.right { left: 62%; }
-        .video-divider { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: #ffc107; z-index: 1; pointer-events: none; }
-        .video-box .placeholder { color: #888; padding: 40px; text-align: center; font-size: 14px; }
-        .video-labels-row { display: flex; width: 100%; margin-top: 4px; flex-shrink: 0; }
-        .video-labels-row span { flex: 1; text-align: center; font-size: 13px; color: #555; padding: 4px; }
+        .video-row { display: flex; width: 100%; margin-bottom: 0; flex: 1; min-height: 0; gap: 10px; padding: 0 2px; }
+        .video-box-outer { flex: 1; min-width: 0; min-height: 52vh; height: 100%; display: flex; flex-direction: column; background: #000; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
+        .video-box-outer .box-title { flex-shrink: 0; padding: 6px 10px; background: rgba(0,0,0,0.9); color: #fff; font-size: 14px; font-weight: 500; text-align: center; }
+        .video-box-outer .box-body { flex: 1; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
+        .video-box-outer .box-body canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
+        .video-box-outer .box-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #666; font-size: 13px; text-align: center; padding: 24px; pointer-events: none; }
+        .video-box-outer .box-body.has-feed .box-placeholder { display: none; }
+        .stream-img-hidden { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+        .video-foot { display: flex; width: 100%; margin-top: 2px; flex-shrink: 0; gap: 10px; padding: 0 2px; align-items: center; }
+        .video-foot span { flex: 1; text-align: center; font-size: 16px; font-weight: 500; color: #333; line-height: 1.3; }
         .video-wrapper { width: 100%; max-height: 70vh; background: #111; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .video-wrapper img { max-width: 100%; max-height: 70vh; object-fit: contain; display: block; }
         .video-wrapper .placeholder { color: #888; padding: 40px; text-align: center; }
-        .status { margin-top: 6px; color: #666; font-size: 13px; flex-shrink: 0; }
+        .status { margin-top: 6px; color: #444; font-size: 14px; flex-shrink: 0; }
         .tip-one { font-size: 11px; color: #666; margin-bottom: 8px; flex-shrink: 0; }
         .checkbox-wrap { font-weight: normal; display: inline-flex; align-items: center; gap: 5px; font-size: 14px; }
         .controls .checkbox-wrap input { margin: 0; }
@@ -138,19 +138,25 @@
                 <button class="btn-stop" id="btnStop" disabled>停止</button>
             </div>
             <div class="video-row" id="videoRow">
-                <div class="video-two-panels" id="videoTwoPanels">
-                    <div class="video-divider" id="videoDivider" style="display: none;"></div>
-                    <span class="panel-label left" id="labelLeft" style="display: none;">检测画面（左）</span>
-                    <span class="panel-label right" id="labelRight" style="display: none;">骨架线画面（右）</span>
-                    <div class="video-combined-wrap" style="width:100%;">
-                        <img id="streamImg" src="" alt="左:检测 右:骨架线" style="display: none;" />
-                        <div class="placeholder" id="placeholder">选择摄像头后点击「开始」，将同时显示左侧检测画面与右侧骨架线画面（一张图内左右并排）</div>
+                <div class="video-box-outer" id="boxDetect">
+                    <div class="box-title">检测画面</div>
+                    <div class="box-body" id="bodyDetect">
+                        <canvas id="canvasDetect"></canvas>
+                        <div class="box-placeholder" id="phDetect">点击「开始」后在此区域显示</div>
+                    </div>
+                </div>
+                <div class="video-box-outer" id="boxSkeleton">
+                    <div class="box-title">骨架线画面</div>
+                    <div class="box-body" id="bodySkeleton">
+                        <canvas id="canvasSkeleton"></canvas>
+                        <div class="box-placeholder" id="phSkeleton">点击「开始」后在此区域显示</div>
                     </div>
                 </div>
             </div>
-            <div class="video-labels-row" id="videoLabelsRow" style="display: none;">
-                <span>左：检测画面（手部/头部框与阶段目标）</span>
-                <span>右：骨架线画面（手部+身体骨架线）</span>
+            <img id="streamImg" class="stream-img-hidden" src="" alt="" />
+            <div class="video-foot" id="videoFoot">
+                <span>手部/头部框与阶段目标</span>
+                <span>手部+身体骨架线</span>
             </div>
             <div class="status" id="status"></div>
 
@@ -181,7 +187,6 @@
     <script>
         (function () {
             var streamImg = document.getElementById('streamImg');
-            var placeholder = document.getElementById('placeholder');
             var btnStart = document.getElementById('btnStart');
             var btnStop = document.getElementById('btnStop');
             var device = document.getElementById('device');
@@ -190,8 +195,58 @@
             var useMediaPipeFace = document.getElementById('useMediaPipeFace');
             var btnDetect = document.getElementById('btnDetect');
             var status = document.getElementById('status');
-            var videoLabelsRow = document.getElementById('videoLabelsRow');
+            var canvasDetect = document.getElementById('canvasDetect');
+            var canvasSkeleton = document.getElementById('canvasSkeleton');
+            var bodyDetect = document.getElementById('bodyDetect');
+            var bodySkeleton = document.getElementById('bodySkeleton');
             var currentStreamId = null;
+            var animId = null;
+
+            function setRunning(running) {
+                btnStart.disabled = running;
+                btnStop.disabled = !running;
+                device.disabled = running;
+                stage.disabled = running;
+                useMediaPipeHands.disabled = running;
+                useMediaPipeFace.disabled = running;
+            }
+
+            function drawFrames() {
+                if (!streamImg || !streamImg.src || streamImg.naturalWidth <= 0) {
+                    animId = requestAnimationFrame(drawFrames);
+                    return;
+                }
+                var w = streamImg.naturalWidth;
+                var h = streamImg.naturalHeight;
+                var half = Math.floor(w / 2);
+                if (half <= 0 || h <= 0) {
+                    animId = requestAnimationFrame(drawFrames);
+                    return;
+                }
+                function drawHalf(sx, sw, canvas, body) {
+                    if (!canvas || !canvas.getContext) return;
+                    var rect = canvas.getBoundingClientRect();
+                    var cw = Math.floor(rect.width);
+                    var ch = Math.floor(rect.height);
+                    if (cw <= 0 || ch <= 0) return;
+                    if (canvas.width !== cw) canvas.width = cw;
+                    if (canvas.height !== ch) canvas.height = ch;
+                    var ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(0, 0, cw, ch);
+                    var scale = Math.min(cw / sw, ch / h);
+                    var dw = sw * scale;
+                    var dh = h * scale;
+                    var dx = (cw - dw) / 2;
+                    var dy = (ch - dh) / 2;
+                    ctx.drawImage(streamImg, sx, 0, sw, h, dx, dy, dw, dh);
+                }
+                drawHalf(0, half, canvasDetect, bodyDetect);
+                drawHalf(half, w - half, canvasSkeleton, bodySkeleton);
+                if (bodyDetect) bodyDetect.classList.add('has-feed');
+                if (bodySkeleton) bodySkeleton.classList.add('has-feed');
+                animId = requestAnimationFrame(drawFrames);
+            }
 
             if (btnDetect) {
                 btnDetect.addEventListener('click', function () {
@@ -204,15 +259,6 @@
                 });
             }
 
-            function setRunning(running) {
-                btnStart.disabled = running;
-                btnStop.disabled = !running;
-                device.disabled = running;
-                stage.disabled = running;
-                useMediaPipeHands.disabled = running;
-                useMediaPipeFace.disabled = running;
-            }
-
             btnStart.addEventListener('click', function () {
                 currentStreamId = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2);
                 var url = '/api/realtime-combined-stream?device=' + encodeURIComponent(device.value) + '&stage=' + encodeURIComponent(stage.value)
@@ -221,19 +267,12 @@
                     + '&stream_id=' + encodeURIComponent(currentStreamId)
                     + '&t=' + Date.now();
                 streamImg.src = url;
-                streamImg.style.display = 'block';
-                placeholder.style.display = 'none';
-                var div = document.getElementById('videoDivider');
-                if (div) div.style.display = 'block';
-                var lblLeft = document.getElementById('labelLeft');
-                var lblRight = document.getElementById('labelRight');
-                if (lblLeft) lblLeft.style.display = 'block';
-                if (lblRight) lblRight.style.display = 'block';
-                if (videoLabelsRow) videoLabelsRow.style.display = 'flex';
                 setRunning(true);
                 status.textContent = '连接中…';
-                streamImg.onload = function () { status.textContent = '已连接（左：检测 右：骨架线）'; };
+                streamImg.onload = function () { status.textContent = '已连接'; };
                 streamImg.onerror = function () { status.textContent = '连接失败，请关闭占用摄像头的应用后重试'; };
+                if (animId != null) cancelAnimationFrame(animId);
+                animId = requestAnimationFrame(drawFrames);
             });
 
             function doStop() {
@@ -242,15 +281,20 @@
                     currentStreamId = null;
                 }
                 streamImg.src = '';
-                streamImg.style.display = 'none';
-                placeholder.style.display = 'block';
-                var div = document.getElementById('videoDivider');
-                if (div) div.style.display = 'none';
-                var lblLeft = document.getElementById('labelLeft');
-                var lblRight = document.getElementById('labelRight');
-                if (lblLeft) lblLeft.style.display = 'none';
-                if (lblRight) lblRight.style.display = 'none';
-                if (videoLabelsRow) videoLabelsRow.style.display = 'none';
+                if (animId != null) {
+                    cancelAnimationFrame(animId);
+                    animId = null;
+                }
+                if (bodyDetect) bodyDetect.classList.remove('has-feed');
+                if (bodySkeleton) bodySkeleton.classList.remove('has-feed');
+                if (canvasDetect && canvasDetect.getContext) {
+                    var ctx = canvasDetect.getContext('2d');
+                    ctx.clearRect(0, 0, canvasDetect.width, canvasDetect.height);
+                }
+                if (canvasSkeleton && canvasSkeleton.getContext) {
+                    var ctx2 = canvasSkeleton.getContext('2d');
+                    ctx2.clearRect(0, 0, canvasSkeleton.width, canvasSkeleton.height);
+                }
                 setRunning(false);
                 status.textContent = '已停止';
             }
