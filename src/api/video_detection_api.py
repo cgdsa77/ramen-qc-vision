@@ -175,10 +175,10 @@ def _get_mediapipe_face_detector():
             FaceDetector = mp.tasks.vision.FaceDetector
             FaceDetectorOptions = mp.tasks.vision.FaceDetectorOptions
             VisionRunningMode = mp.tasks.vision.RunningMode
-            options =             FaceDetectorOptions(
+            options = FaceDetectorOptions(
                 base_options=BaseOptions(model_asset_path=str(task_file)),
                 running_mode=VisionRunningMode.VIDEO,
-                min_detection_confidence=0.4,
+                min_detection_confidence=0.45,
             )
             _mp_face_detector = FaceDetector.create_from_options(options)
             print("[OK] MediaPipe Face 已加载（头部检测）")
@@ -589,8 +589,18 @@ class VideoDetectionAPI:
             hand_boxes = get_mediapipe_hand_boxes(frame_bgr)
             detections = [d for d in detections if "hand" not in (d.get("class") or "").lower()]
             detections = detections + hand_boxes
+            # 抑制与手部重叠的头部框，减少将手误检为头（head 0.5x 出现在手上）
+            hand_xyxy = [d["xyxy"] for d in detections if (d.get("class") or "").strip().lower() == "hand"]
+            def head_overlaps_hand(d):
+                if (d.get("class") or "").strip().lower() != "head":
+                    return False
+                for h in hand_xyxy:
+                    if self._iou_xyxy(d["xyxy"], h) > 0.2:
+                        return True
+                return False
+            detections = [d for d in detections if not head_overlaps_hand(d)]
         if nms_per_class and detections:
-            detections = self._nms_per_class(detections, iou_threshold=0.5)
+            detections = self._nms_per_class(detections, iou_threshold=0.45)
         if draw_boxes:
             return (self._draw_detections(frame_bgr, detections), detections)
         return (frame_bgr.copy(), detections)
