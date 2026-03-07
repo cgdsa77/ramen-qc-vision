@@ -467,21 +467,29 @@ def reset_password(uid: int, new_password: str) -> Tuple[bool, str]:
     new_password = (new_password or "").strip()
     if not new_password:
         return (False, "新密码不能为空")
+    new_hash = _md5(new_password)
     conn = _get_conn()
     mode = _resolve_db_mode()
     p = _param_style()
     try:
         if mode == "sqlite":
-            cur = conn.execute("UPDATE users SET password = " + p + " WHERE id = " + p, (_md5(new_password), uid))
+            row = conn.execute("SELECT id, password FROM users WHERE id = " + p, (uid,)).fetchone()
+            if row is None:
+                return (False, "用户不存在")
+            if (row["password"] or "").strip().lower() == new_hash:
+                return (True, "密码未变更，已保持原密码")
+            conn.execute("UPDATE users SET password = " + p + " WHERE id = " + p, (new_hash, uid))
             conn.commit()
-            rowcount = cur.rowcount
         else:
             with conn.cursor() as cur:
-                cur.execute("UPDATE users SET password = " + p + " WHERE id = " + p, (_md5(new_password), uid))
-                rowcount = cur.rowcount
+                cur.execute("SELECT id, password FROM users WHERE id = " + p, (uid,))
+                row = cur.fetchone()
+                if row is None:
+                    return (False, "用户不存在")
+                if (row.get("password") or "").strip().lower() == new_hash:
+                    return (True, "密码未变更，已保持原密码")
+                cur.execute("UPDATE users SET password = " + p + " WHERE id = " + p, (new_hash, uid))
             conn.commit()
-        if rowcount == 0:
-            return (False, "用户不存在")
         return (True, "密码已重置")
     finally:
         conn.close()

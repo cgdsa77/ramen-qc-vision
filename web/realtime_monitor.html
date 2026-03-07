@@ -162,7 +162,7 @@
 
             <div class="ivcam-section">
                 <h3>选择本地视频或图片进行检测（使用 ivcam）</h3>
-                <p class="hint">从 data\ivcam 目录选择已录制的视频或拍摄的图片，跳转到对应检测模块（跳转后将提示确认是否开始检测）。</p>
+                <p class="hint">从 data\ivcam\检测框 或 data\ivcam\骨架线 选择已录制的视频或图片，跳转到对应检测模块（跳转后将提示确认是否开始检测）。</p>
                 <div class="ivcam-btns-row">
                     <button type="button" class="ivcam-btn" id="ivcamBtnVideo">选择视频文件</button>
                     <button type="button" class="ivcam-btn" id="ivcamBtnImage">选择图片文件</button>
@@ -330,23 +330,33 @@
                     btnBoiling.style.display = mode === 'video' ? 'inline-block' : 'none';
                     btnSkeleton.style.display = mode === 'video' ? 'inline-block' : 'none';
                     btnProduct.style.display = mode === 'image' ? 'inline-block' : 'none';
-                    modalTitle.textContent = mode === 'video' ? '选择视频文件（data\\ivcam）' : '选择图片文件（data\\ivcam）';
+                    modalTitle.textContent = mode === 'video' ? '选择视频（检测框 / 骨架线）' : '选择图片（检测框 / 骨架线）';
                     modal.classList.add('show');
                     fetch('/api/ivcam/list').then(function (r) { return r.json(); }).then(function (res) {
-                        var items = mode === 'video' ? (res.videos || []) : (res.images || []);
+                        var detection = res.detection || { videos: [], images: [] };
+                        var skeleton = res.skeleton || { videos: [], images: [] };
+                        var items = [];
+                        if (mode === 'video') {
+                            (detection.videos || []).forEach(function (n) { items.push({ path: '检测框/' + n, label: '[检测框] ' + n }); });
+                            (skeleton.videos || []).forEach(function (n) { items.push({ path: '骨架线/' + n, label: '[骨架线] ' + n }); });
+                        } else {
+                            (detection.images || []).forEach(function (n) { items.push({ path: '检测框/' + n, label: '[检测框] ' + n }); });
+                            (skeleton.images || []).forEach(function (n) { items.push({ path: '骨架线/' + n, label: '[骨架线] ' + n }); });
+                        }
                         if (items.length === 0) {
                             modalList.style.display = 'none';
                             modalEmpty.style.display = 'block';
+                            modalEmpty.textContent = '暂无文件，请将视频或图片放入 data\\ivcam\\检测框 或 data\\ivcam\\骨架线';
                             return;
                         }
-                        modalList.innerHTML = items.map(function (name) {
-                            return '<li data-name="' + name.replace(/"/g, '&quot;') + '">' + name + '</li>';
+                        modalList.innerHTML = items.map(function (o) {
+                            return '<li data-path="' + (o.path || '').replace(/"/g, '&quot;') + '">' + (o.label || o.path) + '</li>';
                         }).join('');
                         modalList.querySelectorAll('li').forEach(function (li) {
                             li.addEventListener('click', function () {
                                 modalList.querySelectorAll('li').forEach(function (l) { l.classList.remove('selected'); });
                                 li.classList.add('selected');
-                                selectedName = li.dataset.name;
+                                selectedName = li.dataset.path;
                                 modalActions.style.display = 'flex';
                                 if (mode === 'video') {
                                     btnStretch.href = '/stretch-detection?ivcam=' + encodeURIComponent(selectedName);

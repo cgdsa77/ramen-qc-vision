@@ -884,15 +884,17 @@
             iframe.style.display = 'none';
             empty.style.display = 'none';
             try {
-                const r = await fetch('/api/list_saved_score_results?stage=boiling');
+                const r = await fetch('/api/list_saved_score_results?stage=boiling', { credentials: 'include' });
                 const res = await r.json().catch(() => ({}));
                 if (!res.success || !res.files || !res.files.length) {
                     empty.style.display = 'block';
                     return;
                 }
+                const listUserId = res.user_id != null ? res.user_id : (res.files[0] && res.files[0].user_id);
                 res.files.forEach(function (f) {
                     const opt = document.createElement('option');
                     opt.value = f.filename;
+                    opt.setAttribute('data-uid', (f.user_id != null ? f.user_id : listUserId) || '');
                     opt.textContent = f.filename;
                     sel.appendChild(opt);
                 });
@@ -900,7 +902,10 @@
                 var loadContent = function () {
                     var fn = sel.value;
                     if (!fn) return;
-                    fetch('/api/saved_score_result_content?stage=boiling&filename=' + encodeURIComponent(fn))
+                    var uid = sel.options[sel.selectedIndex] && sel.options[sel.selectedIndex].getAttribute('data-uid');
+                    var url = '/api/saved_score_result_content?stage=boiling&filename=' + encodeURIComponent(fn);
+                    if (uid) url += '&user_id=' + encodeURIComponent(uid);
+                    fetch(url, { credentials: 'include' })
                         .then(function (resp) { return resp.json(); })
                         .then(function (data) {
                             if (data.success && data.content) {

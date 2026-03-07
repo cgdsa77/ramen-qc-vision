@@ -813,10 +813,10 @@
                     </div>
                 </div>
                 <div class="card-grid" data-role-visible="2">
-                    <div class="card" data-card="chef-history">
-                        <h3>历史记录查看</h3>
-                        <p>查看个人检测与评分历史记录。</p>
-                        <a href="/scoring-visualization" class="btn">进入</a>
+                    <div class="card" data-card="chef-score-history">
+                        <h3>我的评分记录</h3>
+                        <p>查看抻面、下面及捞面、成品检测后的评分历史，可选择性查看各环节记录并删除。</p>
+                        <a href="/score-history" class="btn">进入</a>
                     </div>
                 </div>
             </section>
@@ -1425,7 +1425,7 @@
                         'score-stretch': { title: '抻面评分结果', desc: '查看抻面评分多维度结果与 AI 分析，了解自己的得分与改进方向。' },
                         'score-boiling': { title: '下面及捞面评分结果', desc: '查看下面及捞面视频的评分与多维度展示，对照标准改进操作。' },
                         'score-product': { title: '成品综合评分', desc: '上传成品图获取评分与报告，查看代表样本与 AI 分析建议。' },
-                        'chef-history': { title: '我的历史记录', desc: '查看个人检测与评分历史，追踪练习进度与成绩变化。' },
+                        'chef-score-history': { title: '我的评分记录', desc: '查看抻面、下面及捞面、成品检测后的评分历史，可选择性查看各环节记录并删除。' },
                         'pose-stretch': { title: '抻面手部姿态视频', desc: '浏览带骨架线的抻面预处理视频，作为动作与姿态参考。' },
                         'pose-boiling': { title: '下面及捞面手部姿态视频', desc: '浏览带骨架线的 xl 视频，学习规范操作与手部姿态。' }
                     }
@@ -1644,6 +1644,7 @@
                 var name = document.getElementById('userFormName').value.trim();
                 if (!username) { alert('请输入账号'); return; }
                 if (!id && !password) { alert('请输入初始密码'); return; }
+                if (id && !confirm('确认保存对该用户的修改？')) return;
                 var url = id ? '/api/users/' + id : '/api/users';
                 var body = { username: username, role: role, name: name };
                 if (!id) body.password = password;
@@ -1655,7 +1656,7 @@
                     body.status = parseInt(document.getElementById('userFormStatus').value, 10);
                     fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(body) })
                         .then(function(r) { return r.json(); }).then(function(data) {
-                            if (data.success) { closeModal('userFormModal', loadUserList); } else alert(data.error || '更新失败');
+                            if (data.success) { alert('保存成功'); closeModal('userFormModal', loadUserList); } else alert(data.error || '更新失败');
                         });
                 } else {
                     fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(body) })
@@ -1697,14 +1698,15 @@
             }
 
             function doResetPassword(uid) {
+                if (!confirm('确认要重置该用户的密码？')) return;
                 var pw = prompt('请输入新密码');
                 if (pw === null || !pw.trim()) return;
                 fetch('/api/users/' + uid + '/reset-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ new_password: pw }) })
-                    .then(function(r) { return r.json(); }).then(function(data) { if (data.success) alert('密码已重置'); else alert(data.error || '操作失败'); });
+                    .then(function(r) { return r.json(); }).then(function(data) { if (data.success) alert(data.message || '操作成功'); else alert(data.error || '操作失败'); });
             }
 
             function doDeleteUser(uid) {
-                if (!confirm('确定删除该用户？')) return;
+                if (!confirm('确认删除该用户？删除后不可恢复。')) return;
                 fetch('/api/users/' + uid, { method: 'DELETE', credentials: 'include' }).then(function(r) { return r.json(); }).then(function(data) {
                     if (data.success) loadUserList(); else alert(data.error || '删除失败');
                 });
@@ -1969,7 +1971,7 @@
                     data.students.forEach(function(s) {
                         var tr = document.createElement('tr');
                         tr.innerHTML = '<td>' + (s.username || '') + '</td><td>' + (s.name || '') + '</td><td>' + (s.status === 1 ? '正常' : '禁用') + '</td><td>' +
-                            '<a href="/scoring-visualization" class="btn-sm" style="text-decoration:none;">查看检测报告</a></td>';
+                            '<a href="/score-history?student_id=' + (s.id || '') + '&student_name=' + encodeURIComponent((s.name || s.username) || '') + '" class="btn-sm" style="text-decoration:none;">查看检测报告</a></td>';
                         tbody.appendChild(tr);
                     });
                 });

@@ -7,7 +7,7 @@ import sys
 import threading
 import uuid
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 # 异步检测/评分任务状态（job_id -> 状态字典），供前端轮询进度
 _detect_jobs = {}
@@ -49,7 +49,7 @@ else:
 
 try:
     # 导入FastAPI
-    from fastapi import FastAPI, UploadFile, File, Request, Query, HTTPException
+    from fastapi import FastAPI, UploadFile, File, Form, Request, Query, HTTPException
     from fastapi.staticfiles import StaticFiles
     from fastapi.responses import FileResponse, JSONResponse, StreamingResponse, Response
     from fastapi.middleware.cors import CORSMiddleware
@@ -280,6 +280,175 @@ try:
         students = auth_db.get_students_by_trainer(int(u["id"]))
         return JSONResponse(content={"success": True, "students": students})
 
+    # 培训师建议与学员回复（存 data/trainer_suggestions.json）；图片存 data/suggestion_images/
+    _suggestions_file = project_root / "data" / "trainer_suggestions.json"
+    _suggestion_images_dir = project_root / "data" / "suggestion_images"
+    def _load_suggestions():
+        if not _suggestions_file.exists():
+            return {"threads": []}
+        try:
+            with open(_suggestions_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {"threads": []}
+    def _save_suggestions(data):
+        _suggestions_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(_suggestions_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    def _find_thread(threads, trainer_id, student_id):
+        for t in threads:
+            if t.get("trainer_id") == trainer_id and t.get("student_id") == student_id:
+                return t
+        return None
+
+    @app.get("/api/suggestions")
+    async def api_suggestions_get(request: Request, student_id: Optional[int] = None):
+        """培训师传 student_id 获取与该学员的对话；学员不传则获取自己的对话。"""
+        u = _auth_current_user(request)
+        if not u:
+            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
+        data = _load_suggestions()
+        threads = data.get("threads", [])
+        if u.get("role") == 1 and student_id is not None:
+            tid = int(u["id"])
+            t = _find_thread(threads, tid, student_id)
+            student = next((s for s in auth_db.get_students_by_trainer(tid) if s.get("id") == student_id), None)
+            return JSONResponse(content={"success": True, "thread": t or {"trainer_id": tid, "student_id": student_id, "messages": []}, "student_name": (student and (student.get("name") or student.get("username"))) or ""})
+        if u.get("role") == 2:
+            full_user = next((x for x in auth_db.list_users() if x.get("id") == u["id"]), None)
+            tid = (full_user or {}).get("assigned_trainer_id")
+            if not tid:
+                return JSONResponse(content={"success": True, "thread": {"messages": []}, "trainer_name": ""})
+            t = _find_thread(threads, int(tid), int(u["id"]))
+            trainer = next((x for x in auth_db.list_users() if x.get("id") == tid), None)
+            return JSONResponse(content={"success": True, "thread": t or {"trainer_id": tid, "student_id": u["id"], "messages": []}, "trainer_name": (trainer and (trainer.get("name") or trainer.get("username"))) or ""})
+        return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
+
+    @app.post("/api/suggestions")
+    async def api_suggestions_post(request: Request):
+        """培训师给学员发建议（文本）。"""
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 1:
+            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可发建议"})
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
+        student_id = body.get("student_id")
+        content = (body.get("content") or "").strip()
+        if not content:
+            return JSONResponse(content={"success": False, "error": "建议内容不能为空"})
+        try:
+            student_id = int(student_id)
+        except (TypeError, ValueError):
+            return JSONResponse(content={"success": False, "error": "学员无效"})
+        students = auth_db.get_students_by_trainer(int(u["id"]))
+        if not any(s.get("id") == student_id for s in students):
+            return JSONResponse(status_code=403, content={"success": False, "error": "只能给所负责学员发建议"})
+        data = _load_suggestions()
+        threads = data.get("threads", [])
+        t = _find_thread(threads, int(u["id"]), student_id)
+        if not t:
+            t = {"trainer_id": int(u["id"]), "student_id": student_id, "messages": []}
+            threads.append(t)
+        from datetime import datetime
+        t["messages"].append({"role": "trainer", "content": content, "content_type": "text", "at": datetime.now().isoformat()})
+        _save_suggestions(data)
+        return JSONResponse(content={"success": True, "message": "已发送"})
+
+    @app.post("/api/suggestions/upload")
+    async def api_suggestions_upload(request: Request, student_id: str = Form(...), content: str = Form(""), image: UploadFile = File(None)):
+        """培训师给学员发建议（图片，可选附文字）。支持从本地选择或拖拽上传。"""
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 1:
+            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可发建议"})
+        try:
+            sid = int(student_id)
+        except (TypeError, ValueError):
+            return JSONResponse(content={"success": False, "error": "学员无效"})
+        students = auth_db.get_students_by_trainer(int(u["id"]))
+        if not any(s.get("id") == sid for s in students):
+            return JSONResponse(status_code=403, content={"success": False, "error": "只能给所负责学员发建议"})
+        if not image or not image.filename:
+            return JSONResponse(content={"success": False, "error": "请选择或拖拽上传一张图片"})
+        ext = (Path(image.filename).suffix or ".jpg").lower()
+        if ext not in (".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"):
+            return JSONResponse(content={"success": False, "error": "仅支持图片格式（jpg/png/gif等）"})
+        _suggestion_images_dir.mkdir(parents=True, exist_ok=True)
+        safe_name = str(uuid.uuid4()) + ext
+        path = _suggestion_images_dir / safe_name
+        try:
+            content_bytes = await image.read()
+            path.write_bytes(content_bytes)
+        except Exception as e:
+            return JSONResponse(content={"success": False, "error": "保存图片失败: " + str(e)})
+        data = _load_suggestions()
+        threads = data.get("threads", [])
+        t = _find_thread(threads, int(u["id"]), sid)
+        if not t:
+            t = {"trainer_id": int(u["id"]), "student_id": sid, "messages": []}
+            threads.append(t)
+        from datetime import datetime
+        text_part = (content or "").strip()
+        if text_part:
+            t["messages"].append({"role": "trainer", "content": text_part, "content_type": "text", "at": datetime.now().isoformat()})
+        t["messages"].append({"role": "trainer", "content": safe_name, "content_type": "image", "at": datetime.now().isoformat()})
+        _save_suggestions(data)
+        return JSONResponse(content={"success": True, "message": "已发送"})
+
+    def _suggestion_image_media_type(name: str):
+        n = name.lower()
+        if n.endswith((".png",)): return "image/png"
+        if n.endswith((".gif",)): return "image/gif"
+        if n.endswith((".webp",)): return "image/webp"
+        if n.endswith((".bmp",)): return "image/bmp"
+        return "image/jpeg"
+
+    @app.get("/api/suggestions/image/{filename:path}")
+    async def api_suggestions_image(filename: str):
+        """返回建议中上传的图片，供前端展示。"""
+        if not filename or ".." in filename:
+            raise HTTPException(status_code=400, detail="invalid")
+        name = Path(filename.replace("\\", "/").strip("/")).name
+        if not name:
+            raise HTTPException(status_code=400, detail="invalid")
+        path = _suggestion_images_dir / name
+        if not path.is_file():
+            raise HTTPException(status_code=404, detail="not found")
+        try:
+            path.resolve().relative_to(_suggestion_images_dir.resolve())
+        except ValueError:
+            raise HTTPException(status_code=404, detail="not found")
+        return FileResponse(str(path), media_type=_suggestion_image_media_type(name))
+
+    @app.post("/api/suggestions/reply")
+    async def api_suggestions_reply(request: Request):
+        """学员回复培训师。"""
+        u = _auth_current_user(request)
+        if not u or u.get("role") != 2:
+            return JSONResponse(status_code=403, content={"success": False, "error": "仅学员可回复"})
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
+        content = (body.get("content") or "").strip()
+        if not content:
+            return JSONResponse(content={"success": False, "error": "回复内容不能为空"})
+        full_user = next((x for x in auth_db.list_users() if x.get("id") == u["id"]), None)
+        tid = (full_user or {}).get("assigned_trainer_id")
+        if not tid:
+            return JSONResponse(content={"success": False, "error": "未分配培训师"})
+        data = _load_suggestions()
+        threads = data.get("threads", [])
+        t = _find_thread(threads, int(tid), int(u["id"]))
+        if not t:
+            t = {"trainer_id": int(tid), "student_id": int(u["id"]), "messages": []}
+            threads.append(t)
+        from datetime import datetime
+        t["messages"].append({"role": "student", "content": content, "content_type": "text", "at": datetime.now().isoformat()})
+        _save_suggestions(data)
+        return JSONResponse(content={"success": True, "message": "已回复"})
+
     # 培训师列表（管理员/培训师用于下拉：所属培训师）
     @app.get("/api/trainers")
     async def api_trainers_list(request: Request):
@@ -485,17 +654,17 @@ try:
             return FileResponse(str(web_file))
         return {"message": "实时骨架线页面未找到"}
 
-    # ivcam 目录：使用 ivcam 录制/拍摄的视频或图片（data/ivcam）
+    # ivcam 目录：检测框与骨架线分两个子文件夹（data/ivcam/检测框、data/ivcam/骨架线）
     ivcam_dir = project_root / "data" / "ivcam"
+    ivcam_subdirs = ("检测框", "骨架线")
     _video_ext = {".mp4", ".avi", ".mov", ".mkv", ".wmv"}
     _image_ext = {".jpg", ".jpeg", ".png", ".bmp"}
 
-    @app.get("/api/ivcam/list")
-    async def api_ivcam_list():
-        """列出 data/ivcam 下的视频与图片文件（仅文件名）。"""
-        ivcam_dir.mkdir(parents=True, exist_ok=True)
+    def _ivcam_collect(subdir_path):
         videos, images = [], []
-        for f in ivcam_dir.iterdir():
+        if not subdir_path.exists():
+            return videos, images
+        for f in subdir_path.iterdir():
             if not f.is_file():
                 continue
             suf = f.suffix.lower()
@@ -505,16 +674,49 @@ try:
                 images.append(f.name)
         videos.sort()
         images.sort()
-        return {"success": True, "videos": videos, "images": images}
+        return videos, images
 
-    @app.get("/api/ivcam/file/{filename}")
-    async def api_ivcam_file(filename: str):
-        """返回 data/ivcam 下的文件内容，用于前端拉取后提交检测。仅允许单层文件名，禁止路径穿越。"""
-        if not filename or ".." in filename or "/" in filename.replace("\\", "/"):
+    @app.get("/api/ivcam/list")
+    async def api_ivcam_list():
+        """列出 data/ivcam 下「检测框」「骨架线」两个子目录中的视频与图片。"""
+        ivcam_dir.mkdir(parents=True, exist_ok=True)
+        for sub in ivcam_subdirs:
+            (ivcam_dir / sub).mkdir(parents=True, exist_ok=True)
+        detection_v, detection_i = _ivcam_collect(ivcam_dir / "检测框")
+        skeleton_v, skeleton_i = _ivcam_collect(ivcam_dir / "骨架线")
+        return {
+            "success": True,
+            "detection": {"videos": detection_v, "images": detection_i},
+            "skeleton": {"videos": skeleton_v, "images": skeleton_i},
+            "videos": detection_v + skeleton_v,
+            "images": detection_i + skeleton_i,
+        }
+
+    @app.get("/api/ivcam/file/{file_path:path}")
+    async def api_ivcam_file(file_path: str):
+        """返回 data/ivcam 下文件内容。file_path 可为「检测框/xxx.mp4」或「骨架线/xxx.mp4」，禁止路径穿越。"""
+        from urllib.parse import unquote
+        file_path = unquote(file_path or "")
+        if not file_path or ".." in file_path:
+            raise HTTPException(status_code=400, detail="invalid path")
+        parts = file_path.replace("\\", "/").strip("/").split("/")
+        if len(parts) == 1:
+            subdir, name = "", parts[0]
+        elif len(parts) == 2 and parts[0] in ivcam_subdirs:
+            subdir, name = parts[0], parts[1]
+        else:
+            raise HTTPException(status_code=400, detail="invalid path")
+        if not name or "/" in name:
             raise HTTPException(status_code=400, detail="invalid filename")
-        name = Path(filename).name
-        path = ivcam_dir / name
-        if not path.is_file() or path.resolve().parent != ivcam_dir.resolve():
+        if subdir:
+            path = ivcam_dir / subdir / name
+        else:
+            path = ivcam_dir / name
+        if not path.is_file():
+            raise HTTPException(status_code=404, detail="file not found")
+        try:
+            path.resolve().relative_to(ivcam_dir.resolve())
+        except ValueError:
             raise HTTPException(status_code=404, detail="file not found")
         return FileResponse(str(path), filename=name)
 
@@ -1283,6 +1485,16 @@ try:
             from fastapi import HTTPException
             raise HTTPException(status_code=404, detail=f"视频文件不存在: {video_file}")
     
+    def _normalize_conv_bn_error(err_text: str) -> str:
+        """将 Conv.bn 相关原始异常转为对用户友好的说明（检测/评分过程中若推理报错会触发）。"""
+        if err_text and "Conv" in err_text and "bn" in err_text:
+            return (
+                "模型与当前 ultralytics 版本不兼容（Conv.bn 结构变更）。"
+                "请尝试：pip install ultralytics==8.0.200 后重启服务；"
+                "或使用当前环境重新训练得到新的 best.pt。详见 docs/模型与ultralytics版本兼容说明.md"
+            )
+        return err_text or ""
+
     # 检测API（主要功能）：支持 async_mode=1 返回 job_id，前端轮询进度与结果；model_type=cpu|gpu 预留
     @app.post("/api/detect_video")
     async def detect_video(file: UploadFile = File(...), async_mode: bool = Query(False), model_type: str = Query("cpu", description="检测使用模型：cpu=CPU训练模型，gpu=GPU训练模型（预留）")):
@@ -1329,7 +1541,7 @@ try:
                 traceback.print_exc()
                 with _jobs_lock:
                     if job_id and job_id in _detect_jobs:
-                        _detect_jobs[job_id].update(phase="error", error=str(e), message="检测失败")
+                        _detect_jobs[job_id].update(phase="error", error=_normalize_conv_bn_error(str(e)), message="检测失败")
             finally:
                 if tmp_path and os.path.exists(tmp_path):
                     def delayed_delete(path):
@@ -1370,7 +1582,7 @@ try:
                     traceback.print_exc()
                     with _jobs_lock:
                         if jid in _detect_jobs:
-                            _detect_jobs[jid].update(phase="error", error=str(e), message="检测失败")
+                            _detect_jobs[jid].update(phase="error", error=_normalize_conv_bn_error(str(e)), message="检测失败")
                 finally:
                     if tmp_path and os.path.exists(tmp_path):
                         def delayed_delete(path):
@@ -1394,7 +1606,8 @@ try:
         except Exception as e:
             import traceback
             traceback.print_exc()
-            return {"success": False, "error": str(e), "message": f"检测失败: {e}"}
+            err = _normalize_conv_bn_error(str(e))
+            return {"success": False, "error": err, "message": f"检测失败: {e}"}
         finally:
             if tmp_path and os.path.exists(tmp_path):
                 def delayed_delete(path):
@@ -1494,7 +1707,7 @@ try:
                     traceback.print_exc()
                     with _jobs_lock:
                         if jid in _detect_jobs:
-                            _detect_jobs[jid].update(phase="error", error=str(e), message="检测失败")
+                            _detect_jobs[jid].update(phase="error", error=_normalize_conv_bn_error(str(e)), message="检测失败")
                 finally:
                     if tmp_path and os.path.exists(tmp_path):
                         def delayed_delete(path):
@@ -1515,7 +1728,8 @@ try:
         except Exception as e:
             import traceback
             traceback.print_exc()
-            return {"success": False, "error": str(e), "message": f"检测失败: {e}"}
+            err = _normalize_conv_bn_error(str(e))
+            return {"success": False, "error": err, "message": f"检测失败: {e}"}
         finally:
             if tmp_path and os.path.exists(tmp_path):
                 def delayed_delete(path):
@@ -1783,7 +1997,7 @@ try:
                     traceback.print_exc()
                     with _jobs_lock:
                         if jid in _score_jobs:
-                            _score_jobs[jid].update(phase="error", error=str(e), message="评分失败")
+                            _score_jobs[jid].update(phase="error", error=_normalize_conv_bn_error(str(e)), message="评分失败")
                 finally:
                     if tmp_path and os.path.exists(tmp_path):
                         def delayed_delete(path):
@@ -2102,9 +2316,11 @@ th {{ background: #f8f9fa; }}
 
     @app.post("/api/save_score_result")
     async def save_score_result(request: Request):
-        """将当前评分结果与 AI 分析保存为 HTML（与界面一致：文字+表格+图表）"""
+        """将当前评分结果与 AI 分析保存为 HTML（按用户分目录，便于学员/培训师查看与删除）"""
         import re
         from datetime import datetime
+        u = _auth_current_user(request)
+        user_id = int(u["id"]) if u else 0
         try:
             try:
                 body = await request.json()
@@ -2121,7 +2337,7 @@ th {{ background: #f8f9fa; }}
             if not isinstance(ai_analysis, str):
                 ai_analysis = str(ai_analysis) if ai_analysis is not None else ""
             subdir = "cm_scoring_ras" if stage == "stretch" else "xl_scoring_ras"
-            save_dir = project_root / "data" / "Scoring_results_and_suggestions" / subdir
+            save_dir = project_root / "data" / "Scoring_results_and_suggestions" / subdir / str(user_id)
             try:
                 save_dir.mkdir(parents=True, exist_ok=True)
             except Exception as e:
@@ -2145,45 +2361,95 @@ th {{ background: #f8f9fa; }}
                 filepath.write_text(html_content, encoding="utf-8")
             except Exception as e:
                 return JSONResponse({"success": False, "error": "写入文件失败: " + str(e)}, status_code=500)
-            rel_path = f"data/Scoring_results_and_suggestions/{subdir}/{filename}"
-            return JSONResponse({"success": True, "path": rel_path, "filename": filename})
+            rel_path = f"data/Scoring_results_and_suggestions/{subdir}/{user_id}/{filename}"
+            return JSONResponse({"success": True, "path": rel_path, "filename": filename, "user_id": user_id})
         except Exception as e:
             import traceback
             traceback.print_exc()
             return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
+    def _score_result_target_user(request: Request, student_id: Optional[int] = None):
+        """确定要查看/操作的评分记录所属用户：学员看自己，培训师可传 student_id 看学员，管理员可看任意。"""
+        u = _auth_current_user(request)
+        if not u:
+            return None, "未登录"
+        role = u.get("role")
+        uid = u.get("id")
+        if student_id is not None:
+            if role == 0:
+                return student_id, None
+            if role == 1:
+                students = auth_db.get_students_by_trainer(int(uid))
+                if not any(s.get("id") == student_id for s in students):
+                    return None, "只能查看所负责学员的记录"
+                return student_id, None
+            if role == 2:
+                # 学员/厨师查看自己的记录时，前端会传 user_id（列表返回的记录所属人），仅允许与当前用户一致
+                if int(student_id) == int(uid):
+                    return student_id, None
+                return None, "无权限查看他人记录"
+            return None, "无权限查看他人记录"
+        return uid, None
+
     @app.get("/api/list_saved_score_results")
-    async def list_saved_score_results(stage: str = "stretch"):
-        """列出已保存的评分结果文件（HTML），按修改时间倒序。"""
+    async def list_saved_score_results(request: Request, stage: str = "stretch", student_id: Optional[int] = None):
+        """列出已保存的评分结果（按用户）：学员看自己，培训师可传 student_id 看学员。"""
+        target_uid, err = _score_result_target_user(request, student_id)
+        if err:
+            return JSONResponse({"success": False, "error": err}, status_code=403 if "未登录" in err else 403)
         subdir = "cm_scoring_ras" if stage.strip().lower() == "stretch" else "xl_scoring_ras"
-        folder = project_root / "data" / "Scoring_results_and_suggestions" / subdir
+        folder = project_root / "data" / "Scoring_results_and_suggestions" / subdir / str(target_uid)
         if not folder.exists():
-            return JSONResponse({"success": True, "files": []})
+            return JSONResponse({"success": True, "files": [], "user_id": target_uid})
         files = []
         for f in folder.iterdir():
             if f.is_file() and f.suffix.lower() == ".html":
                 try:
                     mtime = f.stat().st_mtime
-                    files.append({"filename": f.name, "mtime": mtime})
+                    files.append({"filename": f.name, "mtime": mtime, "user_id": target_uid})
                 except Exception:
                     pass
         files.sort(key=lambda x: x["mtime"], reverse=True)
-        return JSONResponse({"success": True, "files": files})
+        return JSONResponse({"success": True, "files": files, "user_id": target_uid})
 
     @app.get("/api/saved_score_result_content")
-    async def saved_score_result_content(stage: str = "stretch", filename: str = ""):
-        """获取已保存的评分结果 HTML 内容，用于在 Web 内展示。"""
-        import urllib.parse
+    async def saved_score_result_content(request: Request, stage: str = "stretch", filename: str = "", user_id: Optional[int] = None):
+        """获取已保存的评分结果 HTML 内容。user_id 为记录所属用户（列表返回）；不传则用当前用户。"""
         if not filename or ".." in filename or "/" in filename or "\\" in filename:
             return JSONResponse({"success": False, "error": "无效文件名"}, status_code=400)
+        u = _auth_current_user(request)
+        if not u:
+            return JSONResponse({"success": False, "error": "未登录"}, status_code=401)
+        target_uid, err = _score_result_target_user(request, user_id)
+        if err:
+            return JSONResponse({"success": False, "error": err}, status_code=403)
         subdir = "cm_scoring_ras" if stage.strip().lower() == "stretch" else "xl_scoring_ras"
-        folder = project_root / "data" / "Scoring_results_and_suggestions" / subdir
+        folder = project_root / "data" / "Scoring_results_and_suggestions" / subdir / str(target_uid)
         filepath = folder / filename
         if not filepath.is_file() or filepath.suffix.lower() != ".html":
             return JSONResponse({"success": False, "error": "文件不存在"}, status_code=404)
         try:
             content = filepath.read_text(encoding="utf-8")
             return JSONResponse({"success": True, "content": content})
+        except Exception as e:
+            return JSONResponse({"success": False, "error": str(e)}, status_code=500)
+
+    @app.delete("/api/saved_score_result")
+    async def delete_saved_score_result(request: Request, stage: str = "stretch", filename: str = "", user_id: Optional[int] = None):
+        """删除一条已保存的评分记录。仅本人、其培训师或管理员可删。"""
+        if not filename or ".." in filename or "/" in filename or "\\" in filename:
+            return JSONResponse({"success": False, "error": "无效文件名"}, status_code=400)
+        target_uid, err = _score_result_target_user(request, user_id)
+        if err:
+            return JSONResponse({"success": False, "error": err}, status_code=403)
+        subdir = "cm_scoring_ras" if stage.strip().lower() == "stretch" else "xl_scoring_ras"
+        folder = project_root / "data" / "Scoring_results_and_suggestions" / subdir / str(target_uid)
+        filepath = folder / filename
+        if not filepath.is_file() or filepath.suffix.lower() != ".html":
+            return JSONResponse({"success": False, "error": "文件不存在"}, status_code=404)
+        try:
+            filepath.unlink()
+            return JSONResponse({"success": True, "message": "已删除"})
         except Exception as e:
             return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
@@ -2314,6 +2580,16 @@ th {{ background: #f8f9fa; }}
             r.headers["Expires"] = "0"
             return r
         return {"message": "评分可视化页面未找到"}
+
+    @app.get("/score-history")
+    async def score_history_page():
+        """我的评分记录：按抻面/下面捞面/成品分页查看与删除，培训师可查学员并给建议。"""
+        web_file = web_dir / "score_history.html"
+        if web_file.exists():
+            r = FileResponse(str(web_file))
+            r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            return r
+        return {"message": "评分记录页面未找到"}
 
     @app.get("/scoring-visualization-boiling")
     async def scoring_visualization_boiling():

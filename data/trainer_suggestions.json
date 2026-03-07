@@ -1,0 +1,40 @@
+{
+  "threads": [
+    {
+      "trainer_id": 3,
+      "student_id": 2,
+      "messages": [
+        {
+          "role": "trainer",
+          "content": "这不是什么大问题，xl7的基本正常",
+          "content_type": "text",
+          "at": "2026-03-07T23:02:45.722748"
+        },
+        {
+          "role": "student",
+          "content": "好的，谢谢老师",
+          "content_type": "text",
+          "at": "2026-03-07T23:03:21.609789"
+        }
+      ]
+    },
+    {
+      "trainer_id": 3,
+      "student_id": 4,
+      "messages": [
+        {
+          "role": "trainer",
+          "content": "可以参照一下这个，做出来就是这个效果",
+          "content_type": "text",
+          "at": "2026-03-07T23:11:49.417344"
+        },
+        {
+          "role": "trainer",
+          "content": "bc958b13-9d89-4fb5-a824-256efb442011.jpg",
+          "content_type": "image",
+          "at": "2026-03-07T23:11:49.417353"
+        }
+      ]
+    }
+  ]
+}

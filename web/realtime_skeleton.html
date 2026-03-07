@@ -228,20 +228,22 @@
                     modalTitle.textContent = '选择视频文件（data\\ivcam）';
                     modal.classList.add('show');
                     fetch('/api/ivcam/list').then(function (r) { return r.json(); }).then(function (res) {
-                        var items = res.videos || [];
+                        var skeleton = res.skeleton || { videos: [] };
+                        var items = (skeleton.videos || []).map(function (n) { return { path: '骨架线/' + n, label: n }; });
                         if (items.length === 0) {
                             modalList.style.display = 'none';
                             modalEmpty.style.display = 'block';
+                            modalEmpty.textContent = '暂无视频，请将文件放入 data\\ivcam\\骨架线';
                             return;
                         }
-                        modalList.innerHTML = items.map(function (name) {
-                            return '<li data-name="' + name.replace(/"/g, '&quot;') + '">' + name + '</li>';
+                        modalList.innerHTML = items.map(function (o) {
+                            return '<li data-path="' + (o.path || '').replace(/"/g, '&quot;') + '">' + (o.label || o.path) + '</li>';
                         }).join('');
                         modalList.querySelectorAll('li').forEach(function (li) {
                             li.addEventListener('click', function () {
                                 modalList.querySelectorAll('li').forEach(function (l) { l.classList.remove('selected'); });
                                 li.classList.add('selected');
-                                selectedName = li.dataset.name;
+                                selectedName = li.dataset.path;
                                 modalActions.style.display = 'flex';
                                 btnSkeleton.href = '/video-skeleton-ivcam?ivcam=' + encodeURIComponent(selectedName);
                             });

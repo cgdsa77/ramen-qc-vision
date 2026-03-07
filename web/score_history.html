@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>我的评分记录</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #f0f0f5; min-height: 100vh; padding: 20px; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; }
+        .nav-home { display: inline-block; margin-bottom: 16px; color: #667eea; text-decoration: none; font-size: 14px; }
+        .nav-home:hover { text-decoration: underline; }
+        .header { background: #fff; padding: 20px 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .header h1 { font-size: 1.4em; margin-bottom: 6px; color: #333; }
+        .header .sub { font-size: 13px; color: #666; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .tab { padding: 10px 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .tab:hover { background: #f5f5f5; }
+        .tab.active { background: #667eea; color: #fff; border-color: #667eea; }
+        .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .card h2 { font-size: 1em; margin-bottom: 12px; color: #555; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; color: #555; font-weight: 600; }
+        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; margin-right: 6px; text-decoration: none; display: inline-block; }
+        .btn-view { background: #667eea; color: #fff; }
+        .btn-view:hover { opacity: 0.9; }
+        .btn-del { background: #e0e0e0; color: #333; }
+        .btn-del:hover { background: #f5576c; color: #fff; }
+        .empty { color: #888; padding: 24px; text-align: center; font-size: 14px; }
+        .viewer-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .viewer-modal.show { display: flex; }
+        .viewer-box { background: #fff; border-radius: 12px; width: 92%; max-width: 860px; min-width: 520px; max-height: 88vh; overflow: auto; padding: 20px; }
+        .viewer-box .close { float: right; cursor: pointer; font-size: 20px; color: #666; }
+        .viewer-content { margin-top: 12px; }
+        #viewerIframe { width: 100%; height: 72vh; max-height: 640px; border: none; display: block; }
+        .student-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 6px; font-size: 12px; margin-left: 8px; }
+        .suggestion-card { margin-top: 20px; }
+        .suggestion-card h2 { margin-bottom: 12px; }
+        .msg-list { max-height: 280px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
+        .msg-item { margin-bottom: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; }
+        .msg-item.trainer { background: #e3f2fd; margin-left: 0; margin-right: 24px; }
+        .msg-item.student { background: #e8f5e9; margin-left: 24px; margin-right: 0; }
+        .msg-item .meta { font-size: 11px; color: #666; margin-top: 4px; }
+        .suggestion-form { display: flex; flex-direction: column; gap: 10px; }
+        .suggestion-form .form-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+        .suggestion-form textarea { flex: 1; min-width: 200px; min-height: 72px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .suggestion-form .btn-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .suggestion-form button { padding: 10px 20px; background: #667eea; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .suggestion-form button:hover { opacity: 0.9; }
+        .suggestion-form .btn-img { background: #5a6268; }
+        .suggestion-form .img-zone { border: 2px dashed #ccc; border-radius: 8px; padding: 16px; text-align: center; color: #666; font-size: 13px; cursor: pointer; background: #fafafa; }
+        .suggestion-form .img-zone:hover, .suggestion-form .img-zone.dragover { border-color: #667eea; background: #f0f4ff; color: #333; }
+        .suggestion-form .img-preview { max-width: 120px; max-height: 100px; border-radius: 6px; margin-top: 8px; display: block; margin-left: auto; margin-right: auto; }
+        .msg-item img.msg-img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 6px; display: block; cursor: pointer; }
+        .msg-item img.msg-img:hover { opacity: 0.9; }
+        .img-enlarge-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1100; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
+        .img-enlarge-modal.show { display: flex; }
+        .img-enlarge-modal img { max-width: 95vw; max-height: 90vh; object-fit: contain; border-radius: 8px; pointer-events: none; }
+        .img-enlarge-modal .close-hint { position: absolute; top: 16px; right: 20px; color: #fff; font-size: 28px; cursor: pointer; line-height: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="nav-home">← 返回首页</a>
+        <div class="header">
+            <h1 id="pageTitle">我的评分记录</h1>
+            <p class="sub" id="pageSub">按环节查看抻面、下面及捞面、成品检测后的评分历史，可查看或删除记录。</p>
+        </div>
+        <div class="tabs">
+            <button type="button" class="tab active" data-stage="stretch">抻面评分记录</button>
+            <button type="button" class="tab" data-stage="boiling">下面及捞面评分记录</button>
+            <button type="button" class="tab" data-stage="product">成品评分记录</button>
+        </div>
+        <div class="card">
+            <h2 id="sectionTitle">抻面评分记录</h2>
+            <div id="listWrap">
+                <table id="recordTable" style="display:none;">
+                    <thead><tr><th>时间</th><th>名称/文件</th><th>操作</th></tr></thead>
+                    <tbody id="recordBody"></tbody>
+                </table>
+                <p id="listEmpty" class="empty">加载中…</p>
+            </div>
+        </div>
+        <div class="card suggestion-card" id="suggestionCard" style="display:none;">
+            <h2 id="suggestionTitle">培训师建议与回复</h2>
+            <div id="suggestionThread" class="msg-list">加载中…</div>
+            <div id="suggestionFormWrap" style="display:none;">
+                <div class="suggestion-form" id="suggestionForm">
+                    <div class="form-row">
+                        <textarea id="suggestionInput" placeholder="输入建议内容（培训师）或回复内容（学员）…"></textarea>
+                        <div class="btn-row">
+                            <button type="button" id="suggestionSendBtn">发送</button>
+                        </div>
+                    </div>
+                    <div id="suggestionImageZone" class="img-zone" style="display:none;">点击或拖拽图片到此处上传 · 可从本地文件夹选择</div>
+                    <input type="file" id="suggestionImageInput" accept="image/*" style="display:none;" />
+                    <div id="suggestionImagePreviewWrap" style="display:none;"><img id="suggestionImagePreview" class="img-preview" alt="预览" /><span id="suggestionImageName"></span> <button type="button" id="suggestionImageClear">移除</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="viewerModal" class="viewer-modal">
+        <div class="viewer-box">
+            <span class="close" id="viewerClose">&times;</span>
+            <div class="viewer-content" id="viewerContent"></div>
+        </div>
+    </div>
+    <div id="imgEnlargeModal" class="img-enlarge-modal" title="点击任意处关闭">
+        <span class="close-hint" id="imgEnlargeClose">&times;</span>
+        <img id="imgEnlargeImg" src="" alt="放大" />
+    </div>
+    <script>
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var studentId = params.get('student_id') ? parseInt(params.get('student_id'), 10) : null;
+            var studentName = params.get('student_name') || '';
+            var currentStage = 'stretch';
+            var currentUserId = null;
+
+            if (studentId && studentName) {
+                document.getElementById('pageTitle').textContent = '学员评分记录';
+                document.getElementById('pageSub').innerHTML = '学员「' + escapeHtml(studentName) + '」的评分历史，可查看、删除或给予建议。';
+            }
+
+            function escapeHtml(s) {
+                if (!s) return '';
+                var d = document.createElement('div');
+                d.textContent = s;
+                return d.innerHTML;
+            }
+
+            function listUrl(stage) {
+                var url = '/api/list_saved_score_results?stage=' + encodeURIComponent(stage);
+                if (studentId) url += '&student_id=' + studentId;
+                return url;
+            }
+
+            function loadList(stage) {
+                currentStage = stage;
+                var tbody = document.getElementById('recordBody');
+                var table = document.getElementById('recordTable');
+                var empty = document.getElementById('listEmpty');
+                tbody.innerHTML = '';
+                empty.textContent = '加载中…';
+                empty.style.display = 'block';
+                table.style.display = 'none';
+
+                if (stage === 'product') {
+                    empty.textContent = '成品评分记录功能即将开放，请先在「兰州拉面成品综合评分」中上传并评分。';
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                fetch(listUrl(stage), { credentials: 'include' })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (!data.success) {
+                            empty.textContent = data.error || '加载失败';
+                            empty.style.display = 'block';
+                            return;
+                        }
+                        currentUserId = data.user_id;
+                        var files = data.files || [];
+                        if (files.length === 0) {
+                            empty.textContent = '暂无该环节的评分记录。请先在抻面/下面及捞面检测中完成检测并保存评分。';
+                            empty.style.display = 'block';
+                            return;
+                        }
+                        empty.style.display = 'none';
+                        table.style.display = 'table';
+                        files.forEach(function(f) {
+                            var tr = document.createElement('tr');
+                            var mtime = f.mtime ? new Date(f.mtime * 1000).toLocaleString('zh-CN') : '';
+                            var name = f.filename || '';
+                            tr.innerHTML = '<td>' + escapeHtml(mtime) + '</td><td>' + escapeHtml(name) + '</td><td>' +
+                                '<button type="button" class="btn-sm btn-view" data-fn="' + escapeHtml(f.filename) + '" data-uid="' + (f.user_id || '') + '">查看</button>' +
+                                '<button type="button" class="btn-sm btn-del" data-fn="' + escapeHtml(f.filename) + '" data-uid="' + (f.user_id || '') + '">删除</button></td>';
+                            tbody.appendChild(tr);
+                        });
+                        tbody.querySelectorAll('.btn-view').forEach(function(btn) {
+                            btn.onclick = function() { viewRecord(btn.getAttribute('data-fn'), btn.getAttribute('data-uid')); };
+                        });
+                        tbody.querySelectorAll('.btn-del').forEach(function(btn) {
+                            btn.onclick = function() { deleteRecord(btn.getAttribute('data-fn'), btn.getAttribute('data-uid')); };
+                        });
+                    })
+                    .catch(function() {
+                        empty.textContent = '网络错误，请稍后重试';
+                        empty.style.display = 'block';
+                    });
+            }
+
+            function viewRecord(filename, uid) {
+                var url = '/api/saved_score_result_content?stage=' + encodeURIComponent(currentStage) + '&filename=' + encodeURIComponent(filename);
+                if (uid) url += '&user_id=' + encodeURIComponent(uid);
+                fetch(url, { credentials: 'include' })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (!data.success) {
+                            alert(data.error || '加载失败');
+                            return;
+                        }
+                        var wrap = document.getElementById('viewerContent');
+                        wrap.innerHTML = '<iframe id="viewerIframe" style="width:100%;min-height:70vh;border:none;"></iframe>';
+                        var iframe = document.getElementById('viewerIframe');
+                        iframe.srcdoc = data.content || '';
+                        document.getElementById('viewerModal').classList.add('show');
+                    })
+                    .catch(function() { alert('加载失败'); });
+            }
+
+            function deleteRecord(filename, uid) {
+                if (!confirm('确定删除该条评分记录？删除后不可恢复。')) return;
+                var url = '/api/saved_score_result?stage=' + encodeURIComponent(currentStage) + '&filename=' + encodeURIComponent(filename);
+                if (uid) url += '&user_id=' + encodeURIComponent(uid);
+                fetch(url, { method: 'DELETE', credentials: 'include' })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (data.success) {
+                            loadList(currentStage);
+                        } else {
+                            alert(data.error || '删除失败');
+                        }
+                    })
+                    .catch(function() { alert('删除失败'); });
+            }
+
+            document.getElementById('viewerClose').onclick = function() {
+                document.getElementById('viewerModal').classList.remove('show');
+            };
+            document.getElementById('viewerModal').onclick = function(e) {
+                if (e.target.id === 'viewerModal') document.getElementById('viewerModal').classList.remove('show');
+            };
+
+            var titles = { stretch: '抻面评分记录', boiling: '下面及捞面评分记录', product: '成品评分记录' };
+            document.querySelectorAll('.tab').forEach(function(tab) {
+                tab.onclick = function() {
+                    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+                    tab.classList.add('active');
+                    var stage = tab.getAttribute('data-stage');
+                    document.getElementById('sectionTitle').textContent = titles[stage] || stage;
+                    loadList(stage);
+                };
+            });
+
+            loadList('stretch');
+
+            var currentRole = null;
+            fetch('/api/auth/session', { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(d) {
+                if (d.success && d.user) currentRole = d.user.role;
+                if (studentId && currentRole === 1) {
+                    document.getElementById('suggestionCard').style.display = 'block';
+                    document.getElementById('suggestionTitle').textContent = '给予学员建议';
+                    document.getElementById('suggestionFormWrap').style.display = 'block';
+                    document.getElementById('suggestionInput').placeholder = '输入给学员的建议（可选，可仅发图片）…';
+                    document.getElementById('suggestionSendBtn').textContent = '发送建议';
+                    document.getElementById('suggestionImageZone').style.display = 'block';
+                    initTrainerImageUpload();
+                    loadSuggestions();
+                } else if (!studentId && currentRole === 2) {
+                    document.getElementById('suggestionCard').style.display = 'block';
+                    document.getElementById('suggestionTitle').textContent = '培训师建议与回复';
+                    document.getElementById('suggestionFormWrap').style.display = 'block';
+                    document.getElementById('suggestionInput').placeholder = '输入回复内容…';
+                    document.getElementById('suggestionSendBtn').textContent = '回复';
+                    document.getElementById('suggestionImageZone').style.display = 'none';
+                    loadSuggestions();
+                }
+            });
+
+            var suggestionImageFile = null;
+            function initTrainerImageUpload() {
+                var zone = document.getElementById('suggestionImageZone');
+                var input = document.getElementById('suggestionImageInput');
+                var previewWrap = document.getElementById('suggestionImagePreviewWrap');
+                var preview = document.getElementById('suggestionImagePreview');
+                var nameEl = document.getElementById('suggestionImageName');
+                var clearBtn = document.getElementById('suggestionImageClear');
+                if (!zone || !input) return;
+                zone.onclick = function() { input.click(); };
+                input.onchange = function() {
+                    var f = input.files && input.files[0];
+                    if (!f || !f.type.match(/^image\//)) { suggestionImageFile = null; input.value = ''; previewWrap.style.display = 'none'; return; }
+                    suggestionImageFile = f;
+                    nameEl.textContent = f.name;
+                    var r = new FileReader();
+                    r.onload = function() { preview.src = r.result; previewWrap.style.display = 'block'; };
+                    r.readAsDataURL(f);
+                };
+                clearBtn.onclick = function() { suggestionImageFile = null; input.value = ''; previewWrap.style.display = 'none'; preview.src = ''; };
+                zone.ondragover = function(e) { e.preventDefault(); zone.classList.add('dragover'); };
+                zone.ondragleave = function() { zone.classList.remove('dragover'); };
+                zone.ondrop = function(e) {
+                    e.preventDefault();
+                    zone.classList.remove('dragover');
+                    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+                    if (!f || !f.type.match(/^image\//)) return;
+                    suggestionImageFile = f;
+                    input.files = e.dataTransfer.files;
+                    nameEl.textContent = f.name;
+                    var r = new FileReader();
+                    r.onload = function() { preview.src = r.result; previewWrap.style.display = 'block'; };
+                    r.readAsDataURL(f);
+                };
+            }
+
+            function loadSuggestions() {
+                var url = '/api/suggestions';
+                if (studentId) url += '?student_id=' + studentId;
+                fetch(url, { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(d) {
+                    var el = document.getElementById('suggestionThread');
+                    if (!d.success) { el.textContent = d.error || '加载失败'; return; }
+                    var thread = d.thread || {};
+                    var msgs = thread.messages || [];
+                    if (msgs.length === 0) {
+                        el.innerHTML = '<p class="empty">暂无消息。' + (studentId ? '在下方输入建议发送给学员，可发送文字或图片。' : '培训师发送建议后您可在此回复。') + '</p>';
+                        return;
+                    }
+                    el.innerHTML = msgs.map(function(m) {
+                        var role = m.role === 'trainer' ? '培训师' : '我';
+                        var cls = m.role === 'trainer' ? 'trainer' : 'student';
+                        var at = (m.at || '').replace('T', ' ').substring(0, 19);
+                        var body = '';
+                        if (m.content_type === 'image') {
+                            body = '<img class="msg-img" src="/api/suggestions/image/' + escapeHtml(m.content || '') + '" alt="图片" title="点击放大" />';
+                        } else {
+                            body = escapeHtml(m.content || '');
+                        }
+                        return '<div class="msg-item ' + cls + '">' + body + '<div class="meta">' + role + ' · ' + at + '</div></div>';
+                    }).join('');
+                }).catch(function() { document.getElementById('suggestionThread').textContent = '加载失败'; });
+            }
+
+            (function initImgEnlarge() {
+                var modal = document.getElementById('imgEnlargeModal');
+                var imgEl = document.getElementById('imgEnlargeImg');
+                var closeBtn = document.getElementById('imgEnlargeClose');
+                var threadEl = document.getElementById('suggestionThread');
+                if (!modal || !imgEl || !threadEl) return;
+                function showEnlarge(src) {
+                    if (!src) return;
+                    imgEl.src = src;
+                    modal.classList.add('show');
+                }
+                function hideEnlarge() {
+                    modal.classList.remove('show');
+                    imgEl.src = '';
+                }
+                threadEl.addEventListener('click', function(e) {
+                    if (e.target && e.target.classList && e.target.classList.contains('msg-img')) {
+                        e.preventDefault();
+                        showEnlarge(e.target.src);
+                    }
+                });
+                modal.onclick = function(e) { if (e.target === modal) hideEnlarge(); };
+                if (closeBtn) closeBtn.onclick = hideEnlarge;
+            })();
+
+            document.getElementById('suggestionSendBtn').onclick = function() {
+                var text = (document.getElementById('suggestionInput').value || '').trim();
+                if (studentId && currentRole === 1) {
+                    if (suggestionImageFile) {
+                        var fd = new FormData();
+                        fd.append('student_id', String(studentId));
+                        fd.append('content', text);
+                        fd.append('image', suggestionImageFile);
+                        fetch('/api/suggestions/upload', { method: 'POST', credentials: 'include', body: fd })
+                            .then(function(r) { return r.json(); })
+                            .then(function(d) {
+                                if (d.success) {
+                                    document.getElementById('suggestionInput').value = '';
+                                    suggestionImageFile = null;
+                                    document.getElementById('suggestionImageInput').value = '';
+                                    document.getElementById('suggestionImagePreviewWrap').style.display = 'none';
+                                    loadSuggestions();
+                                } else alert(d.error || '发送失败');
+                            })
+                            .catch(function() { alert('发送失败'); });
+                        return;
+                    }
+                    if (!text) { alert('请输入建议内容或选择一张图片'); return; }
+                    fetch('/api/suggestions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ student_id: studentId, content: text }) })
+                        .then(function(r) { return r.json(); })
+                        .then(function(d) {
+                            if (d.success) { document.getElementById('suggestionInput').value = ''; loadSuggestions(); } else alert(d.error || '发送失败');
+                        })
+                        .catch(function() { alert('发送失败'); });
+                    return;
+                }
+                if (!studentId && currentRole === 2) {
+                    if (!text) { alert('请输入回复内容'); return; }
+                    fetch('/api/suggestions/reply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ content: text }) })
+                        .then(function(r) { return r.json(); })
+                        .then(function(d) {
+                            if (d.success) { document.getElementById('suggestionInput').value = ''; loadSuggestions(); } else alert(d.error || '发送失败');
+                        })
+                        .catch(function() { alert('发送失败'); });
+                }
+            };
+        })();
+    </script>
+</body>
+</html>
