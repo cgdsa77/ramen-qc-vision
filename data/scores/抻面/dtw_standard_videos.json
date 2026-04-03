@@ -1,0 +1,7 @@
+{
+  "standard_video_names": [
+    "cm1", "cm2", "cm3", "cm4", "cm5",
+    "cm13", "cm14", "cm15", "cm16", "cm17"
+  ],
+  "description": "DTW 标准角度序列来源：需在 hand_keypoints 中存在对应 JSON；缺失的名称会自动跳过。可编辑本列表以增删示范视频。"
+}

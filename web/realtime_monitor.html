@@ -182,6 +182,12 @@
                     </div>
                 </div>
             </div>
+            <div class="ivcam-section">
+                <h3>示范视频（data\raw\抻面）</h3>
+                <p class="hint">cm13～cm17 固定入口；将 <code>cmXX.mp4</code> 放入 <code>data\raw\抻面</code> 后点击，在新标签打开逐帧骨架（与上方摄像头流独立）。</p>
+                <div class="ivcam-btns-row" id="stretchRawDemoRow" style="flex-wrap: wrap; align-items: center;"></div>
+                <p id="stretchRawDemoEmpty" class="ivcam-empty" style="display: none;"></p>
+            </div>
         </div>
     </div>
     <script>
@@ -382,6 +388,61 @@
                 document.getElementById('ivcamModalClose').addEventListener('click', closeModal);
                 modal.addEventListener('click', function (e) {
                     if (e.target === modal) closeModal();
+                });
+            })();
+
+            (function initStretchRawDemo() {
+                var row = document.getElementById('stretchRawDemoRow');
+                var empty = document.getElementById('stretchRawDemoEmpty');
+                if (!row) return;
+                var seen = {};
+                var lab1 = document.createElement('span');
+                lab1.style.cssText = 'font-size:12px;color:#555;margin-right:8px;';
+                lab1.textContent = 'cm13～17';
+                row.appendChild(lab1);
+                ['cm13', 'cm14', 'cm15', 'cm16', 'cm17'].forEach(function (name) {
+                    seen[name] = true;
+                    var a = document.createElement('a');
+                    a.href = '/video-skeleton-ivcam?demo=1&video=' + encodeURIComponent(name);
+                    a.className = 'ivcam-btn';
+                    a.style.textDecoration = 'none';
+                    a.target = '_blank';
+                    a.rel = 'noopener';
+                    a.textContent = name;
+                    a.title = '将 ' + name + '.mp4 放在 data\\raw\\抻面';
+                    row.appendChild(a);
+                });
+                var mid = document.createElement('span');
+                mid.style.cssText = 'margin:0 10px;color:#bbb;';
+                mid.textContent = '|';
+                row.appendChild(mid);
+                var lab2 = document.createElement('span');
+                lab2.style.cssText = 'font-size:12px;color:#555;margin-right:8px;';
+                lab2.textContent = '目录内其他';
+                row.appendChild(lab2);
+                fetch('/api/stretch_raw_videos/list').then(function (r) { return r.json(); }).then(function (res) {
+                    var videos = (res && res.videos) ? res.videos : [];
+                    videos.forEach(function (name) {
+                        if (seen[name]) return;
+                        seen[name] = true;
+                        var a = document.createElement('a');
+                        a.href = '/video-skeleton-ivcam?demo=1&video=' + encodeURIComponent(name);
+                        a.className = 'ivcam-btn';
+                        a.style.textDecoration = 'none';
+                        a.target = '_blank';
+                        a.rel = 'noopener';
+                        a.textContent = name;
+                        row.appendChild(a);
+                    });
+                    if (empty && videos.length <= 5) {
+                        empty.style.display = 'block';
+                        empty.textContent = '若目录内暂无其他 cm，仅使用上方 cm13～17 即可。';
+                    }
+                }).catch(function () {
+                    if (empty) {
+                        empty.style.display = 'block';
+                        empty.textContent = '目录扫描失败；cm13～17 仍可点击。';
+                    }
                 });
             })();
         })();

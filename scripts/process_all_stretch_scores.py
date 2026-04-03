@@ -1,7 +1,7 @@
 """
 完整处理抻面部分的所有视频综合评分
-流程：先用当前最佳抻面模型对 cm1~cm12 做检测得分，再与骨架线、DTW 等融合得到综合分与细分，
-结果仍由抻面综合评分可视化系统展示。
+流程：先用当前最佳抻面模型对有骨架线 JSON 的视频做检测得分，再与骨架线、DTW 等融合得到综合分与细分，
+结果由抻面综合评分可视化系统展示（含 cm13～cm17 等新数据，需先有 hand_keypoints_*.json）。
 """
 import json
 import sys
@@ -54,9 +54,9 @@ def main():
         print(f"\n仅处理: {args.video}（不重跑其余视频）")
     print(f"\n找到 {len(videos)} 个视频（有骨架线数据）")
     keypoints_dir = project_root / "data" / "scores" / "抻面" / "hand_keypoints"
-    missing = [f"cm{i}" for i in range(1, 13) if not (keypoints_dir / f"hand_keypoints_cm{i}.json").exists()]
+    missing = [f"cm{i}" for i in range(1, 18) if not (keypoints_dir / f"hand_keypoints_cm{i}.json").exists()]
     if missing:
-        print(f"  说明：骨架线来自 data/scores/抻面/hand_keypoints/，当前缺少 {missing}，如需 12 个请先生成并放入该目录。")
+        print(f"  说明：骨架线来自 data/scores/抻面/hand_keypoints/，相对完整集 cm1～cm17 仍缺 {len(missing)} 个（示例: {missing[:8]}…）可运行: python scripts/extract_hand_keypoints_from_video.py --video cm13")
     print("=" * 60)
     
     output_dir = project_root / "reports" / "comprehensive_scores_final"

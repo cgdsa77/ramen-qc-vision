@@ -758,7 +758,7 @@
                 <div class="card-grid">
                     <div class="card" data-card="stretch">
                         <h3>抻面动作检测</h3>
-                        <p>上传抻面视频，进行动作与类别检测，输出检测结果与可视化。</p>
+                        <p>上传抻面视频，进行动作与类别检测，输出检测结果与可视化（使用当前最新训练的抻面 YOLO 权重，含 cm13～cm17 等新数据训练结果）。</p>
                         <a href="/stretch-detection" class="btn">进入</a>
                     </div>
                     <div class="card" data-card="boiling">
@@ -798,7 +798,7 @@
                 <div class="card-grid" data-role-visible="0,1">
                     <div class="card" data-card="score-stretch">
                         <h3>抻面综合评分可视化</h3>
-                        <p>多维度图表展示抻面评分结果，支持 AI 智能分析报告与问答。</p>
+                        <p>多维度图表与 DTW 对比展示：批量结果含最佳模型检测 + 骨架线 + DTW（标准序列已扩展 cm13～cm17，见配置 dtw_standard_videos.json），支持 AI 分析报告与问答。</p>
                         <a href="/scoring-visualization" class="btn">进入</a>
                     </div>
                     <div class="card" data-card="score-boiling">
@@ -825,7 +825,7 @@
                 <div class="card-grid">
                     <div class="card" data-card="pose-stretch" data-role-visible="0,1">
                         <h3>抻面手部姿态视频（预处理）</h3>
-                        <p>浏览已预处理的带骨架线抻面视频列表并播放。</p>
+                        <p>浏览已预处理的带骨架线抻面视频（cm1～cm17 等）并播放；实时骨架页可从 data\raw\抻面 直接打开 cm13～cm17 示范视频。</p>
                         <a href="/video-skeleton" class="btn">进入</a>
                     </div>
                     <div class="card" data-card="pose-boiling" data-role-visible="0,1">
@@ -1001,7 +1001,7 @@
             </div>
             <p style="font-size:13px;color:#5c4a3a;margin-bottom:16px;">各环节评分权重（总和须为 100%）。下方可调节评分行为参数，保存后将在<strong>下次评分时</strong>生效，无需重启服务。</p>
             <div id="scoringRulesStretch" style="margin-bottom:20px;">
-                <h4 style="font-size:14px;color:var(--warm-mid);margin-bottom:8px;">抻面</h4>
+                <h4 style="font-size:14px;color:#667eea;margin-bottom:8px;">抻面</h4>
                 <div id="scoringRulesStretchFields" class="scoring-weight-fields"></div>
                 <div class="scoring-params-wrap" data-stage="stretch" style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13px;">
                     <label>最低参与置信度 (0～1)<input type="number" data-stage="stretch" data-param="min_confidence" min="0" max="1" step="0.05" value="0.3" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
@@ -1011,7 +1011,7 @@
                 </div>
             </div>
             <div id="scoringRulesBoiling" style="margin-bottom:16px;">
-                <h4 style="font-size:14px;color:var(--warm-mid);margin-bottom:8px;">下面及捞面</h4>
+                <h4 style="font-size:14px;color:#667eea;margin-bottom:8px;">下面及捞面</h4>
                 <div id="scoringRulesBoilingFields" class="scoring-weight-fields"></div>
                 <div class="scoring-params-wrap" data-stage="boiling" style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13px;">
                     <label>最低参与置信度 (0～1)<input type="number" data-stage="boiling" data-param="min_confidence" min="0" max="1" step="0.05" value="0.3" style="width:80px;margin-left:6px;padding:4px 8px;"></label>
@@ -1382,16 +1382,16 @@
                     heroSubtitle: '全流程质检数据管控与权限管理',
                     sections: { 'section-process': '流程检测与监管', 'section-annotation': '标注与数据管理', 'section-scoring': '综合评分与报告', 'section-pose': '姿态与视频资源' },
                     cards: {
-                        stretch: { title: '抻面动作检测', desc: '上传抻面视频进行检测，查看结果与可视化，用于流程监管与质量把控。' },
+                        stretch: { title: '抻面动作检测', desc: '上传抻面视频进行检测（最新训练权重，含扩充数据集），查看结果与可视化，用于流程监管与质量把控。' },
                         boiling: { title: '下面及捞面检测', desc: '对下面、捞面环节视频进行检测，识别关键动作与状态，支撑监管与统计。' },
                         realtime: { title: '实时监测', desc: '通过摄像头或外接设备对制面流程进行实时解析与检测，便于现场监管。' },
                         'annotate-stretch': { title: '抻面评分标注工具', desc: '对关键帧进行手部、面条等维度的人工标注与评分，支撑模型训练与数据管理。' },
                         'annotate-boiling': { title: '下面及捞面评分标注工具', desc: '对视频中面条、手部、工具、汤面等目标进行手动评分，用于标注数据建设。' },
                         'annotate-product': { title: '兰州拉面成品评估标注', desc: '对成品图进行质感、汤色、辅料等标注，构建标准数据集供模型与报告使用。' },
-                        'score-stretch': { title: '抻面综合评分可视化', desc: '多维度图表与 AI 分析展示抻面评分结果，用于监管决策与报告导出。' },
+                        'score-stretch': { title: '抻面综合评分可视化', desc: '检测+骨架+DTW 多维度图表与 AI 分析（DTW 标准含 cm13～cm17 等配置），用于监管决策与报告导出。' },
                         'score-boiling': { title: '下面及捞面综合评分可视化', desc: '骨架与标注融合的多维度评分展示，支持 xl 视频的评分报告与对比。' },
                         'score-product': { title: '兰州拉面成品综合评分', desc: '成品图上传评分、多维度报告与代表样本展示，支持 AI 智能分析。' },
-                        'pose-stretch': { title: '抻面手部姿态视频（预处理）', desc: '浏览已预处理的带骨架线抻面视频，用于监管与教学资源查看。' },
+                        'pose-stretch': { title: '抻面手部姿态视频（预处理）', desc: '浏览带骨架线抻面视频（cm1～cm17）；实时骨架页可打开 raw\\抻面 示范视频。' },
                         'pose-boiling': { title: '下面及捞面手部姿态视频（预处理）', desc: '浏览带骨架线的 xl 预处理视频列表并播放，支持比例适配。' }
                     }
                 },
@@ -1399,16 +1399,16 @@
                     heroSubtitle: '教学与评分标准 · 学员管理与标注 · 多维度评分展示',
                     sections: { 'section-process': '流程检测与教学', 'section-annotation': '标注与评分工具', 'section-scoring': '综合评分可视化', 'section-pose': '姿态与示范视频' },
                     cards: {
-                        stretch: { title: '抻面动作检测', desc: '上传抻面视频进行动作与类别检测，用于教学演示与学员练习结果查看。' },
+                        stretch: { title: '抻面动作检测', desc: '上传抻面视频进行动作与类别检测（最新 YOLO 权重），用于教学演示与学员练习结果查看。' },
                         boiling: { title: '下面及捞面检测', desc: '针对下面、捞面环节的视频检测，帮助学员理解关键动作与评分依据。' },
                         realtime: { title: '实时监测', desc: '使用摄像头或外接设备进行实时解析与检测，便于课堂或现场示范。' },
                         'annotate-stretch': { title: '抻面评分标注工具', desc: '对关键帧进行手部、面条等维度的人工标注与评分，支撑教学与模型迭代。' },
                         'annotate-boiling': { title: '下面及捞面评分标注工具', desc: '对视频中四类目标进行手动评分（粗细/弹性/熟度等），用于教学与数据标注。' },
                         'annotate-product': { title: '兰州拉面成品评估标注', desc: '对成品图进行标注，构建标准数据集，支撑成品评分标准与教学案例。' },
-                        'score-stretch': { title: '抻面综合评分可视化', desc: '多维度图表与 AI 分析展示抻面评分，便于制定与讲解评分标准。' },
+                        'score-stretch': { title: '抻面综合评分可视化', desc: '检测+骨架+DTW 与 AI 分析，标准动作库已含新示范段（cm13～cm17），便于讲解评分标准。' },
                         'score-boiling': { title: '下面及捞面综合评分可视化', desc: '骨架与标注融合的多维度得分展示，用于学员评分解读与标准对照。' },
                         'score-product': { title: '兰州拉面成品综合评分', desc: '成品图评分、多维度报告与代表样本展示，支持 AI 智能分析与教学。' },
-                        'pose-stretch': { title: '抻面手部姿态视频（预处理）', desc: '浏览带骨架线的抻面预处理视频，作为教学示范与姿态参考。' },
+                        'pose-stretch': { title: '抻面手部姿态视频（预处理）', desc: '浏览带骨架线的抻面视频（含 cm13～cm17）；实时骨架页可演示 raw\\抻面 本地文件。' },
                         'pose-boiling': { title: '下面及捞面手部姿态视频（预处理）', desc: '浏览带骨架线的 xl 预处理视频，用于操作规范与姿态教学。' }
                     }
                 },
@@ -1416,17 +1416,17 @@
                     heroSubtitle: '个人实操评分与历史记录查询',
                     sections: { 'section-process': '我的检测任务', 'section-annotation': '标注工具', 'section-scoring': '我的评分与记录', 'section-pose': '姿态与视频' },
                     cards: {
-                        stretch: { title: '抻面动作检测', desc: '上传抻面视频，完成动作与类别检测并查看自己的检测结果。' },
+                        stretch: { title: '抻面动作检测', desc: '上传抻面视频完成检测并查看结果（系统使用当前最新训练模型）。' },
                         boiling: { title: '下面及捞面检测', desc: '上传下面、捞面视频进行检测，查看关键动作与状态识别结果。' },
                         realtime: { title: '实时监测', desc: '使用电脑摄像头或外接设备进行实时检测，即时查看制面过程反馈。' },
                         'annotate-stretch': { title: '抻面评分标注', desc: '对关键帧进行手部、面条等维度的标注与评分，参与数据标注任务。' },
                         'annotate-boiling': { title: '下面及捞面评分标注', desc: '对视频中面条、手部、工具、汤面等进行手动评分练习。' },
                         'annotate-product': { title: '成品评估标注', desc: '对成品图进行质感、汤色、辅料等标注，参与标准数据集建设。' },
-                        'score-stretch': { title: '抻面评分结果', desc: '查看抻面评分多维度结果与 AI 分析，了解自己的得分与改进方向。' },
+                        'score-stretch': { title: '抻面评分结果', desc: '查看综合评分、DTW 与各类别维度及 AI 分析，了解得分与改进方向。' },
                         'score-boiling': { title: '下面及捞面评分结果', desc: '查看下面及捞面视频的评分与多维度展示，对照标准改进操作。' },
                         'score-product': { title: '成品综合评分', desc: '上传成品图获取评分与报告，查看代表样本与 AI 分析建议。' },
                         'chef-score-history': { title: '我的评分记录', desc: '查看抻面、下面及捞面、成品检测后的评分历史，可选择性查看各环节记录并删除。' },
-                        'pose-stretch': { title: '抻面手部姿态视频', desc: '浏览带骨架线的抻面预处理视频，作为动作与姿态参考。' },
+                        'pose-stretch': { title: '抻面手部姿态视频', desc: '浏览带骨架线示范视频；也可在实时骨架页打开 data\\raw\\抻面 中的 cm 视频。' },
                         'pose-boiling': { title: '下面及捞面手部姿态视频', desc: '浏览带骨架线的 xl 视频，学习规范操作与手部姿态。' }
                     }
                 }

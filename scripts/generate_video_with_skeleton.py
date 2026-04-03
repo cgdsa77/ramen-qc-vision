@@ -458,24 +458,29 @@ def process_video(video_path: Path, keypoints_file: Path, output_path: Path):
             )
             clip.close()
             used_fourcc = "H.264 (moviepy)"
-            print(f"  ✅ moviepy生成成功（H.264编码，浏览器兼容）")
+            # 仅用 ASCII，避免 Windows GBK 控制台在打印 emoji 时抛错，误触发下方回退覆盖已生成的 H.264
+            print("  [OK] moviepy H.264 done (browser compatible)")
         except Exception as e:
             import traceback
             traceback.print_exc()
             print(f"  [错误] moviepy生成失败: {e}")
-            print(f"  [回退] 使用OpenCV生成（可能浏览器不兼容）...")
-            # 回退到OpenCV
-            temp_file = output_path.with_suffix('.tmp.avi')
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            out = cv2.VideoWriter(str(temp_file), fourcc, fps, (width, height))
-            for frame_bgr in [cv2.cvtColor(f, cv2.COLOR_RGB2BGR) for f in frames_list]:
-                out.write(frame_bgr)
-            out.release()
-            if temp_file.exists():
-                if output_path.exists():
-                    output_path.unlink()
-                temp_file.rename(output_path)
-            used_fourcc = "XVID (回退)"
+            # moviepy 可能已成功写出文件，仅后续日志打印失败；切勿用 XVID 覆盖已有 mp4
+            if output_path.exists() and output_path.stat().st_size > 1000:
+                print("  [提示] 输出文件已存在且非空，保留为 H.264，跳过 OpenCV 回退。")
+                used_fourcc = "H.264 (moviepy)"
+            else:
+                print("  [回退] 使用OpenCV生成（可能浏览器不兼容）...")
+                temp_file = output_path.with_suffix('.tmp.avi')
+                fourcc = cv2.VideoWriter_fourcc(*'XVID')
+                out = cv2.VideoWriter(str(temp_file), fourcc, fps, (width, height))
+                for frame_bgr in [cv2.cvtColor(f, cv2.COLOR_RGB2BGR) for f in frames_list]:
+                    out.write(frame_bgr)
+                out.release()
+                if temp_file.exists():
+                    if output_path.exists():
+                        output_path.unlink()
+                    temp_file.rename(output_path)
+                used_fourcc = "XVID (回退)"
     else:
         # 使用OpenCV写入器
         if out:
@@ -500,7 +505,12 @@ def process_video(video_path: Path, keypoints_file: Path, output_path: Path):
 
 
 def main():
-    """主函数：处理所有视频"""
+    """主函数：处理所有视频；--video cm16 仅处理单个抻面视频"""
+    import argparse
+    parser = argparse.ArgumentParser(description="由原片 + hand_keypoints JSON 生成带骨架叠加的 mp4")
+    parser.add_argument("--video", type=str, default=None, metavar="NAME", help="仅处理该抻面视频名（如 cm16），需 data/raw/抻面 与 hand_keypoints 已就绪")
+    args = parser.parse_args()
+
     print("=" * 60)
     print("生成带骨架线的视频文件")
     print("=" * 60)
@@ -518,6 +528,30 @@ def main():
     boiling_output_dir.mkdir(parents=True, exist_ok=True)
     
     all_tasks = []
+
+    if args.video:
+        vn = args.video.strip()
+        video_file = None
+        if stretch_video_dir.exists():
+            for ext in (".mp4", ".MP4", ".mov", ".MOV"):
+                p = stretch_video_dir / f"{vn}{ext}"
+                if p.is_file():
+                    video_file = p
+                    break
+        keypoints_file = stretch_keypoints_dir / f"hand_keypoints_{vn}.json"
+        output_file = stretch_output_dir / f"{vn}_with_skeleton.mp4"
+        if not video_file:
+            print(f"\n[错误] 未找到抻面原片: {stretch_video_dir / (vn + '.mp4')}")
+            print("  请将视频放入 data\\raw\\抻面\\")
+            return
+        if not keypoints_file.is_file():
+            print(f"\n[错误] 未找到骨架数据: {keypoints_file}")
+            print(f"  请先运行: python scripts/extract_hand_keypoints_from_video.py --video {vn}")
+            return
+        print(f"\n仅处理: {vn}")
+        if process_video(video_file, keypoints_file, output_file):
+            print("\n完成。可在「手部姿态视频展示」页选择该视频播放。")
+        return
     
     # 收集抻面视频任务
     if stretch_video_dir.exists() and stretch_keypoints_dir.exists():

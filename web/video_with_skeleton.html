@@ -178,7 +178,7 @@
     <div class="container">
         <div class="header">
             <h1>手部姿态视频展示</h1>
-            <p>预处理版本 - 骨架线已直接绘制在视频上，无同步问题</p>
+            <p>预处理版本：与 cm1～cm12 相同，直接播放本地 <code>cm*_with_skeleton.mp4</code>。尚无预渲染时可在本页下方查看逐帧骨架预览；生成预渲染后刷新即可用上方播放器。</p>
         </div>
         
         <div class="content">
@@ -192,22 +192,28 @@
             <div class="status" id="status"></div>
             
             <div class="video-section" id="videoSection">
-                <div class="video-wrapper">
-                    <video id="videoPlayer" controls>
-                        您的浏览器不支持HTML5视频
-                    </video>
+                <div id="preprocessedBlock">
+                    <div class="video-wrapper">
+                        <video id="videoPlayer" controls>
+                            您的浏览器不支持HTML5视频
+                        </video>
+                    </div>
+                    <div class="controls" id="controls">
+                        <button class="btn btn-primary" id="playBtn">播放</button>
+                        <button class="btn btn-secondary" id="pauseBtn">暂停</button>
+                    </div>
                 </div>
-                
-                <div class="controls" id="controls">
-                    <button class="btn btn-primary" id="playBtn">播放</button>
-                    <button class="btn btn-secondary" id="pauseBtn">暂停</button>
+                <div id="iframeBlock" style="display: none;">
+                    <p id="iframeHint" style="font-size: 14px; color: #444; margin-bottom: 12px;"></p>
+                    <div class="video-wrapper" style="min-height: 420px; background: #111;">
+                        <iframe id="skeletonIframe" title="逐帧骨架预览" src="" style="width: 100%; height: min(70vh, 680px); border: 0; border-radius: 10px; display: block;"></iframe>
+                    </div>
                 </div>
-                
                 <div class="info-panel">
                     <h3>说明</h3>
-                    <p>此视频已预处理，手部骨架线已直接绘制在视频上。</p>
-                    <p>优点：无同步问题，无错位，播放流畅。</p>
-                    <p>注意：如果视频不存在，请先运行预处理脚本生成视频。</p>
+                    <p><strong>与 cm1～cm12 一致</strong>：需存在 <code>data/processed_videos/抻面/cm*_with_skeleton.mp4</code>（由脚本从原片+骨架 JSON 生成）。</p>
+                    <p>生成命令示例：<code>python scripts/generate_video_with_skeleton.py --video cm13</code></p>
+                    <p>尚无预渲染时，本页会在下方嵌入逐帧骨架预览（不跳转新标签）。完整流程仍建议生成预渲染文件。</p>
                 </div>
             </div>
         </div>
@@ -217,11 +223,16 @@
         const videoSelect = document.getElementById('videoSelect');
         const videoPlayer = document.getElementById('videoPlayer');
         const videoSection = document.getElementById('videoSection');
+        const preprocessedBlock = document.getElementById('preprocessedBlock');
+        const iframeBlock = document.getElementById('iframeBlock');
+        const skeletonIframe = document.getElementById('skeletonIframe');
+        const iframeHint = document.getElementById('iframeHint');
         const controls = document.getElementById('controls');
         const status = document.getElementById('status');
         
-        // 显示状态消息
+        // 显示状态消息（会清空之前追加的节点）
         function showStatus(message, type = 'info') {
+            status.innerHTML = '';
             status.textContent = message;
             status.className = `status ${type}`;
             status.style.display = 'block';
@@ -232,86 +243,133 @@
             status.style.display = 'none';
         }
         
-        // 加载视频列表
+        const FALLBACK_CM_LIST = ['cm1', 'cm2', 'cm3', 'cm4', 'cm5', 'cm6', 'cm7', 'cm8', 'cm9', 'cm10', 'cm11', 'cm12', 'cm13', 'cm14', 'cm15', 'cm16', 'cm17'];
+
+        function appendFallbackOptions(reason) {
+            FALLBACK_CM_LIST.forEach((name) => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name + (reason ? ' — ' + reason : '');
+                videoSelect.appendChild(option);
+            });
+        }
+
+        // 从后端扫描 cm1～cm17；API 不可用或返回空时仍显示默认列表（避免下拉只剩「请选择」）
         async function loadVideoList() {
+            videoSelect.innerHTML = '';
+            const opt0 = document.createElement('option');
+            opt0.value = '';
+            opt0.textContent = '请选择视频…';
+            videoSelect.appendChild(opt0);
             try {
-                // 这里可以从后端API获取视频列表，或者直接硬编码
-                // 暂时使用已知的视频列表
-                const videos = ['cm1', 'cm2', 'cm3', 'cm4', 'cm5', 'cm6', 'cm7', 'cm8', 'cm9', 'cm10', 'cm11', 'cm12'];
-                
-                videos.forEach(video => {
+                const r = await fetch('/api/stretch_pose_catalog');
+                let data = null;
+                try {
+                    data = await r.json();
+                } catch (e) {
+                    data = null;
+                }
+                const list = (r.ok && data && data.success && Array.isArray(data.videos) && data.videos.length > 0)
+                    ? data.videos
+                    : null;
+                if (!list) {
+                    appendFallbackOptions(r.ok ? '（扫描为空，请重启 Web 服务后再试）' : '（未连接扫描接口，请用 start_web 启动并访问本站）');
+                    return;
+                }
+                list.forEach((v) => {
                     const option = document.createElement('option');
-                    option.value = video;
-                    option.textContent = video;
+                    option.value = v.name;
+                    option.textContent = `${v.name} — ${v.label || ''}`;
+                    option.title = `原片:${v.has_raw ? '有' : '无'} 骨架JSON:${v.has_keypoints ? '有' : '无'} 预处理mp4:${v.has_processed ? '有' : '无'}`;
                     videoSelect.appendChild(option);
                 });
             } catch (error) {
                 console.error('加载视频列表失败:', error);
+                appendFallbackOptions('（默认列表）');
             }
         }
         
-        // 加载视频
+        // 加载视频：有预渲染则与 cm1～cm12 相同；仅有原片时在本页内嵌逐帧预览（不跳转）
         videoSelect.addEventListener('change', async () => {
             const videoName = videoSelect.value;
+            if (skeletonIframe) skeletonIframe.src = '';
+            if (iframeBlock) iframeBlock.style.display = 'none';
+            if (preprocessedBlock) preprocessedBlock.style.display = 'block';
+            try { videoPlayer.pause(); } catch (e) {}
+            videoPlayer.removeAttribute('src');
+
             if (!videoName) {
                 videoSection.style.display = 'none';
-                controls.style.display = 'none';
+                if (controls) controls.style.display = 'none';
+                hideStatus();
                 return;
             }
-            
+
             showStatus('正在检查视频文件...', 'info');
-            
+
             try {
-                // 先检查视频文件是否存在
                 const checkResponse = await fetch(`/api/check_processed_video/${videoName}?stage=stretch`);
                 const checkResult = await checkResponse.json();
-                
+
                 if (!checkResult.exists) {
-                    throw new Error(`视频文件不存在。请先运行预处理脚本生成视频：python scripts/generate_video_with_skeleton.py`);
+                    if (checkResult.raw_available && checkResult.skeleton_demo_url) {
+                        if (preprocessedBlock) preprocessedBlock.style.display = 'none';
+                        if (iframeBlock) iframeBlock.style.display = 'block';
+                        if (iframeHint) {
+                            iframeHint.innerHTML = '当前 <strong>' + videoName + '</strong> 尚无预渲染文件；下方为逐帧骨架预览（与 cm1～cm12 的「已预处理」播放方式不同）。生成预渲染后将自动使用上方播放器。';
+                        }
+                        if (skeletonIframe) {
+                            skeletonIframe.src = checkResult.skeleton_demo_url + (String(checkResult.skeleton_demo_url).indexOf('?') >= 0 ? '&' : '?') + '_embed=1';
+                        }
+                        videoSection.style.display = 'block';
+                        const gen = checkResult.generate_hint || ('python scripts/extract_hand_keypoints_from_video.py --video ' + videoName + ' && python scripts/generate_video_with_skeleton.py --video ' + videoName);
+                        showStatus('无预渲染 mp4：已在本页下方嵌入预览。与 cm1～cm12 一致请先执行：', 'info');
+                        const cmd = document.createElement('pre');
+                        cmd.style.marginTop = '10px';
+                        cmd.style.fontSize = '12px';
+                        cmd.style.color = '#333';
+                        cmd.style.userSelect = 'all';
+                        cmd.style.whiteSpace = 'pre-wrap';
+                        cmd.textContent = gen;
+                        status.appendChild(cmd);
+                        return;
+                    }
+                    const msg = (checkResult.message || '') + ' 请确认：① data\\raw\\抻面\\' + videoName + '.mp4 ② hand_keypoints_' + videoName + '.json ③ python scripts/generate_video_with_skeleton.py --video ' + videoName;
+                    throw new Error(msg);
                 }
-                
-                showStatus('正在加载视频...', 'info');
-                
-                // 加载处理好的视频（带骨架线）
-                // 优先使用API路径（避免路径编码问题）
+
+                if (preprocessedBlock) preprocessedBlock.style.display = 'block';
+                if (iframeBlock) iframeBlock.style.display = 'none';
+                showStatus('正在加载预渲染视频...', 'info');
+
                 let videoPath = checkResult.path;
                 if (!videoPath) {
-                    // 如果API没有返回路径，尝试静态文件路径
                     videoPath = checkResult.path_alt || `/data/processed_videos/抻面/${videoName}_with_skeleton.mp4`;
                 }
-                console.log('加载视频路径:', videoPath);
-                console.log('视频文件检查结果:', checkResult);
-                
                 videoPlayer.src = videoPath;
-                
-                // 等待视频加载
+
                 await new Promise((resolve, reject) => {
                     const timeout = setTimeout(() => {
                         reject(new Error('视频加载超时（10秒）'));
                     }, 10000);
-                    
                     videoPlayer.addEventListener('loadeddata', () => {
                         clearTimeout(timeout);
                         resolve();
                     }, { once: true });
-                    
-                    videoPlayer.addEventListener('error', (e) => {
+                    videoPlayer.addEventListener('error', () => {
                         clearTimeout(timeout);
-                        console.error('视频加载错误:', e);
-                        reject(new Error(`视频加载失败。错误代码: ${videoPlayer.error?.code || 'unknown'}`));
+                        reject(new Error(`视频加载失败（代码: ${videoPlayer.error?.code || 'unknown'}）`));
                     }, { once: true });
                 });
-                
-                // 显示界面
+
                 videoSection.style.display = 'block';
-                controls.style.display = 'flex';
-                showStatus('视频加载成功！', 'success');
-                
+                if (controls) controls.style.display = 'flex';
+                showStatus('已加载预渲染视频（与 cm1～cm12 相同方式）。', 'success');
             } catch (error) {
                 showStatus(`错误: ${error.message}`, 'error');
                 console.error('加载失败:', error);
                 videoSection.style.display = 'none';
-                controls.style.display = 'none';
+                if (controls) controls.style.display = 'none';
             }
         });
         

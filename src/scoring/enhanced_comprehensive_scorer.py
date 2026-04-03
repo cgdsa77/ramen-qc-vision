@@ -46,8 +46,8 @@ class EnhancedComprehensiveScorer:
         self.dtw = ImprovedDTW(window_size=None, distance_metric='euclidean', max_sequence_length=500)
         self.weight_estimator = KeypointWeightEstimator(bandwidth=0.5)
         
-        # 标准视频：cm1-cm5，可选专家视频由配置扩展
-        self.standard_video_names = ['cm1', 'cm2', 'cm3', 'cm4', 'cm5']
+        # 标准视频：默认含 cm1–cm5 与新增示范 cm13–cm17；可由 data/scores/抻面/dtw_standard_videos.json 覆盖
+        self.standard_video_names = self._load_dtw_standard_video_names()
         self.standard_angle_sequences = self._load_standard_angle_sequences()
         self.keypoint_weights = self._load_keypoint_weights()
         
@@ -81,6 +81,24 @@ class EnhancedComprehensiveScorer:
         self.class_confidence_threshold = {'hand': 0.5, 'noodle_rope': 0.5, 'noodle_bundle': 0.3}
         self.class_confidence_penalty = {'hand': 0.8, 'noodle_rope': 0.8, 'noodle_bundle': 0.5}
     
+    def _load_dtw_standard_video_names(self) -> List[str]:
+        """DTW 参照序列对应的示范视频名列表（需存在 hand_keypoints_*.json 才会载入角度序列）。"""
+        default = [
+            "cm1", "cm2", "cm3", "cm4", "cm5",
+            "cm13", "cm14", "cm15", "cm16", "cm17",
+        ]
+        cfg = self.scores_dir / "dtw_standard_videos.json"
+        if cfg.exists():
+            try:
+                with open(cfg, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                names = data.get("standard_video_names")
+                if isinstance(names, list) and len(names) > 0:
+                    return [str(x).strip() for x in names if str(x).strip()]
+            except Exception:
+                pass
+        return default
+
     def _load_scoring_rules(self) -> Dict:
         """加载评分规则"""
         rules_file = self.scores_dir / "scoring_rules.json"
@@ -92,7 +110,7 @@ class EnhancedComprehensiveScorer:
     def _load_standard_angle_sequences(self) -> List[List[Dict[str, float]]]:
         """
         加载标准动作序列的角度数据（预处理过滤置信度＜0.7 的帧：由角度提取器内部过滤）
-        从标准视频 cm1-cm5（及可配置专家视频）提取角度序列
+        从标准视频列表（dtw_standard_videos.json，含 cm1–cm5 与 cm13–cm17 等）提取角度序列
         """
         sequences = []
         for video_name in self.standard_video_names:

@@ -10,7 +10,7 @@ _project_root = Path(__file__).parent.parent.parent
 
 
 def resolve_stretch_video_path(video_name: str, project_root: Optional[Path] = None) -> Optional[Path]:
-    """解析抻面视频路径（cm1~cm12 等）。"""
+    """解析抻面视频路径（cm1、cm10～cm17 等，见 data/raw/抻面 与备选目录）。"""
     root = project_root or _project_root
     candidates = [
         root / "data" / "raw" / "抻面" / f"{video_name}.mp4",

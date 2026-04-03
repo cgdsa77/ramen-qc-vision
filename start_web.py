@@ -51,7 +51,7 @@ try:
     # 导入FastAPI
     from fastapi import FastAPI, UploadFile, File, Form, Request, Query, HTTPException
     from fastapi.staticfiles import StaticFiles
-    from fastapi.responses import FileResponse, JSONResponse, StreamingResponse, Response
+    from fastapi.responses import FileResponse, JSONResponse, StreamingResponse, Response, RedirectResponse
     from fastapi.middleware.cors import CORSMiddleware
     import uvicorn
     import json
@@ -648,11 +648,8 @@ try:
 
     @app.get("/realtime-skeleton")
     async def realtime_skeleton():
-        """实时检测骨架线页面（摄像头 + 手部骨架线叠加）"""
-        web_file = web_dir / "realtime_skeleton.html"
-        if web_file.exists():
-            return FileResponse(str(web_file))
-        return {"message": "实时骨架线页面未找到"}
+        """旧入口：已与「实时监测」合并（检测+骨架双画面），避免重复页面。"""
+        return RedirectResponse(url="/realtime-monitor", status_code=302)
 
     # ivcam 目录：检测框与骨架线分两个子文件夹（data/ivcam/检测框、data/ivcam/骨架线）
     ivcam_dir = project_root / "data" / "ivcam"
@@ -719,6 +716,82 @@ try:
         except ValueError:
             raise HTTPException(status_code=404, detail="file not found")
         return FileResponse(str(path), filename=name)
+
+    # data/raw/抻面 示范视频：与 ivcam 并列，用于骨架线页直接加载 cm13～cm17 等本地 mp4
+    import re as _re_stretch_raw
+    stretch_raw_抻面_dir = project_root / "data" / "raw" / "抻面"
+    _stretch_demo_name_pat = _re_stretch_raw.compile(r"^cm\d+$", _re_stretch_raw.I)
+
+    def _stretch_raw_cm_sort_key(name: str):
+        m = _re_stretch_raw.search(r"(\d+)$", name, _re_stretch_raw.I)
+        return (int(m.group(1)) if m else 0, name.lower())
+
+    @app.get("/api/stretch_raw_videos/list")
+    async def api_stretch_raw_videos_list():
+        """列出 data/raw/抻面 下 cm*.mp4，供骨架线示范页与综合评分数据准备。"""
+        out = []
+        if stretch_raw_抻面_dir.exists():
+            for f in stretch_raw_抻面_dir.iterdir():
+                if not f.is_file():
+                    continue
+                if f.suffix.lower() not in (".mp4", ".mov", ".avi", ".mkv"):
+                    continue
+                stem = f.stem
+                if _stretch_demo_name_pat.match(stem):
+                    out.append(stem)
+        out.sort(key=_stretch_raw_cm_sort_key)
+        return {"success": True, "videos": out}
+
+    @app.get("/api/stretch_raw_video/file/{video_name}")
+    async def api_stretch_raw_video_file(video_name: str):
+        """安全返回 data/raw/抻面 下视频（仅允许 cm+数字  stem）。"""
+        from urllib.parse import unquote
+        name = unquote(video_name or "").strip()
+        if not name or not _stretch_demo_name_pat.match(name):
+            raise HTTPException(status_code=400, detail="invalid video name")
+        for ext in (".mp4", ".MP4", ".mov", ".MOV", ".avi", ".AVI"):
+            path = stretch_raw_抻面_dir / f"{name}{ext}"
+            if path.is_file():
+                try:
+                    path.resolve().relative_to(stretch_raw_抻面_dir.resolve())
+                except ValueError:
+                    raise HTTPException(status_code=404, detail="file not found")
+                return FileResponse(str(path), filename=path.name, media_type="video/mp4", headers={"Accept-Ranges": "bytes"})
+        raise HTTPException(status_code=404, detail="file not found")
+
+    @app.get("/api/stretch_pose_catalog")
+    async def api_stretch_pose_catalog():
+        """抻面预处理/骨架页用：cm1～cm17 各自是否已有原片、骨架 JSON、预渲染带骨架 mp4。"""
+        processed_dir = project_root / "data" / "processed_videos" / "抻面"
+        raw_dir = project_root / "data" / "raw" / "抻面"
+        kp_dir = project_root / "data" / "scores" / "抻面" / "hand_keypoints"
+        items = []
+        for i in range(1, 18):
+            name = f"cm{i}"
+            has_p = (processed_dir / f"{name}_with_skeleton.mp4").is_file()
+            has_raw = False
+            if raw_dir.exists():
+                for ext in (".mp4", ".MP4", ".mov", ".MOV", ".avi", ".AVI"):
+                    if (raw_dir / f"{name}{ext}").is_file():
+                        has_raw = True
+                        break
+            has_kp = (kp_dir / f"hand_keypoints_{name}.json").is_file() if kp_dir.exists() else False
+            if has_p:
+                label = "已预处理"
+            elif has_raw and has_kp:
+                label = "可生成预处理"
+            elif has_raw:
+                label = "有原片"
+            else:
+                label = "未检测到文件"
+            items.append({
+                "name": name,
+                "has_processed": has_p,
+                "has_raw": has_raw,
+                "has_keypoints": has_kp,
+                "label": label,
+            })
+        return {"success": True, "videos": items}
 
     # 实时流取消标记：前端点击「停止」时设置，生成器检查后退出并释放摄像头
     _realtime_stream_cancel = {}
@@ -1459,13 +1532,32 @@ try:
                 "path_alt": f"/data/processed_videos/{stage_path}/{video_name}_with_skeleton.mp4"
             }
         else:
-            return {
+            out = {
                 "success": False,
                 "exists": False,
-                "message": f"视频文件不存在: {video_file}",
+                "message": f"预处理带骨架视频不存在: {video_file}",
                 "file_path": str(video_file),
-                "stage_path": stage_path
+                "stage_path": stage_path,
             }
+            # 抻面：告知是否已有原片 / 骨架 JSON，便于前端跳转「逐帧骨架」或生成命令
+            if stage != "boiling_scooping":
+                raw_dir = project_root / "data" / "raw" / "抻面"
+                raw_ok = False
+                if raw_dir.exists():
+                    for ext in (".mp4", ".MP4", ".mov", ".MOV", ".avi", ".AVI"):
+                        if (raw_dir / f"{video_name}{ext}").is_file():
+                            raw_ok = True
+                            break
+                kp = project_root / "data" / "scores" / "抻面" / "hand_keypoints" / f"hand_keypoints_{video_name}.json"
+                out["raw_available"] = raw_ok
+                out["keypoints_available"] = kp.is_file()
+                if raw_ok:
+                    out["skeleton_demo_url"] = f"/video-skeleton-ivcam?demo=1&video={video_name}"
+                out["generate_hint"] = (
+                    "1) python scripts/extract_hand_keypoints_from_video.py --video " + video_name +
+                    "  2) python scripts/generate_video_with_skeleton.py --video " + video_name
+                )
+            return out
     
     @app.get("/api/get_processed_video/{video_name}")
     async def get_processed_video(video_name: str, stage: str = "stretch"):
@@ -3727,8 +3819,14 @@ DTW评分: {data.get('dtw_result', {}).get('score', 0):.2f}
         traceback.print_exc()
     print("="*60)
     
-    # 启动服务器
-    uvicorn.run(app, host="127.0.0.1", port=port, log_level="info")
+    # 启动服务器（有限时优雅退出，避免视频流 206 等长连接导致 Ctrl+C 后无限卡在 Shutting down）
+    uvicorn.run(
+        app,
+        host="127.0.0.1",
+        port=port,
+        log_level="info",
+        timeout_graceful_shutdown=15,
+    )
     
 except ImportError as e:
     print(f"导入错误: {e}")

@@ -7,6 +7,7 @@ import sys
 import shutil
 import argparse
 from pathlib import Path
+from typing import Optional
 import yaml
 
 # 添加项目根目录到路径
@@ -25,6 +26,14 @@ try:
     torch.load = _torch_load_weights_only_false
     if hasattr(torch, "serialization"):
         torch.serialization.load = _torch_load_weights_only_false
+except Exception:
+    pass
+
+# NumPy 2.0+ 移除 np.trapz（改用 np.trapezoid），部分 ultralytics 版本仍调用 np.trapz，验证 mAP 时会崩。
+try:
+    import numpy as _np
+    if not hasattr(_np, "trapz") and hasattr(_np, "trapezoid"):
+        _np.trapz = _np.trapezoid
 except Exception:
     pass
 
@@ -149,7 +158,9 @@ def prepare_yolo_dataset(standard_videos: list = None, val_split: float = 0.2):
     train_count = 0
     val_count = 0
     
-    # 计算验证集视频数量
+    # 计算验证集视频数量（按「视频列表」最后若干段作为 val，不是随机帧）
+    # 若希望新增视频（如 cm13~cm17）全部参与训练，请把用于验证的旧视频名放在 --videos 列表末尾，
+    # 或改用 --val-split 0（不推荐：无独立视频级验证）。
     if val_split > 0 and len(standard_videos) > 1:
         val_video_count = max(1, int(len(standard_videos) * val_split))
         val_videos = standard_videos[-val_video_count:]  # 使用最后几个视频作为验证集
@@ -258,6 +269,24 @@ def train_yolo_model(dataset_yaml_path: Path, epochs: int = 300, imgsz: int = 64
         print("错误：未安装 ultralytics。请运行: pip install ultralytics")
         return None
 
+    # 部分 Windows 环境 torch 为 CUDA 版但 torchvision 未带 CUDA NMS，验证阶段会崩。
+    # 对 CUDA 输入在 CPU 上算 NMS，再把索引移回原设备（训练仍用 GPU，仅 NMS 走 CPU）。
+    try:
+        import torchvision
+        _nms_orig = torchvision.ops.nms
+
+        def _nms_cuda_fallback(boxes, scores, iou_threshold):
+            if boxes is not None and getattr(boxes, "is_cuda", False) and boxes.numel() > 0:
+                idx = _nms_orig(boxes.detach().cpu(), scores.detach().cpu(), iou_threshold)
+                return idx.to(boxes.device)
+            return _nms_orig(boxes, scores, iou_threshold)
+
+        torchvision.ops.nms = _nms_cuda_fallback
+        if hasattr(torchvision.ops, "boxes") and hasattr(torchvision.ops.boxes, "nms"):
+            torchvision.ops.boxes.nms = _nms_cuda_fallback
+    except Exception:
+        pass
+
     weights_dir = project_root / "models" / "stretch_detection" / "weights"
     weights_dir.mkdir(parents=True, exist_ok=True)
     base_weights = f'yolov8{model_size}.pt'
@@ -274,58 +303,36 @@ def train_yolo_model(dataset_yaml_path: Path, epochs: int = 300, imgsz: int = 64
     print(f"  - 最后 {close_mosaic} 轮关闭 Mosaic")
     print(f"  - 设备: {device}")
     
-    last_ckpt = weights_dir / "last.pt"
-    # 若固定路径没有 last.pt，尝试从最近一次运行目录恢复（如 stretch_detection14）
-    if resume and not last_ckpt.exists():
+    def _latest_stretch_best_weights() -> Optional[Path]:
+        """各次训练子目录 stretch_detection*/weights/best.pt 中，取修改时间最新者。"""
         models_dir = project_root / "models"
-        candidates = sorted(
-            [d for d in models_dir.iterdir() if d.is_dir() and d.name.startswith("stretch_detection") and (d / "weights" / "last.pt").exists()],
-            key=lambda d: (d / "weights" / "last.pt").stat().st_mtime,
-            reverse=True,
-        )
-        if candidates:
-            last_ckpt = candidates[0] / "weights" / "last.pt"
-            print(f"  - 在 {candidates[0].name} 下找到检查点: {last_ckpt}")
-    def _checkpoint_valid(path):
-        try:
-            import torch
-            try:
-                ckpt = torch.load(str(path), map_location="cpu", weights_only=False)
-            except TypeError:
-                ckpt = torch.load(str(path), map_location="cpu")
-            return ckpt.get("model") is not None
-        except Exception:
-            return False
+        found: list[Path] = []
+        for d in models_dir.iterdir():
+            if d.is_dir() and d.name.startswith("stretch_detection"):
+                bp = d / "weights" / "best.pt"
+                if bp.is_file():
+                    found.append(bp)
+        if not found:
+            return None
+        return max(found, key=lambda p: p.stat().st_mtime)
 
-    do_resume = False
-    if resume and last_ckpt.exists():
-        if _checkpoint_valid(last_ckpt):
-            do_resume = True
+    # 注意：不要用 YOLO(last.pt) + train(resume=...)。Ultralytics 8.x 下 last.pt 常含 epoch=-1，
+    # 且已训练结束的 checkpoint 会触发 AssertionError。增量训练统一用 best.pt 热启动 + resume=False。
+    init_weights: Optional[Path] = None
+    if resume:
+        init_weights = _latest_stretch_best_weights()
+        if init_weights is not None:
+            print(f"  - 增量训练（初始权重为历史 best.pt）: {init_weights}")
         else:
-            print(f"  - [警告] 检查点无效或缺少 model: {last_ckpt}")
-            # 尝试从最近一次运行目录用有效检查点恢复（如 stretch_detection14）
-            models_dir = project_root / "models"
-            candidates = sorted(
-                [d for d in models_dir.iterdir() if d.is_dir() and d.name.startswith("stretch_detection") and (d / "weights" / "last.pt").exists()],
-                key=lambda d: (d / "weights" / "last.pt").stat().st_mtime,
-                reverse=True,
-            )
-            for d in candidates:
-                cand = d / "weights" / "last.pt"
-                if cand != last_ckpt and _checkpoint_valid(cand):
-                    last_ckpt = cand
-                    do_resume = True
-                    print(f"  - 改用有效检查点: {last_ckpt}")
-                    break
-            if not do_resume:
-                print(f"  - 将从头训练")
-    if do_resume:
-        print(f"  - 从检查点恢复: {last_ckpt}")
-        model = YOLO(str(last_ckpt))
+            print(f"  - 未找到历史 stretch_detection*/weights/best.pt，使用 COCO 预训练 {base_weights}")
     else:
-        print(f"  - 从头开始训练")
+        print(f"  - 按 --no-resume：从 COCO 预训练开始 ({base_weights})")
+
+    if resume and init_weights is not None:
+        model = YOLO(str(init_weights))
+    else:
         model = YOLO(base_weights)
-        print(f"  - 使用预训练: {base_weights}")
+        print(f"  - 加载: {base_weights}")
     
     # exist_ok=True：始终写入同一目录；resume=路径 让 Ultralytics 从该检查点续训（传 True 可能被 checkpoint 覆盖）
     train_kw = dict(
@@ -340,6 +347,8 @@ def train_yolo_model(dataset_yaml_path: Path, epochs: int = 300, imgsz: int = 64
         save=True,
         plots=True,
         device=device,
+        # 部分 Windows 环境 torchvision 与 PyTorch CUDA 的 NMS 算子不匹配，AMP 自检会崩；关闭 AMP 仍可 GPU 全精度训练
+        amp=False,
         cos_lr=cos_lr,
         label_smoothing=label_smoothing,
         close_mosaic=close_mosaic,
@@ -360,8 +369,6 @@ def train_yolo_model(dataset_yaml_path: Path, epochs: int = 300, imgsz: int = 64
         warmup_epochs=3.0,
     )
     train_kw["exist_ok"] = True
-    if do_resume:
-        train_kw["resume"] = str(last_ckpt)
     results = model.train(**train_kw)
     
     best_model_path = weights_dir / "best.pt"
@@ -383,10 +390,14 @@ def train_yolo_model(dataset_yaml_path: Path, epochs: int = 300, imgsz: int = 64
 
 def main():
     """主函数"""
-    parser = argparse.ArgumentParser(description='训练抻面检测模型（cm1~cm7 + cm10~cm12）')
+    parser = argparse.ArgumentParser(description='训练抻面检测模型（默认含 cm1~cm7、cm10~cm12、cm13~cm17）')
     parser.add_argument('--videos', nargs='+',
-                       default=['cm1', 'cm2', 'cm3', 'cm4', 'cm5', 'cm6', 'cm7', 'cm10', 'cm11', 'cm12'],
-                       help='视频列表（默认：cm1-cm7 与 cm10-cm12）')
+                       default=[
+                           'cm1', 'cm2', 'cm3', 'cm4', 'cm5', 'cm6', 'cm7',
+                           'cm10', 'cm11', 'cm12',
+                           'cm13', 'cm14', 'cm15', 'cm16', 'cm17',
+                       ],
+                       help='参与组装的视频列表（与 data/processed、data/labels 下子目录名一致）')
     parser.add_argument('--epochs', type=int, default=300,
                        help='训练轮数（默认：300）')
     parser.add_argument('--batch', type=int, default=8,
@@ -410,9 +421,9 @@ def main():
     parser.add_argument('--device', type=str, default='cpu', choices=['cpu', 'cuda'],
                        help='训练设备（默认：cpu，后续可改为 cuda）')
     parser.add_argument('--resume', action='store_true', default=True,
-                       help='从检查点恢复（默认：True）')
+                       help='增量训练：优先加载最新的 stretch_detection*/weights/best.pt（不用 last.pt，避免续训异常）')
     parser.add_argument('--no-resume', dest='resume', action='store_false',
-                       help='从头训练')
+                       help='不从历史 best 热启动，仅用 COCO 预训练 yolov8*.pt')
     
     args = parser.parse_args()
     

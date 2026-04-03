@@ -49,7 +49,7 @@
         <div class="header">
             <h1>抻面综合评分可视化系统</h1>
             <p class="subtitle">3D骨架线展示,多维度图表分析,交互式数据探索</p>
-            <p class="subtitle" style="margin-top:6px; font-size:12px; color:#555;">得分数据说明：<strong>本次上传</strong> = 当前最佳抻面模型检测 + 规则/图像特征评分；<strong>cm1～cm12</strong> = 基于本地视频已跑完的最佳模型检测 + 骨架线 + DTW 融合结果，界面直接读取报告，<strong>打开本页不会重新跑模型</strong>。需更新 cm1～cm12 数据时请运行：<code>python scripts/process_all_stretch_scores.py</code></p>
+            <p class="subtitle" style="margin-top:6px; font-size:12px; color:#555;">得分数据说明：<strong>本次上传</strong> = 当前最佳抻面模型（重启 Web 后加载最新 best.pt）检测 + 规则/图像特征；<strong>列表中的 cm*</strong> = 批量脚本生成的「检测 + 骨架线 + DTW」融合结果（DTW 标准序列含 cm1–cm5 与 cm13–cm17，见 data/scores/抻面/dtw_standard_videos.json），<strong>打开本页不重新推理</strong>。更新列表请运行：<code>python scripts/process_all_stretch_scores.py</code>；新视频需先有 <code>hand_keypoints_*.json</code>（<code>python scripts/extract_hand_keypoints_from_video.py --video cm13</code>）。</p>
             <div id="videoSelector" class="video-selector"></div>
         </div>
         <div id="loadErr" class="card load-err" style="display:none;"></div>
