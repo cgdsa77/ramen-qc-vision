@@ -505,10 +505,10 @@ def process_video(video_path: Path, keypoints_file: Path, output_path: Path):
 
 
 def main():
-    """主函数：处理所有视频；--video cm16 仅处理单个抻面视频"""
+    """主函数：处理所有视频；--video 仅处理单个视频（cm* 抻面，xl* 下面及捞面）"""
     import argparse
     parser = argparse.ArgumentParser(description="由原片 + hand_keypoints JSON 生成带骨架叠加的 mp4")
-    parser.add_argument("--video", type=str, default=None, metavar="NAME", help="仅处理该抻面视频名（如 cm16），需 data/raw/抻面 与 hand_keypoints 已就绪")
+    parser.add_argument("--video", type=str, default=None, metavar="NAME", help="仅处理该视频：cm* 为抻面，xl* 为下面及捞面；需对应 raw 与 hand_keypoints 已就绪")
     args = parser.parse_args()
 
     print("=" * 60)
@@ -531,24 +531,35 @@ def main():
 
     if args.video:
         vn = args.video.strip()
+        is_boiling = vn.lower().startswith("xl")
+        if is_boiling:
+            search_dir = boiling_video_dir
+            keypoints_file = boiling_keypoints_dir / f"hand_keypoints_{vn}.json"
+            output_file = boiling_output_dir / f"{vn}_with_skeleton.mp4"
+            stage_label = "下面及捞面"
+            raw_hint = "data\\raw\\下面及捞面\\"
+        else:
+            search_dir = stretch_video_dir
+            keypoints_file = stretch_keypoints_dir / f"hand_keypoints_{vn}.json"
+            output_file = stretch_output_dir / f"{vn}_with_skeleton.mp4"
+            stage_label = "抻面"
+            raw_hint = "data\\raw\\抻面\\"
         video_file = None
-        if stretch_video_dir.exists():
+        if search_dir.exists():
             for ext in (".mp4", ".MP4", ".mov", ".MOV"):
-                p = stretch_video_dir / f"{vn}{ext}"
+                p = search_dir / f"{vn}{ext}"
                 if p.is_file():
                     video_file = p
                     break
-        keypoints_file = stretch_keypoints_dir / f"hand_keypoints_{vn}.json"
-        output_file = stretch_output_dir / f"{vn}_with_skeleton.mp4"
         if not video_file:
-            print(f"\n[错误] 未找到抻面原片: {stretch_video_dir / (vn + '.mp4')}")
-            print("  请将视频放入 data\\raw\\抻面\\")
+            print(f"\n[错误] 未找到{stage_label}原片: {search_dir / (vn + '.mp4')}")
+            print(f"  请将视频放入 {raw_hint}")
             return
         if not keypoints_file.is_file():
             print(f"\n[错误] 未找到骨架数据: {keypoints_file}")
             print(f"  请先运行: python scripts/extract_hand_keypoints_from_video.py --video {vn}")
             return
-        print(f"\n仅处理: {vn}")
+        print(f"\n仅处理 ({stage_label}): {vn}")
         if process_video(video_file, keypoints_file, output_file):
             print("\n完成。可在「手部姿态视频展示」页选择该视频播放。")
         return

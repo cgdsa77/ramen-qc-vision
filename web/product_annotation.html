@@ -5,20 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>兰州拉面成品评估 - 标注工具</title>
     <style>
+        :root {
+            --pa-bg: #f5f2ee;
+            --pa-hd: linear-gradient(135deg, #9a7a62 0%, #7d6048 100%);
+            --pa-ac: #8b6048;
+            --pa-nav: rgba(255,255,255,0.92);
+        }
+        body.theme-r0 {
+            --pa-bg: linear-gradient(165deg, #faf8f5 0%, #f3eee8 100%);
+            --pa-hd: linear-gradient(135deg, #7d6858 0%, #5c4a3e 100%);
+            --pa-ac: #6b5344;
+        }
+        body.theme-r1 {
+            --pa-bg: linear-gradient(165deg, #f0f5fa 0%, #e6eef6 100%);
+            --pa-hd: linear-gradient(135deg, #7a88b0 0%, #8899b8 100%);
+            --pa-ac: #4a6b94;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f5f5f5; padding: 16px; }
-        .container { max-width: 1400px; margin: 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #c45c26 0%, #8b4513 100%); color: #fff; padding: 16px 20px; }
-        .header h1 { font-size: 22px; margin-bottom: 4px; }
-        .header p { font-size: 13px; opacity: 0.95; }
-        .nav-home { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 13px; }
+        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: var(--pa-bg); padding: 16px; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 1400px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.07); overflow: hidden; border: 1px solid rgba(0,0,0,0.04); }
+        .header { background: var(--pa-hd); color: #fff; padding: 18px 22px; }
+        .header h1 { font-size: clamp(1.05rem, 2.2vw, 1.35rem); margin-bottom: 4px; font-weight: 700; }
+        .header p { font-size: 13px; opacity: 0.92; }
+        .nav-home { color: var(--pa-nav); text-decoration: none; font-size: 13px; font-weight: 500; }
         .nav-home:hover { text-decoration: underline; }
         .content { display: grid; grid-template-columns: 220px 1fr 320px; gap: 0; min-height: 75vh; }
         .list-panel { background: #f8f9fa; border-right: 1px solid #eee; overflow-y: auto; max-height: 78vh; }
         .list-panel h3 { padding: 12px 14px; font-size: 14px; color: #333; border-bottom: 1px solid #eee; }
         .img-item { padding: 8px 14px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; }
         .img-item:hover { background: #e9ecef; }
-        .img-item.current { background: #c45c26; color: #fff; }
+        .img-item.current { background: var(--pa-ac); color: #fff; }
         .img-item.done { color: #0d6efd; }
         .img-item.current.done { color: #fff; }
         .main-panel { padding: 16px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; min-height: 0; }
@@ -31,8 +47,8 @@
         .field label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; }
         .field select, .field input, .field textarea { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
         .field textarea { resize: vertical; min-height: 56px; }
-        .btn-save { width: 100%; padding: 12px; background: #c45c26; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 8px; }
-        .btn-save:hover { background: #a84d1f; }
+        .btn-save { width: 100%; padding: 12px; background: var(--pa-ac); color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 8px; transition: filter 0.15s; }
+        .btn-save:hover { filter: brightness(1.08); }
         .btn-save:disabled { background: #ccc; cursor: not-allowed; }
         .status { font-size: 12px; color: #666; margin-top: 10px; }
         .status.err { color: #c00; }
@@ -42,9 +58,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <a class="nav-home" href="/web/index.html">← 返回首页</a>
-            <h1>兰州拉面成品分析评估</h1>
-            <p>主评：面条质感 | 汤型：红汤/清汤 | 面条辣椒 | 辅料：牛肉、鸡蛋、蒜苗碎</p>
+            <a class="nav-home" href="/">← 返回首页</a>
+            <h1>成品评估标注</h1>
+            <p id="headerSub">左侧选图，在右侧填写标注项并保存</p>
         </div>
         <div class="content">
             <div class="list-panel">
@@ -256,6 +272,24 @@
                     document.getElementById('imageList').innerHTML = '<div class="placeholder" style="padding:12px;">未找到 lmcp.*.jpg 图片</div>';
                 }
             });
+        })();
+    </script>
+    <script>
+        (function () {
+            var sub = document.getElementById('headerSub');
+            fetch('/api/auth/session', { credentials: 'include' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var role = d.success && d.user ? d.user.role : null;
+                    if (role === 0) {
+                        document.body.classList.add('theme-r0');
+                        if (sub) sub.textContent = '成品样本标注与标准库维护（管理员）';
+                    } else if (role === 1) {
+                        document.body.classList.add('theme-r1');
+                        if (sub) sub.textContent = '教学用成品标注与案例录入（培训师）';
+                    }
+                })
+                .catch(function () {});
         })();
     </script>
 </body>

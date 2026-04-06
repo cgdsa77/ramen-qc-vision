@@ -7,27 +7,48 @@
     <title>兰州拉面成品综合评分</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --pg-bg: linear-gradient(165deg, #faf7f3 0%, #f3eee8 100%);
+            --hd: linear-gradient(135deg, #5c4a3e 0%, #8b7358 100%);
+            --ac: #8b6048;
+            --ac2: #6b5344;
+            --nav: #6b5344;
+        }
+        body.theme-r0 {
+            --pg-bg: linear-gradient(165deg, #faf8f5 0%, #f0ebe3 100%);
+            --hd: linear-gradient(135deg, #4a3d32 0%, #6b5344 100%);
+            --ac: #6b5344;
+            --ac2: #5c4033;
+            --nav: #5c4033;
+        }
+        body.theme-r1 {
+            --pg-bg: linear-gradient(165deg, #f0f5fa 0%, #e6eef6 100%);
+            --hd: linear-gradient(135deg, #4a6b8a 0%, #6a8aaf 100%);
+            --ac: #4a6b94;
+            --ac2: #3d5a80;
+            --nav: #4a6b94;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #faf5ef; min-height: 100vh; padding: 20px; color: #2c1810; }
+        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: var(--pg-bg); min-height: 100vh; padding: 20px; color: #2c1810; -webkit-font-smoothing: antialiased; }
         .container { max-width: 1200px; margin: 0 auto; }
-        .nav-home-wrap { padding: 10px 20px; background: rgba(196,92,38,0.08); text-align: left; border-radius: 8px; margin-bottom: 16px; }
-        .nav-home { color: #8b5a2b; text-decoration: none; font-size: 14px; }
+        .nav-home-wrap { padding: 10px 20px; background: rgba(255,255,255,0.55); text-align: left; border-radius: 10px; margin-bottom: 12px; }
+        .nav-home { color: var(--nav); text-decoration: none; font-size: 14px; font-weight: 500; }
         .nav-home:hover { text-decoration: underline; }
-        .header { background: linear-gradient(135deg, #2c1810 0%, #8b5a2b 100%); color: #fffbf7; padding: 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(44,24,16,0.2); }
-        .header h1 { font-size: 1.6em; margin-bottom: 8px; }
-        .header .subtitle { font-size: 14px; opacity: 0.95; }
+        .header { background: var(--hd); color: #fffbf7; padding: 22px 24px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 6px 28px rgba(44,24,16,0.12); }
+        .header h1 { font-size: clamp(1.2rem, 2.8vw, 1.6em); margin-bottom: 6px; font-weight: 700; }
+        .header .subtitle { font-size: 14px; opacity: 0.94; line-height: 1.5; }
         .card { background: #fffbf7; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid rgba(196,92,38,0.12); margin-bottom: 20px; }
         .card h2 { color: #8b5a2b; margin-bottom: 12px; font-size: 1.1em; padding-bottom: 6px; border-bottom: 1px solid rgba(196,92,38,0.2); }
-        .upload-zone { border: 2px dashed #c45c26; border-radius: 12px; padding: 32px; text-align: center; background: rgba(196,92,38,0.04); cursor: pointer; transition: background 0.2s; }
-        .upload-zone:hover { background: rgba(196,92,38,0.08); }
-        .upload-zone.dragover { background: rgba(196,92,38,0.12); }
+        .upload-zone { border: 2px dashed var(--ac); border-radius: 12px; padding: 32px; text-align: center; background: rgba(139,96,72,0.06); cursor: pointer; transition: background 0.2s; }
+        .upload-zone:hover { background: rgba(139,96,72,0.1); }
+        .upload-zone.dragover { background: rgba(139,96,72,0.14); }
         .upload-zone input { display: none; }
         .upload-zone .hint { color: #5c4a3a; font-size: 13px; margin-top: 8px; }
         .score-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
-        .score-item { text-align: center; padding: 12px 18px; background: linear-gradient(135deg, #c45c26 0%, #8b5a2b 100%); color: #fff; border-radius: 10px; min-width: 90px; }
+        .score-item { text-align: center; padding: 12px 18px; background: linear-gradient(135deg, var(--ac) 0%, var(--ac2) 100%); color: #fff; border-radius: 10px; min-width: 90px; }
         .score-item .label { font-size: 11px; opacity: 0.9; }
         .score-item .value { font-size: 1.3em; font-weight: bold; margin-top: 4px; }
-        .score-item.total { background: linear-gradient(135deg, #2c1810 0%, #5c3d1e 100%); }
+        .score-item.total { background: linear-gradient(135deg, var(--ac2) 0%, #3d3028 100%); }
         .chart-wrap { height: 220px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
@@ -48,8 +69,8 @@
         .ai-input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .ai-input-row input { flex: 1; min-width: 200px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
         .ai-input-row .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
-        .ai-input-row .btn-send { background: #8b5a2b; color: #fff; }
-        .ai-input-row .btn-start { background: #c45c26; color: #fff; }
+        .ai-input-row .btn-send { background: var(--ac2); color: #fff; }
+        .ai-input-row .btn-start { background: var(--ac); color: #fff; }
         .err { color: #c00; padding: 12px; font-size: 13px; }
         .loading { color: #666; padding: 16px; text-align: center; }
         .attr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
@@ -94,7 +115,7 @@
     <div class="container">
         <div class="header">
             <h1>兰州拉面成品综合评分</h1>
-            <p class="subtitle">上传图片评分 · 多维度报告与图表 · 代表性样本展示 · AI 智能分析</p>
+            <p class="subtitle" id="headerSub">上传图片或使用下方样本查看评分与报告</p>
         </div>
 
         <!-- 1. 上传评分与报告 -->
@@ -103,7 +124,7 @@
             <div id="uploadZone" class="upload-zone">
                 <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" />
                 <div>点击或拖拽图片到此处</div>
-                <div class="hint">支持 JPG、PNG，将生成成品评分报告（以面条质感为主体）</div>
+                <div class="hint">支持 JPG、PNG</div>
             </div>
             <div id="uploadReport" style="display:none;">
                 <h3 style="margin:16px 0 8px; font-size:1em;">评分报告</h3>
@@ -118,7 +139,7 @@
                 </div>
                 <div id="reportPresentationForm" class="presentation-form" style="display:none;">
                     <h4>辅料（用于呈现加分）</h4>
-                    <p class="hint">上传图片时模型不识别辅料，请根据画面勾选后，呈现加分会重新计算并更新报告。</p>
+                    <p class="hint">请按画面勾选辅料，保存后更新呈现分。</p>
                     <div class="row">
                         <label>牛肉</label><select id="reportBeef"><option value="none">无</option><option value="little">少量</option><option value="more">较多</option></select>
                         <label>鸡蛋</label><select id="reportEgg"><option value="none">无</option><option value="yes">有</option></select>
@@ -141,19 +162,16 @@
 
         <!-- 2. 代表性样本 -->
         <div class="card">
-            <h2>数据集代表样本（高分且具代表性）</h2>
-            <p class="hint" style="margin-bottom:12px; color:#666; font-size:13px;">从 178 张标注中挑选红汤多肉有蛋、清汤多蒜苗等组合。点击图片可放大查看，点击卡片可选中并用于 AI 分析</p>
+            <h2>代表样本</h2>
+            <p class="hint" style="margin-bottom:12px; color:#666; font-size:13px;">点击卡片可选中；点击图片放大。</p>
             <div id="samplesLoading" class="loading">加载中…</div>
             <div id="samplesGrid" class="samples-grid" style="display:none;"></div>
         </div>
 
         <!-- 3. AI 智能分析 -->
         <div class="ai-card">
-            <h2>🤖 AI 智能分析</h2>
-            <p class="hint">
-                <strong>开始分析</strong>：基于当前选中的成品（上传结果或下方样本）生成完整分析报告。<br>
-                <strong>发送</strong>：输入具体问题（如「为什么质感得分是良好？」「清汤和红汤在评分上有区别吗？」），AI 结合当前数据作答。
-            </p>
+            <h2>AI 智能分析</h2>
+            <p class="hint">「开始分析」基于当前选中成品生成报告；「发送」先输入问题。</p>
             <div id="aiResult" class="ai-result"></div>
             <div class="ai-input-row">
                 <input type="text" id="aiInput" placeholder="输入问题，例如：清汤和红汤在评分上有区别吗？" />
@@ -513,6 +531,24 @@
                     document.getElementById('uploadPlaceholder').style.display = 'none';
                 }
             };
+        })();
+    </script>
+    <script>
+        (function () {
+            var sub = document.getElementById('headerSub');
+            fetch('/api/auth/session', { credentials: 'include' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var role = d.success && d.user ? d.user.role : null;
+                    if (role === 0) {
+                        document.body.classList.add('theme-r0');
+                        if (sub) sub.textContent = '监管用：上传或选样本查看成品评分与报告。';
+                    } else if (role === 1) {
+                        document.body.classList.add('theme-r1');
+                        if (sub) sub.textContent = '教学用：上传或选样本进行讲评与演示。';
+                    }
+                })
+                .catch(function () {});
         })();
     </script>
 </body>

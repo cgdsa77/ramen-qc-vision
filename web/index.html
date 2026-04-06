@@ -168,9 +168,9 @@
             color: #7d6b5a;
         }
         /* 角色主题：管理员 - 深棕/金，沉稳管控感 */
-        body.role-0 .top-bar { background: linear-gradient(90deg, #4a3022, #d4b18e, #4a3022); }
-        body.role-0 .hero { background: linear-gradient(165deg, #2c1810 0%, #3d2818 35%, #4a3520 70%, #5c4033 100%); }
-        body.role-0 .container { background: linear-gradient(180deg, #f8f4ef 0%, #f0ebe3 100%); }
+        body.role-0 .top-bar { background: linear-gradient(90deg, #5c4a3e, #c4a882, #5c4a3e); }
+        body.role-0 .hero { background: linear-gradient(165deg, #2f1e16 0%, #3a2a20 38%, #463428 72%, #504030 100%); }
+        body.role-0 .container { background: linear-gradient(180deg, #faf8f5 0%, #f3eee8 100%); }
         body.role-0 .section-title { color: #5c4033; font-weight: 600; border-bottom-color: transparent; }
         body.role-0 .section-title .section-title-line { background: linear-gradient(90deg, #5c4033, #d4b18e); }
         body.role-0 .card { background: #fffcf9; border-radius: 8px; border-color: rgba(92,64,51,0.15); box-shadow: 0 4px 12px rgba(92,64,51,0.15); }
@@ -179,9 +179,9 @@
         body.role-0 .nav-bar { background: rgba(44,24,16,0.96); }
         body.role-0 .footer { color: #6b5a4a; }
         /* 角色主题：培训师 - 偏蓝色调，冷静教学感 */
-        body.role-1 .top-bar { background: linear-gradient(90deg, #1a365d, #63b3ed, #1a365d); }
-        body.role-1 .hero { background: linear-gradient(165deg, #1a365d 0%, #2c5282 40%, #2b6cb0 70%, #3182ce 100%); }
-        body.role-1 .container { background: linear-gradient(180deg, #e6f0f7 0%, #dae8f2 100%); }
+        body.role-1 .top-bar { background: linear-gradient(90deg, #2d4a68, #7eb8e0, #2d4a68); }
+        body.role-1 .hero { background: linear-gradient(165deg, #243d5c 0%, #2d4f6e 42%, #3a6490 72%, #4a7caf 100%); }
+        body.role-1 .container { background: linear-gradient(180deg, #f0f5fa 0%, #e6eef6 100%); }
         body.role-1 .section-title { color: #2c5282; font-weight: 500; border-bottom-color: transparent; }
         body.role-1 .section-title .section-title-line { background: linear-gradient(90deg, #1a365d, #63b3ed); }
         body.role-1 .card { background: #f0f7fc; border-radius: 8px; border-color: rgba(44,82,130,0.15); box-shadow: 0 4px 12px rgba(44,82,130,0.15); }
@@ -202,6 +202,77 @@
         body.role-2 .footer { color: #3d6b5a; }
         body.role-1 .card h3 { font-weight: 500; }
         body.role-2 .card h3 { font-weight: 400; }
+        /* 首页 · 标注与综合评分两栏（管理员 / 培训师专属分区样式） */
+        .section-pillar { margin-bottom: 44px; }
+        body.role-0 .section-pillar--annotation,
+        body.role-0 .section-pillar--scoring,
+        body.role-1 .section-pillar--annotation,
+        body.role-1 .section-pillar--scoring {
+            padding: 26px 22px 30px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+        }
+        body.role-0 .section-pillar--annotation {
+            background: linear-gradient(165deg, #faf7f3 0%, #f2ebe4 55%, #ede4db 100%);
+            border-color: rgba(92, 64, 51, 0.1);
+            box-shadow: 0 6px 28px rgba(44, 24, 16, 0.06);
+        }
+        body.role-0 .section-pillar--scoring {
+            background: linear-gradient(165deg, #f6f3ef 0%, #ebe5de 55%, #e5ddd4 100%);
+            border-color: rgba(92, 64, 51, 0.09);
+            box-shadow: 0 6px 28px rgba(44, 24, 16, 0.055);
+        }
+        body.role-1 .section-pillar--annotation {
+            background: linear-gradient(165deg, #f0f6fb 0%, #e8f0f8 50%, #e2ebf4 100%);
+            border-color: rgba(44, 82, 130, 0.11);
+            box-shadow: 0 6px 28px rgba(26, 54, 93, 0.07);
+        }
+        body.role-1 .section-pillar--scoring {
+            background: linear-gradient(165deg, #ebf3fa 0%, #e3edf4 50%, #dde8f0 100%);
+            border-color: rgba(44, 82, 130, 0.1);
+            box-shadow: 0 6px 28px rgba(26, 54, 93, 0.065);
+        }
+        body.role-0 .section-pillar .section-title,
+        body.role-1 .section-pillar .section-title { margin-bottom: 18px; padding-bottom: 10px; }
+        body.role-0 .card-pillar,
+        body.role-1 .card-pillar {
+            position: relative;
+            padding: 24px;
+            border-radius: 14px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        body.role-0 .card-pillar {
+            background: rgba(255, 252, 249, 0.94);
+            border-color: rgba(92, 64, 51, 0.1);
+            box-shadow: 0 4px 16px rgba(44, 24, 16, 0.06);
+        }
+        body.role-1 .card-pillar {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(44, 82, 130, 0.12);
+            box-shadow: 0 4px 16px rgba(26, 54, 93, 0.07);
+        }
+        body.role-0 .card-pillar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(44, 24, 16, 0.1);
+        }
+        body.role-1 .card-pillar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(26, 54, 93, 0.12);
+        }
+        body.role-0 .card-pillar .card-desc {
+            font-size: 13px;
+            line-height: 1.55;
+            margin-bottom: 18px;
+            color: #6b5e52;
+        }
+        body.role-1 .card-pillar .card-desc {
+            font-size: 13px;
+            line-height: 1.55;
+            margin-bottom: 18px;
+            color: #4a5f78;
+        }
+        body.role-0 .card-pillar .btn,
+        body.role-1 .card-pillar .btn { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06); }
         /* 角色主题下的弹窗与模块按钮统一（排除登录弹窗，登录页无 role） */
         body.role-0 .modal-overlay .modal-box {
             background: #fffcf9;
@@ -773,42 +844,42 @@
                     </div>
                 </div>
             </section>
-            <section id="section-annotation" class="section" data-role-visible="0,1">
+            <section id="section-annotation" class="section section-pillar section-pillar--annotation" data-role-visible="0,1">
                 <h2 class="section-title"><span id="title-annotation">标注工具</span><span class="section-title-line"></span></h2>
                 <div class="card-grid">
-                    <div class="card" data-card="annotate-stretch">
+                    <div class="card card-pillar" data-card="annotate-stretch">
                         <h3>抻面评分标注工具</h3>
-                        <p>对关键帧进行手部、面条等维度的人工标注与评分，支撑模型训练与评估。</p>
+                        <p class="card-desc">关键帧标注与环节评分，服务模型与数据治理。</p>
                         <a href="/scoring-tool" class="btn">进入</a>
                     </div>
-                    <div class="card" data-card="annotate-boiling">
+                    <div class="card card-pillar" data-card="annotate-boiling">
                         <h3>下面及捞面评分标注工具</h3>
-                        <p>对 xl 标注视频中的面条、手部、面条工具、汤面四类目标进行手动评分（粗细/弹性/熟度等）。</p>
+                        <p class="card-desc">环节目标手动评分，建设标注数据。</p>
                         <a href="/scoring-tool-boiling" class="btn">进入</a>
                     </div>
-                    <div class="card" data-card="annotate-product">
+                    <div class="card card-pillar" data-card="annotate-product">
                         <h3>兰州拉面成品评估标注</h3>
-                        <p>对成品图片标注面条质感、红汤/清汤、辣椒、辅料（牛肉/鸡蛋/蒜苗碎），构建标准数据集。</p>
+                        <p class="card-desc">成品图标注，沉淀标准样本。</p>
                         <a href="/product-annotation" class="btn">进入</a>
                     </div>
                 </div>
             </section>
-            <section id="section-scoring" class="section" data-role-visible="0,1,2">
+            <section id="section-scoring" class="section section-pillar section-pillar--scoring" data-role-visible="0,1,2">
                 <h2 class="section-title"><span id="title-scoring">综合评分</span><span class="section-title-line"></span></h2>
-                <div class="card-grid" data-role-visible="0,1">
-                    <div class="card" data-card="score-stretch">
+                <div class="card-grid card-grid--scoring-main" data-role-visible="0,1">
+                    <div class="card card-pillar" data-card="score-stretch">
                         <h3>抻面综合评分可视化</h3>
-                        <p>多维度图表与 DTW 对比展示：批量结果含最佳模型检测 + 骨架线 + DTW（标准序列已扩展 cm13～cm17，见配置 dtw_standard_videos.json），支持 AI 分析报告与问答。</p>
+                        <p class="card-desc">多维度得分、趋势与 AI 解读，便于查阅与导出。</p>
                         <a href="/scoring-visualization" class="btn">进入</a>
                     </div>
-                    <div class="card" data-card="score-boiling">
+                    <div class="card card-pillar" data-card="score-boiling">
                         <h3>下面及捞面综合评分可视化</h3>
-                        <p>骨架线与标注融合，多维度展示 xl 视频的手部/面条/操作规范得分。</p>
+                        <p class="card-desc">环节评分可视化与对比。</p>
                         <a href="/web/scoring_visualization_boiling.html" class="btn">进入</a>
                     </div>
-                    <div class="card" data-card="score-product">
+                    <div class="card card-pillar" data-card="score-product">
                         <h3>兰州拉面成品综合评分</h3>
-                        <p>上传成品图评分、多维度报告与图表，代表样本展示，支持 AI 智能分析。</p>
+                        <p class="card-desc">成品打分、报告与样本查阅。</p>
                         <a href="/product-scoring-visualization" class="btn">进入</a>
                     </div>
                 </div>
@@ -1385,12 +1456,12 @@
                         stretch: { title: '抻面动作检测', desc: '上传抻面视频进行检测（最新训练权重，含扩充数据集），查看结果与可视化，用于流程监管与质量把控。' },
                         boiling: { title: '下面及捞面检测', desc: '对下面、捞面环节视频进行检测，识别关键动作与状态，支撑监管与统计。' },
                         realtime: { title: '实时监测', desc: '通过摄像头或外接设备对制面流程进行实时解析与检测，便于现场监管。' },
-                        'annotate-stretch': { title: '抻面评分标注工具', desc: '对关键帧进行手部、面条等维度的人工标注与评分，支撑模型训练与数据管理。' },
-                        'annotate-boiling': { title: '下面及捞面评分标注工具', desc: '对视频中面条、手部、工具、汤面等目标进行手动评分，用于标注数据建设。' },
-                        'annotate-product': { title: '兰州拉面成品评估标注', desc: '对成品图进行质感、汤色、辅料等标注，构建标准数据集供模型与报告使用。' },
-                        'score-stretch': { title: '抻面综合评分可视化', desc: '检测+骨架+DTW 多维度图表与 AI 分析（DTW 标准含 cm13～cm17 等配置），用于监管决策与报告导出。' },
-                        'score-boiling': { title: '下面及捞面综合评分可视化', desc: '骨架与标注融合的多维度评分展示，支持 xl 视频的评分报告与对比。' },
-                        'score-product': { title: '兰州拉面成品综合评分', desc: '成品图上传评分、多维度报告与代表样本展示，支持 AI 智能分析。' },
+                        'annotate-stretch': { title: '抻面评分标注工具', desc: '关键帧与环节标注，服务模型迭代与数据治理。' },
+                        'annotate-boiling': { title: '下面及捞面评分标注工具', desc: '环节目标手动评分，沉淀标注数据。' },
+                        'annotate-product': { title: '兰州拉面成品评估标注', desc: '成品图标注，构建标准样本库。' },
+                        'score-stretch': { title: '抻面综合评分可视化', desc: '多维度得分与趋势，支持决策与报告导出。' },
+                        'score-boiling': { title: '下面及捞面综合评分可视化', desc: '环节评分可视化与横向对比。' },
+                        'score-product': { title: '兰州拉面成品综合评分', desc: '成品打分、报告与样本查阅。' },
                         'pose-stretch': { title: '抻面手部姿态视频（预处理）', desc: '浏览带骨架线抻面视频（cm1～cm17）；实时骨架页可打开 raw\\抻面 示范视频。' },
                         'pose-boiling': { title: '下面及捞面手部姿态视频（预处理）', desc: '浏览带骨架线的 xl 预处理视频列表并播放，支持比例适配。' }
                     }
@@ -1402,12 +1473,12 @@
                         stretch: { title: '抻面动作检测', desc: '上传抻面视频进行动作与类别检测（最新 YOLO 权重），用于教学演示与学员练习结果查看。' },
                         boiling: { title: '下面及捞面检测', desc: '针对下面、捞面环节的视频检测，帮助学员理解关键动作与评分依据。' },
                         realtime: { title: '实时监测', desc: '使用摄像头或外接设备进行实时解析与检测，便于课堂或现场示范。' },
-                        'annotate-stretch': { title: '抻面评分标注工具', desc: '对关键帧进行手部、面条等维度的人工标注与评分，支撑教学与模型迭代。' },
-                        'annotate-boiling': { title: '下面及捞面评分标注工具', desc: '对视频中四类目标进行手动评分（粗细/弹性/熟度等），用于教学与数据标注。' },
-                        'annotate-product': { title: '兰州拉面成品评估标注', desc: '对成品图进行标注，构建标准数据集，支撑成品评分标准与教学案例。' },
-                        'score-stretch': { title: '抻面综合评分可视化', desc: '检测+骨架+DTW 与 AI 分析，标准动作库已含新示范段（cm13～cm17），便于讲解评分标准。' },
-                        'score-boiling': { title: '下面及捞面综合评分可视化', desc: '骨架与标注融合的多维度得分展示，用于学员评分解读与标准对照。' },
-                        'score-product': { title: '兰州拉面成品综合评分', desc: '成品图评分、多维度报告与代表样本展示，支持 AI 智能分析与教学。' },
+                        'annotate-stretch': { title: '抻面评分标注工具', desc: '课堂与备课用关键帧标注与评分。' },
+                        'annotate-boiling': { title: '下面及捞面评分标注工具', desc: '环节目标评分，配合教学与数据回流。' },
+                        'annotate-product': { title: '兰州拉面成品评估标注', desc: '成品标准标注，积累教学案例。' },
+                        'score-stretch': { title: '抻面综合评分可视化', desc: '综合得分与 AI 解读，便于讲解评分标准。' },
+                        'score-boiling': { title: '下面及捞面综合评分可视化', desc: '多维度展示，对照细则解读学员得分。' },
+                        'score-product': { title: '兰州拉面成品综合评分', desc: '成品报告与样例，用于讲评与演示。' },
                         'pose-stretch': { title: '抻面手部姿态视频（预处理）', desc: '浏览带骨架线的抻面视频（含 cm13～cm17）；实时骨架页可演示 raw\\抻面 本地文件。' },
                         'pose-boiling': { title: '下面及捞面手部姿态视频（预处理）', desc: '浏览带骨架线的 xl 预处理视频，用于操作规范与姿态教学。' }
                     }

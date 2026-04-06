@@ -7,20 +7,32 @@ import sys
 import threading
 import uuid
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
-# 异步检测/评分任务状态（job_id -> 状态字典），供前端轮询进度
-_detect_jobs = {}
-_score_jobs = {}
-_upload_score_result = None   # 最近一次上传视频的评分结果，供综合评分页 source=upload 展示
-_upload_score_stage = None    # "stretch" | "boiling_scooping"
-_jobs_lock = threading.Lock()
-
-# 项目根目录 = start_web.py 所在目录（不依赖当前工作目录）
+# 必须先加入项目根，再导入 src.*
 _script_dir = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
 os.chdir(_script_dir)
 project_root = Path(_script_dir)
 sys.path.insert(0, str(project_root))
+
+# 异步任务状态见 src.webapp.state（中期拆分，便于测试与复用）
+from src.webapp import state as _job_state
+
+_detect_jobs = _job_state._detect_jobs
+_score_jobs = _job_state._score_jobs
+_jobs_lock = _job_state._jobs_lock
+
+
+def _prune_job_store(store: Dict[str, Any]) -> None:
+    _job_state.prune_job_store(store)
+
+
+def _env_default_async_detect() -> bool:
+    return _job_state.env_default_async_detect()
+
+
+def _resolve_async_mode(async_mode: Optional[bool]) -> bool:
+    return _job_state.resolve_async_mode(async_mode)
 
 # 启动时即加载 AI API 密钥（与 start_web.py 同目录的 configs）
 _ai_api_key_from_file = None
@@ -46,6 +58,12 @@ if _ai_api_key_from_file:
     print(f"[AI] 已从 {_secret_path} 加载 api_key，AI 分析可用")
 else:
     print(f"[AI] 未加载 api_key。路径: {_secret_path}，原因: {_ai_config_load_error or '文件内无 api_key/secret_key'}")
+if _env_default_async_detect():
+    print("[配置] RAMEN_DEFAULT_ASYNC_DETECT=1：/api/detect_video、/api/detect_boiling_scooping、/api/score_video 默认异步（返回 job_id）")
+if os.environ.get("RAMEN_PREFER_ONNX", "").lower() in ("1", "true", "yes"):
+    print("[配置] RAMEN_PREFER_ONNX=1：若存在与 best.pt 同名的 best.onnx 将优先用于推理")
+if os.environ.get("RAMEN_PREFER_ENGINE", "").lower() in ("1", "true", "yes"):
+    print("[配置] RAMEN_PREFER_ENGINE=1：若存在与 best.pt 同名的 .engine 将优先用于 TensorRT 推理")
 
 try:
     # 导入FastAPI
@@ -68,15 +86,33 @@ try:
             content={"success": False, "error": str(exc), "message": "服务器内部错误: " + str(exc)}
         )
 
-    # CORS支持
+    # CORS（中期：可用 RAMEN_CORS_ORIGINS 收紧；未设置时与改前一致为 *）
+    from src.webapp.config import cors_allows_credentials, get_cors_origins
+
+    _cors_origins = get_cors_origins()
+    _cors_cred = cors_allows_credentials(_cors_origins)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
+        allow_origins=_cors_origins,
+        allow_credentials=_cors_cred,
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+    _sess_mw = None
+    try:
+        from src.webapp.middleware_session import build_session_enforcement_middleware
+
+        _sess_mw = build_session_enforcement_middleware()
+        if _sess_mw is not None:
+            app.add_middleware(_sess_mw)
+            print("[配置] RAMEN_REQUIRE_SESSION_FOR_API=1：未登录访问受限 /api 将返回 401（白名单见 src/webapp/config.py）")
+    except Exception as _e:
+        print(f"[配置] 会话校验中间件未启用: {_e}")
+
+    from src.webapp.routers.meta import build_meta_router
+
+    app.include_router(build_meta_router(project_root))
+
     # 静态文件
     web_dir = project_root / "web"
     reports_dir = project_root / "reports"
@@ -120,678 +156,16 @@ try:
     raw_lmcp_dir = project_root / "data" / "raw" / "拉面成品"
     product_scores_dir = project_root / "data" / "scores" / "拉面成品"
 
-    # ---------- 毕设：用户权限与 Session（SQLite 或 MySQL）----------
-    try:
-        from src import auth_db
-        auth_db.init_db()
-        mode = auth_db._resolve_db_mode()
-        if mode == "mysql":
-            print("[认证] 用户库已初始化（MySQL），默认管理员 admin / admin123")
-        else:
-            print("[认证] 用户库已初始化（SQLite），默认管理员 admin / admin123")
-    except Exception as e:
-        print(f"[认证] 初始化失败: {e}，登录/用户管理将不可用")
+    from src.webapp.auth_deps import auth_current_user
+    from src.webapp.routes.auth_suggestions import register_auth_suggestions_routes
+    from src.webapp.scoring_rules_helpers import score_100_and_grade
+    from src import auth_db  # 评分记录目录权限（培训师查看学员）等接口需用
 
-    def _auth_session_id(request: Request) -> Optional[str]:
-        return request.cookies.get("ramen_session")
+    register_auth_suggestions_routes(app, project_root)
 
-    def _auth_current_user(request: Request):
-        uid = _auth_session_id(request)
-        return auth_db.get_session(uid)
+    from src.webapp.routes.pages_and_assets import register_pages_and_asset_routes
+    register_pages_and_asset_routes(app, project_root, web_dir)
 
-    # 登录
-    @app.post("/api/auth/login")
-    async def api_auth_login(request: Request):
-        try:
-            body = await request.json()
-        except Exception:
-            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
-        username = (body.get("username") or "").strip()
-        password = (body.get("password") or "")
-        if not username or password is None:
-            return JSONResponse(content={"success": False, "error": "请输入账号和密码"})
-        user, session_id = auth_db.login(username, password)
-        if user is None:
-            return JSONResponse(content={"success": False, "error": "账号或密码错误"})
-        if user.get("_disabled"):
-            return JSONResponse(content={"success": False, "error": "账号已禁用，请联系管理员"})
-        res = JSONResponse(content={
-            "success": True,
-            "user": {"id": user["id"], "username": user["username"], "role": user["role"], "name": user["name"]},
-        })
-        res.set_cookie(key="ramen_session", value=session_id, max_age=24 * 3600, httponly=True, samesite="lax")
-        return res
-
-    @app.get("/api/auth/session")
-    async def api_auth_session(request: Request):
-        u = _auth_current_user(request)
-        if not u:
-            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
-        return JSONResponse(content={"success": True, "user": u})
-
-    @app.post("/api/auth/logout")
-    async def api_auth_logout(request: Request):
-        sid = _auth_session_id(request)
-        if sid:
-            auth_db.logout(sid)
-        res = JSONResponse(content={"success": True})
-        res.delete_cookie(key="ramen_session")
-        return res
-
-    # 用户管理（仅管理员 role=0）
-    @app.get("/api/users")
-    async def api_users_list(request: Request):
-        u = _auth_current_user(request)
-        if not u:
-            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
-        if u.get("role") != 0:
-            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
-        users = auth_db.list_users()
-        return JSONResponse(content={"success": True, "users": users})
-
-    @app.post("/api/users")
-    async def api_users_create(request: Request):
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 0:
-            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
-        try:
-            body = await request.json()
-        except Exception:
-            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
-        tid = body.get("assigned_trainer_id")
-        if tid is not None and tid != "":
-            try:
-                tid = int(tid)
-            except (TypeError, ValueError):
-                tid = None
-        ok, msg, row = auth_db.create_user(
-            body.get("username", ""),
-            body.get("password", ""),
-            int(body.get("role", 2)),
-            body.get("name", ""),
-            assigned_trainer_id=tid,
-        )
-        if not ok:
-            return JSONResponse(content={"success": False, "error": msg})
-        return JSONResponse(content={"success": True, "user": row, "message": msg})
-
-    @app.put("/api/users/{uid}")
-    async def api_users_update(uid: int, request: Request):
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 0:
-            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
-        try:
-            body = await request.json()
-        except Exception:
-            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
-        kw = {}
-        if "role" in body:
-            kw["role"] = int(body["role"])
-        if "name" in body:
-            kw["name"] = body.get("name")
-        if "status" in body:
-            kw["status"] = int(body["status"])
-        if "assigned_trainer_id" in body:
-            tid = body["assigned_trainer_id"]
-            if tid is not None and tid != "":
-                try:
-                    kw["assigned_trainer_id"] = int(tid)
-                except (TypeError, ValueError):
-                    kw["assigned_trainer_id"] = None
-            else:
-                kw["assigned_trainer_id"] = None
-        ok, msg = auth_db.update_user(uid, **kw)
-        if not ok:
-            return JSONResponse(content={"success": False, "error": msg})
-        return JSONResponse(content={"success": True, "message": msg})
-
-    @app.delete("/api/users/{uid}")
-    async def api_users_delete(uid: int, request: Request):
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 0:
-            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
-        ok, msg = auth_db.delete_user(uid)
-        if not ok:
-            return JSONResponse(content={"success": False, "error": msg})
-        return JSONResponse(content={"success": True, "message": msg})
-
-    @app.post("/api/users/{uid}/reset-password")
-    async def api_users_reset_password(uid: int, request: Request):
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 0:
-            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
-        try:
-            body = await request.json()
-        except Exception:
-            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
-        ok, msg = auth_db.reset_password(uid, body.get("new_password", ""))
-        if not ok:
-            return JSONResponse(content={"success": False, "error": msg})
-        return JSONResponse(content={"success": True, "message": msg})
-
-    # 培训师：获取当前培训师名下的学员列表（role=1 可调）
-    @app.get("/api/trainer/students")
-    async def api_trainer_students(request: Request):
-        u = _auth_current_user(request)
-        if not u:
-            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
-        if u.get("role") != 1:
-            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可查看"})
-        students = auth_db.get_students_by_trainer(int(u["id"]))
-        return JSONResponse(content={"success": True, "students": students})
-
-    # 培训师建议与学员回复（存 data/trainer_suggestions.json）；图片存 data/suggestion_images/
-    _suggestions_file = project_root / "data" / "trainer_suggestions.json"
-    _suggestion_images_dir = project_root / "data" / "suggestion_images"
-    def _load_suggestions():
-        if not _suggestions_file.exists():
-            return {"threads": []}
-        try:
-            with open(_suggestions_file, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return {"threads": []}
-    def _save_suggestions(data):
-        _suggestions_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(_suggestions_file, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-    def _find_thread(threads, trainer_id, student_id):
-        for t in threads:
-            if t.get("trainer_id") == trainer_id and t.get("student_id") == student_id:
-                return t
-        return None
-
-    @app.get("/api/suggestions")
-    async def api_suggestions_get(request: Request, student_id: Optional[int] = None):
-        """培训师传 student_id 获取与该学员的对话；学员不传则获取自己的对话。"""
-        u = _auth_current_user(request)
-        if not u:
-            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
-        data = _load_suggestions()
-        threads = data.get("threads", [])
-        if u.get("role") == 1 and student_id is not None:
-            tid = int(u["id"])
-            t = _find_thread(threads, tid, student_id)
-            student = next((s for s in auth_db.get_students_by_trainer(tid) if s.get("id") == student_id), None)
-            return JSONResponse(content={"success": True, "thread": t or {"trainer_id": tid, "student_id": student_id, "messages": []}, "student_name": (student and (student.get("name") or student.get("username"))) or ""})
-        if u.get("role") == 2:
-            full_user = next((x for x in auth_db.list_users() if x.get("id") == u["id"]), None)
-            tid = (full_user or {}).get("assigned_trainer_id")
-            if not tid:
-                return JSONResponse(content={"success": True, "thread": {"messages": []}, "trainer_name": ""})
-            t = _find_thread(threads, int(tid), int(u["id"]))
-            trainer = next((x for x in auth_db.list_users() if x.get("id") == tid), None)
-            return JSONResponse(content={"success": True, "thread": t or {"trainer_id": tid, "student_id": u["id"], "messages": []}, "trainer_name": (trainer and (trainer.get("name") or trainer.get("username"))) or ""})
-        return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
-
-    @app.post("/api/suggestions")
-    async def api_suggestions_post(request: Request):
-        """培训师给学员发建议（文本）。"""
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 1:
-            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可发建议"})
-        try:
-            body = await request.json()
-        except Exception:
-            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
-        student_id = body.get("student_id")
-        content = (body.get("content") or "").strip()
-        if not content:
-            return JSONResponse(content={"success": False, "error": "建议内容不能为空"})
-        try:
-            student_id = int(student_id)
-        except (TypeError, ValueError):
-            return JSONResponse(content={"success": False, "error": "学员无效"})
-        students = auth_db.get_students_by_trainer(int(u["id"]))
-        if not any(s.get("id") == student_id for s in students):
-            return JSONResponse(status_code=403, content={"success": False, "error": "只能给所负责学员发建议"})
-        data = _load_suggestions()
-        threads = data.get("threads", [])
-        t = _find_thread(threads, int(u["id"]), student_id)
-        if not t:
-            t = {"trainer_id": int(u["id"]), "student_id": student_id, "messages": []}
-            threads.append(t)
-        from datetime import datetime
-        t["messages"].append({"role": "trainer", "content": content, "content_type": "text", "at": datetime.now().isoformat()})
-        _save_suggestions(data)
-        return JSONResponse(content={"success": True, "message": "已发送"})
-
-    @app.post("/api/suggestions/upload")
-    async def api_suggestions_upload(request: Request, student_id: str = Form(...), content: str = Form(""), image: UploadFile = File(None)):
-        """培训师给学员发建议（图片，可选附文字）。支持从本地选择或拖拽上传。"""
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 1:
-            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可发建议"})
-        try:
-            sid = int(student_id)
-        except (TypeError, ValueError):
-            return JSONResponse(content={"success": False, "error": "学员无效"})
-        students = auth_db.get_students_by_trainer(int(u["id"]))
-        if not any(s.get("id") == sid for s in students):
-            return JSONResponse(status_code=403, content={"success": False, "error": "只能给所负责学员发建议"})
-        if not image or not image.filename:
-            return JSONResponse(content={"success": False, "error": "请选择或拖拽上传一张图片"})
-        ext = (Path(image.filename).suffix or ".jpg").lower()
-        if ext not in (".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"):
-            return JSONResponse(content={"success": False, "error": "仅支持图片格式（jpg/png/gif等）"})
-        _suggestion_images_dir.mkdir(parents=True, exist_ok=True)
-        safe_name = str(uuid.uuid4()) + ext
-        path = _suggestion_images_dir / safe_name
-        try:
-            content_bytes = await image.read()
-            path.write_bytes(content_bytes)
-        except Exception as e:
-            return JSONResponse(content={"success": False, "error": "保存图片失败: " + str(e)})
-        data = _load_suggestions()
-        threads = data.get("threads", [])
-        t = _find_thread(threads, int(u["id"]), sid)
-        if not t:
-            t = {"trainer_id": int(u["id"]), "student_id": sid, "messages": []}
-            threads.append(t)
-        from datetime import datetime
-        text_part = (content or "").strip()
-        if text_part:
-            t["messages"].append({"role": "trainer", "content": text_part, "content_type": "text", "at": datetime.now().isoformat()})
-        t["messages"].append({"role": "trainer", "content": safe_name, "content_type": "image", "at": datetime.now().isoformat()})
-        _save_suggestions(data)
-        return JSONResponse(content={"success": True, "message": "已发送"})
-
-    def _suggestion_image_media_type(name: str):
-        n = name.lower()
-        if n.endswith((".png",)): return "image/png"
-        if n.endswith((".gif",)): return "image/gif"
-        if n.endswith((".webp",)): return "image/webp"
-        if n.endswith((".bmp",)): return "image/bmp"
-        return "image/jpeg"
-
-    @app.get("/api/suggestions/image/{filename:path}")
-    async def api_suggestions_image(filename: str):
-        """返回建议中上传的图片，供前端展示。"""
-        if not filename or ".." in filename:
-            raise HTTPException(status_code=400, detail="invalid")
-        name = Path(filename.replace("\\", "/").strip("/")).name
-        if not name:
-            raise HTTPException(status_code=400, detail="invalid")
-        path = _suggestion_images_dir / name
-        if not path.is_file():
-            raise HTTPException(status_code=404, detail="not found")
-        try:
-            path.resolve().relative_to(_suggestion_images_dir.resolve())
-        except ValueError:
-            raise HTTPException(status_code=404, detail="not found")
-        return FileResponse(str(path), media_type=_suggestion_image_media_type(name))
-
-    @app.post("/api/suggestions/reply")
-    async def api_suggestions_reply(request: Request):
-        """学员回复培训师。"""
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 2:
-            return JSONResponse(status_code=403, content={"success": False, "error": "仅学员可回复"})
-        try:
-            body = await request.json()
-        except Exception:
-            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
-        content = (body.get("content") or "").strip()
-        if not content:
-            return JSONResponse(content={"success": False, "error": "回复内容不能为空"})
-        full_user = next((x for x in auth_db.list_users() if x.get("id") == u["id"]), None)
-        tid = (full_user or {}).get("assigned_trainer_id")
-        if not tid:
-            return JSONResponse(content={"success": False, "error": "未分配培训师"})
-        data = _load_suggestions()
-        threads = data.get("threads", [])
-        t = _find_thread(threads, int(tid), int(u["id"]))
-        if not t:
-            t = {"trainer_id": int(tid), "student_id": int(u["id"]), "messages": []}
-            threads.append(t)
-        from datetime import datetime
-        t["messages"].append({"role": "student", "content": content, "content_type": "text", "at": datetime.now().isoformat()})
-        _save_suggestions(data)
-        return JSONResponse(content={"success": True, "message": "已回复"})
-
-    # 培训师列表（管理员/培训师用于下拉：所属培训师）
-    @app.get("/api/trainers")
-    async def api_trainers_list(request: Request):
-        u = _auth_current_user(request)
-        if not u:
-            return JSONResponse(status_code=401, content={"success": False, "error": "未登录"})
-        if u.get("role") not in (0, 1):
-            return JSONResponse(status_code=403, content={"success": False, "error": "无权限"})
-        trainers = auth_db.list_trainers()
-        return JSONResponse(content={"success": True, "trainers": trainers})
-
-    # 评分标准（培训师/管理员可读可改，权重总和须为 1.0）
-    _scoring_rules_paths = {
-        "stretch": project_root / "data" / "scores" / "抻面" / "scoring_rules.json",
-        "boiling": project_root / "data" / "scores" / "下面及捞面" / "scoring_rules.json",
-    }
-    _overall_weight_labels = {
-        "stretch": {"noodle_rope": "面绳", "hand": "手部", "noodle_bundle": "面束"},
-        "boiling": {"noodle_rope": "面绳", "hand": "手部", "tools_noodle": "工具面", "soup_noodle": "汤面"},
-    }
-
-    @app.get("/api/scoring-rules")
-    async def api_scoring_rules_get(request: Request, stage: str = Query("stretch", description="stretch|boiling")):
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 1:
-            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可查看评分标准"})
-        if stage not in _scoring_rules_paths:
-            return JSONResponse(status_code=400, content={"success": False, "error": "stage 须为 stretch 或 boiling"})
-        path = _scoring_rules_paths[stage]
-        if not path.exists():
-            return JSONResponse(content={"success": False, "error": "规则文件不存在"})
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            weights = data.get("overall_weights") or {}
-            labels = _overall_weight_labels.get(stage) or {}
-            return JSONResponse(content={
-                "success": True,
-                "stage": stage,
-                "overall_weights": weights,
-                "labels": labels,
-                "min_confidence": data.get("min_confidence", 0.3),
-                "min_frame_ratio": data.get("min_frame_ratio", 0.1),
-                "pass_threshold": data.get("pass_threshold", 60),
-                "excellent_threshold": data.get("excellent_threshold", 85),
-            })
-        except Exception as e:
-            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
-
-    def _score_100_and_grade(stage: str, average_overall_score_1_5: float) -> tuple:
-        """根据规则中的及格线/优秀线，将 1-5 分制转为百分制并得到等级。"""
-        path = _scoring_rules_paths.get(stage)
-        if not path or not path.exists():
-            return round((average_overall_score_1_5 - 1) / 4 * 100, 1), None
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except Exception:
-            return round((average_overall_score_1_5 - 1) / 4 * 100, 1), None
-        pass_t = float(data.get("pass_threshold", 60))
-        excellent_t = float(data.get("excellent_threshold", 85))
-        score_100 = (average_overall_score_1_5 - 1) / 4 * 100
-        score_100 = round(max(0, min(100, score_100)), 1)
-        if score_100 >= excellent_t:
-            grade = "优秀"
-        elif score_100 >= pass_t:
-            grade = "良好"
-        else:
-            grade = "不及格"
-        return score_100, grade
-
-    @app.put("/api/scoring-rules")
-    async def api_scoring_rules_put(request: Request):
-        u = _auth_current_user(request)
-        if not u or u.get("role") != 1:
-            return JSONResponse(status_code=403, content={"success": False, "error": "仅培训师可修改评分标准"})
-        try:
-            body = await request.json()
-        except Exception:
-            return JSONResponse(status_code=400, content={"success": False, "error": "请求体无效"})
-        stage = body.get("stage")
-        if stage not in _scoring_rules_paths:
-            return JSONResponse(content={"success": False, "error": "stage 须为 stretch 或 boiling"})
-        new_weights = body.get("overall_weights")
-        if not isinstance(new_weights, dict):
-            return JSONResponse(content={"success": False, "error": "overall_weights 须为对象"})
-        try:
-            total = sum(float(v) for v in new_weights.values())
-        except (TypeError, ValueError):
-            return JSONResponse(content={"success": False, "error": "权重须为数字"})
-        if abs(total - 1.0) > 1e-6:
-            return JSONResponse(content={"success": False, "error": "权重总和须为 100%（即 1.0），当前为 " + str(round(total * 100, 1)) + "%"})
-        # 可选：评分行为参数
-        min_confidence = body.get("min_confidence")
-        min_frame_ratio = body.get("min_frame_ratio")
-        pass_threshold = body.get("pass_threshold")
-        excellent_threshold = body.get("excellent_threshold")
-        if min_confidence is not None:
-            v = float(min_confidence)
-            if v < 0 or v > 1:
-                return JSONResponse(content={"success": False, "error": "最低参与置信度须在 0～1 之间"})
-        if min_frame_ratio is not None:
-            v = float(min_frame_ratio)
-            if v < 0 or v > 1:
-                return JSONResponse(content={"success": False, "error": "视频有效帧比例须在 0～1 之间"})
-        if pass_threshold is not None:
-            v = float(pass_threshold)
-            if v < 0 or v > 100:
-                return JSONResponse(content={"success": False, "error": "及格线须在 0～100 之间"})
-        if excellent_threshold is not None:
-            v = float(excellent_threshold)
-            if v < 0 or v > 100:
-                return JSONResponse(content={"success": False, "error": "优秀线须在 0～100 之间"})
-        if pass_threshold is not None and excellent_threshold is not None and float(excellent_threshold) < float(pass_threshold):
-            return JSONResponse(content={"success": False, "error": "优秀线不得低于及格线"})
-        path = _scoring_rules_paths[stage]
-        if not path.exists():
-            return JSONResponse(content={"success": False, "error": "规则文件不存在"})
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            data["overall_weights"] = {k: float(v) for k, v in new_weights.items()}
-            if min_confidence is not None:
-                data["min_confidence"] = float(min_confidence)
-            if min_frame_ratio is not None:
-                data["min_frame_ratio"] = float(min_frame_ratio)
-            if pass_threshold is not None:
-                data["pass_threshold"] = float(pass_threshold)
-            if excellent_threshold is not None:
-                data["excellent_threshold"] = float(excellent_threshold)
-            with open(path, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-            return JSONResponse(content={"success": True, "message": "已保存"})
-        except Exception as e:
-            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
-
-    # ---------- 毕设用户权限结束 ----------
-    
-    # 根路径：毕设主页面（整合导航）
-    @app.get("/")
-    async def root():
-        web_file = web_dir / "index.html"
-        if web_file.exists():
-            return FileResponse(str(web_file))
-        web_file = web_dir / "video_detection.html"
-        if web_file.exists():
-            return FileResponse(str(web_file))
-        return {"message": "Ramen QC System", "status": "running", "web_interface": "/web/index.html"}
-    
-    # 流程检测
-    def _no_cache_file_response(path: str):
-        r = FileResponse(path)
-        r.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
-        r.headers["Pragma"] = "no-cache"
-        return r
-
-    @app.get("/stretch-detection")
-    async def stretch_detection():
-        """抻面动作检测"""
-        web_file = web_dir / "video_detection.html"
-        if web_file.exists():
-            return _no_cache_file_response(str(web_file))
-        return {"message": "页面未找到"}
-    
-    @app.get("/boiling-detection")
-    async def boiling_detection():
-        """下面及捞面检测"""
-        web_file = web_dir / "boiling_scooping_detection.html"
-        if web_file.exists():
-            return _no_cache_file_response(str(web_file))
-        return {"message": "页面未找到"}
-    
-    # 预处理视频页面
-    @app.get("/video-skeleton")
-    async def video_skeleton():
-        """抻面预处理视频展示页面（带骨架线）"""
-        web_file = web_dir / "video_with_skeleton.html"
-        if web_file.exists():
-            return FileResponse(str(web_file))
-        return {"message": "预处理视频页面未找到"}
-
-    @app.get("/video-skeleton-boiling")
-    async def video_skeleton_boiling():
-        """下面及捞面预处理视频展示页面（xl 带骨架线）"""
-        web_file = web_dir / "video_with_skeleton_boiling.html"
-        if web_file.exists():
-            return FileResponse(str(web_file))
-        return {"message": "下面及捞面预处理视频页面未找到"}
-
-    @app.get("/realtime-monitor")
-    async def realtime_monitor():
-        """实时监测页面（摄像头 + 检测流）"""
-        web_file = web_dir / "realtime_monitor.html"
-        if web_file.exists():
-            return FileResponse(str(web_file))
-        return {"message": "实时监测页面未找到"}
-
-    @app.get("/realtime-skeleton")
-    async def realtime_skeleton():
-        """旧入口：已与「实时监测」合并（检测+骨架双画面），避免重复页面。"""
-        return RedirectResponse(url="/realtime-monitor", status_code=302)
-
-    # ivcam 目录：检测框与骨架线分两个子文件夹（data/ivcam/检测框、data/ivcam/骨架线）
-    ivcam_dir = project_root / "data" / "ivcam"
-    ivcam_subdirs = ("检测框", "骨架线")
-    _video_ext = {".mp4", ".avi", ".mov", ".mkv", ".wmv"}
-    _image_ext = {".jpg", ".jpeg", ".png", ".bmp"}
-
-    def _ivcam_collect(subdir_path):
-        videos, images = [], []
-        if not subdir_path.exists():
-            return videos, images
-        for f in subdir_path.iterdir():
-            if not f.is_file():
-                continue
-            suf = f.suffix.lower()
-            if suf in _video_ext:
-                videos.append(f.name)
-            elif suf in _image_ext:
-                images.append(f.name)
-        videos.sort()
-        images.sort()
-        return videos, images
-
-    @app.get("/api/ivcam/list")
-    async def api_ivcam_list():
-        """列出 data/ivcam 下「检测框」「骨架线」两个子目录中的视频与图片。"""
-        ivcam_dir.mkdir(parents=True, exist_ok=True)
-        for sub in ivcam_subdirs:
-            (ivcam_dir / sub).mkdir(parents=True, exist_ok=True)
-        detection_v, detection_i = _ivcam_collect(ivcam_dir / "检测框")
-        skeleton_v, skeleton_i = _ivcam_collect(ivcam_dir / "骨架线")
-        return {
-            "success": True,
-            "detection": {"videos": detection_v, "images": detection_i},
-            "skeleton": {"videos": skeleton_v, "images": skeleton_i},
-            "videos": detection_v + skeleton_v,
-            "images": detection_i + skeleton_i,
-        }
-
-    @app.get("/api/ivcam/file/{file_path:path}")
-    async def api_ivcam_file(file_path: str):
-        """返回 data/ivcam 下文件内容。file_path 可为「检测框/xxx.mp4」或「骨架线/xxx.mp4」，禁止路径穿越。"""
-        from urllib.parse import unquote
-        file_path = unquote(file_path or "")
-        if not file_path or ".." in file_path:
-            raise HTTPException(status_code=400, detail="invalid path")
-        parts = file_path.replace("\\", "/").strip("/").split("/")
-        if len(parts) == 1:
-            subdir, name = "", parts[0]
-        elif len(parts) == 2 and parts[0] in ivcam_subdirs:
-            subdir, name = parts[0], parts[1]
-        else:
-            raise HTTPException(status_code=400, detail="invalid path")
-        if not name or "/" in name:
-            raise HTTPException(status_code=400, detail="invalid filename")
-        if subdir:
-            path = ivcam_dir / subdir / name
-        else:
-            path = ivcam_dir / name
-        if not path.is_file():
-            raise HTTPException(status_code=404, detail="file not found")
-        try:
-            path.resolve().relative_to(ivcam_dir.resolve())
-        except ValueError:
-            raise HTTPException(status_code=404, detail="file not found")
-        return FileResponse(str(path), filename=name)
-
-    # data/raw/抻面 示范视频：与 ivcam 并列，用于骨架线页直接加载 cm13～cm17 等本地 mp4
-    import re as _re_stretch_raw
-    stretch_raw_抻面_dir = project_root / "data" / "raw" / "抻面"
-    _stretch_demo_name_pat = _re_stretch_raw.compile(r"^cm\d+$", _re_stretch_raw.I)
-
-    def _stretch_raw_cm_sort_key(name: str):
-        m = _re_stretch_raw.search(r"(\d+)$", name, _re_stretch_raw.I)
-        return (int(m.group(1)) if m else 0, name.lower())
-
-    @app.get("/api/stretch_raw_videos/list")
-    async def api_stretch_raw_videos_list():
-        """列出 data/raw/抻面 下 cm*.mp4，供骨架线示范页与综合评分数据准备。"""
-        out = []
-        if stretch_raw_抻面_dir.exists():
-            for f in stretch_raw_抻面_dir.iterdir():
-                if not f.is_file():
-                    continue
-                if f.suffix.lower() not in (".mp4", ".mov", ".avi", ".mkv"):
-                    continue
-                stem = f.stem
-                if _stretch_demo_name_pat.match(stem):
-                    out.append(stem)
-        out.sort(key=_stretch_raw_cm_sort_key)
-        return {"success": True, "videos": out}
-
-    @app.get("/api/stretch_raw_video/file/{video_name}")
-    async def api_stretch_raw_video_file(video_name: str):
-        """安全返回 data/raw/抻面 下视频（仅允许 cm+数字  stem）。"""
-        from urllib.parse import unquote
-        name = unquote(video_name or "").strip()
-        if not name or not _stretch_demo_name_pat.match(name):
-            raise HTTPException(status_code=400, detail="invalid video name")
-        for ext in (".mp4", ".MP4", ".mov", ".MOV", ".avi", ".AVI"):
-            path = stretch_raw_抻面_dir / f"{name}{ext}"
-            if path.is_file():
-                try:
-                    path.resolve().relative_to(stretch_raw_抻面_dir.resolve())
-                except ValueError:
-                    raise HTTPException(status_code=404, detail="file not found")
-                return FileResponse(str(path), filename=path.name, media_type="video/mp4", headers={"Accept-Ranges": "bytes"})
-        raise HTTPException(status_code=404, detail="file not found")
-
-    @app.get("/api/stretch_pose_catalog")
-    async def api_stretch_pose_catalog():
-        """抻面预处理/骨架页用：cm1～cm17 各自是否已有原片、骨架 JSON、预渲染带骨架 mp4。"""
-        processed_dir = project_root / "data" / "processed_videos" / "抻面"
-        raw_dir = project_root / "data" / "raw" / "抻面"
-        kp_dir = project_root / "data" / "scores" / "抻面" / "hand_keypoints"
-        items = []
-        for i in range(1, 18):
-            name = f"cm{i}"
-            has_p = (processed_dir / f"{name}_with_skeleton.mp4").is_file()
-            has_raw = False
-            if raw_dir.exists():
-                for ext in (".mp4", ".MP4", ".mov", ".MOV", ".avi", ".AVI"):
-                    if (raw_dir / f"{name}{ext}").is_file():
-                        has_raw = True
-                        break
-            has_kp = (kp_dir / f"hand_keypoints_{name}.json").is_file() if kp_dir.exists() else False
-            if has_p:
-                label = "已预处理"
-            elif has_raw and has_kp:
-                label = "可生成预处理"
-            elif has_raw:
-                label = "有原片"
-            else:
-                label = "未检测到文件"
-            items.append({
-                "name": name,
-                "has_processed": has_p,
-                "has_raw": has_raw,
-                "has_keypoints": has_kp,
-                "label": label,
-            })
-        return {"success": True, "videos": items}
 
     # 实时流取消标记：前端点击「停止」时设置，生成器检查后退出并释放摄像头
     _realtime_stream_cancel = {}
@@ -800,8 +174,8 @@ try:
     # 缺检时沿用上一帧框的帧数：stream_id -> {"hand": n, "head": n}，最多延续 2 帧，减少闪烁、提升跟随感
     _realtime_det_hold_count = {}
 
-    def _realtime_stream_generator(device_index: int, stage: str, conf: float, stream_id: str, use_mediapipe_hands: bool = True, use_mediapipe_face: bool = True, model_type: str = "cpu"):
-        """生成 MJPEG 流：打开摄像头，逐帧检测并绘制；收到 stream_id 取消信号时退出并 release。model_type: cpu|gpu 预留。"""
+    def _realtime_stream_generator(device_index: int, stage: str, conf: float, stream_id: str, use_mediapipe_hands: bool = True, use_mediapipe_face: bool = True, model_type: str = "gpu"):
+        """生成 MJPEG 流：打开摄像头，逐帧检测并绘制；收到 stream_id 取消信号时退出并 release。默认 GPU（无 CUDA 时检测器回退 CPU）。"""
         import cv2
         import sys
         cap = None
@@ -825,10 +199,10 @@ try:
                     return
             if stage == "boiling_scooping":
                 from src.api.video_detection_api import get_boiling_scooping_detector
-                detector = get_boiling_scooping_detector(model_type=model_type if model_type in ("cpu", "gpu") else "cpu")
+                detector = get_boiling_scooping_detector(model_type=model_type if model_type in ("cpu", "gpu") else "gpu")
             else:
                 from src.api.video_detection_api import get_detector
-                detector = get_detector(model_type=model_type if model_type in ("cpu", "gpu") else "cpu")
+                detector = get_detector(model_type=model_type if model_type in ("cpu", "gpu") else "gpu")
             while True:
                 if _realtime_stream_cancel.get(stream_id):
                     break
@@ -880,10 +254,10 @@ try:
                     return
             if stage == "boiling_scooping":
                 from src.api.video_detection_api import get_boiling_scooping_detector
-                detector = get_boiling_scooping_detector(model_type="cpu")
+                detector = get_boiling_scooping_detector(model_type="gpu")
             else:
                 from src.api.video_detection_api import get_detector
-                detector = get_detector(model_type="cpu")
+                detector = get_detector(model_type="gpu")
             hand_landmarker = get_mediapipe_landmarker()
             pose_landmarker = get_mediapipe_pose_landmarker()
             target_h = 360
@@ -1435,9 +809,9 @@ try:
         return {"available": available}
 
     @app.get("/api/realtime-stream")
-    async def api_realtime_stream(device: int = 0, stage: str = "stretch", conf: float = 0.4, stream_id: str = "", use_mediapipe_hands: bool = True, use_mediapipe_face: bool = True, model_type: str = "cpu"):
+    async def api_realtime_stream(device: int = 0, stage: str = "stretch", conf: float = 0.4, stream_id: str = "", use_mediapipe_hands: bool = True, use_mediapipe_face: bool = True, model_type: str = "gpu"):
         """
-        实时视频流（MJPEG）。use_mediapipe_face: 头部检测；use_mediapipe_hands: 手部外源模型。model_type: cpu|gpu 预留。
+        实时视频流（MJPEG）。use_mediapipe_face: 头部检测；use_mediapipe_hands: 手部外源模型。默认 GPU。
         Windows 下 DirectShow 枚举常为 0=虚拟/外接、1=本机摄像头，故对 0/1 做映射：选「默认」用设备 1，选「外接1」用设备 0。
         """
         if not stream_id:
@@ -1449,7 +823,7 @@ try:
             if sys.platform == "win32":
                 device_index = 1 if device_index == 0 else 0
         return StreamingResponse(
-            _realtime_stream_generator(device_index, stage, conf, stream_id, use_mediapipe_hands, use_mediapipe_face, model_type if model_type in ("cpu", "gpu") else "cpu"),
+            _realtime_stream_generator(device_index, stage, conf, stream_id, use_mediapipe_hands, use_mediapipe_face, model_type if model_type in ("cpu", "gpu") else "gpu"),
             media_type="multipart/x-mixed-replace; boundary=frame",
         )
 
@@ -1539,8 +913,27 @@ try:
                 "file_path": str(video_file),
                 "stage_path": stage_path,
             }
-            # 抻面：告知是否已有原片 / 骨架 JSON，便于前端跳转「逐帧骨架」或生成命令
-            if stage != "boiling_scooping":
+            if stage == "boiling_scooping":
+                raw_dir = project_root / "data" / "raw" / "下面及捞面"
+                raw_ok = False
+                if raw_dir.exists():
+                    for ext in (".mp4", ".MP4", ".mov", ".MOV", ".avi", ".AVI"):
+                        if (raw_dir / f"{video_name}{ext}").is_file():
+                            raw_ok = True
+                            break
+                kp = project_root / "data" / "scores" / "下面及捞面" / "hand_keypoints" / f"hand_keypoints_{video_name}.json"
+                out["raw_available"] = raw_ok
+                out["keypoints_available"] = kp.is_file()
+                out["generate_hint"] = (
+                    "1) python scripts/extract_hand_keypoints_from_video.py --video " + video_name +
+                    "  2) python scripts/generate_video_with_skeleton.py --video " + video_name
+                )
+                out["transcode_hint"] = (
+                    "若已生成但仍无法播放（黑屏/解码失败），可转码: "
+                    "python scripts/transcode_processed_videos_h264.py --stretch " + video_name
+                )
+            elif stage != "boiling_scooping":
+                # 抻面：告知是否已有原片 / 骨架 JSON，便于前端跳转「逐帧骨架」或生成命令
                 raw_dir = project_root / "data" / "raw" / "抻面"
                 raw_ok = False
                 if raw_dir.exists():
@@ -1587,16 +980,20 @@ try:
             )
         return err_text or ""
 
-    # 检测API（主要功能）：支持 async_mode=1 返回 job_id，前端轮询进度与结果；model_type=cpu|gpu 预留
+    # 检测API（主要功能）：支持 async_mode=1 返回 job_id；抻面检测固定走 GPU（无 CUDA 时检测器内部回退 CPU）
     @app.post("/api/detect_video")
-    async def detect_video(file: UploadFile = File(...), async_mode: bool = Query(False), model_type: str = Query("cpu", description="检测使用模型：cpu=CPU训练模型，gpu=GPU训练模型（预留）")):
+    async def detect_video(
+        file: UploadFile = File(...),
+        async_mode: Optional[bool] = Query(None, description="true=异步 job；省略时由环境变量 RAMEN_DEFAULT_ASYNC_DETECT 决定"),
+    ):
         import tempfile
         import time
         import os
         from pathlib import Path
         
+        async_mode = _resolve_async_mode(async_mode)
         from src.api.video_detection_api import get_detector
-        detector = get_detector(model_type=model_type if model_type in ("cpu", "gpu") else "cpu")
+        detector = get_detector(model_type="gpu")
         if detector.model is None:
             detail = getattr(detector, "_load_error", None) or "Model not loaded"
             return {
@@ -1653,6 +1050,7 @@ try:
             with _jobs_lock:
                 for j in _detect_jobs.values():
                     j["cancelled"] = True
+                _prune_job_store(_detect_jobs)
                 _detect_jobs[job_id] = {"phase": "detect", "percent": 0, "current": 0, "total": 1, "message": "准备中", "result": None, "error": None, "cancelled": False}
             def run_with_jid():
                 jid = job_id
@@ -1750,16 +1148,20 @@ try:
             return JSONResponse(status_code=404, content={"error": "no result"})
         return result
     
-    # 下面及捞面检测API（同样支持 async_mode=1）；model_type=cpu|gpu 预留
+    # 下面及捞面检测API（同样支持 async_mode=1）；固定 GPU
     @app.post("/api/detect_boiling_scooping")
-    async def detect_boiling_scooping(file: UploadFile = File(...), async_mode: bool = Query(False), model_type: str = Query("cpu", description="检测使用模型：cpu=CPU训练模型，gpu=GPU训练模型（预留）")):
+    async def detect_boiling_scooping(
+        file: UploadFile = File(...),
+        async_mode: Optional[bool] = Query(None, description="true=异步 job；省略时由 RAMEN_DEFAULT_ASYNC_DETECT 决定"),
+    ):
         import tempfile
         import time
         import os
         from pathlib import Path
         
+        async_mode = _resolve_async_mode(async_mode)
         from src.api.video_detection_api import get_boiling_scooping_detector
-        detector = get_boiling_scooping_detector(model_type=model_type if model_type in ("cpu", "gpu") else "cpu")
+        detector = get_boiling_scooping_detector(model_type="gpu")
         if detector.model is None:
             detail = getattr(detector, "_load_error", None) or "Model not loaded"
             return {
@@ -1778,6 +1180,7 @@ try:
             with _jobs_lock:
                 for j in _detect_jobs.values():
                     j["cancelled"] = True
+                _prune_job_store(_detect_jobs)
                 _detect_jobs[job_id] = {"phase": "detect", "percent": 0, "current": 0, "total": 1, "message": "准备中", "result": None, "error": None, "cancelled": False}
             def run_boiling():
                 jid = job_id
@@ -1835,12 +1238,16 @@ try:
     
     # 评分API（本地视频上传 → 评分JSON）；支持 async_mode=1 返回 job_id，前端轮询进度后跳转综合评分页
     @app.post("/api/score_video")
-    async def score_video(file: UploadFile = File(...), stage: str = "stretch", async_mode: bool = Query(False), model_type: str = Query("cpu", description="cpu=CPU训练模型，gpu=GPU训练模型（预留）")):
+    async def score_video(
+        file: UploadFile = File(...),
+        stage: str = "stretch",
+        async_mode: Optional[bool] = Query(None, description="true=异步 job；省略时由 RAMEN_DEFAULT_ASYNC_DETECT 决定"),
+    ):
         """
         评分骨架：
         - 仅支持本地视频上传
         - 默认使用抻面模型（stage="stretch"），若传 stage="boiling_scooping" 则用下面及捞面模型
-        - 评分逻辑为占位实现：基于检测结果统计占比，后续可替换为正式规则/模型
+        - 检测阶段固定 GPU（无 CUDA 时回退 CPU）
         - async_mode=1 时返回 job_id，需轮询 /api/score_progress 与 /api/score_result，完成后可跳转综合评分页并请求 /api/upload_score_result
         """
         import tempfile
@@ -1848,17 +1255,15 @@ try:
         import os
         from pathlib import Path
 
-        if model_type not in ("cpu", "gpu"):
-            model_type = "cpu"
-
+        async_mode = _resolve_async_mode(async_mode)
         if stage == "boiling_scooping":
             from src.api.video_detection_api import get_boiling_scooping_detector
-            detector = get_boiling_scooping_detector(model_type=model_type)
+            detector = get_boiling_scooping_detector(model_type="gpu")
             # 与 datasets/boiling_scooping_detection/data.yaml 一致：0 noodle_rope, 1 hand, 2 tools_noodle, 3 soup_noodle(汤中面条)
             classes = ["noodle_rope", "hand", "tools_noodle", "soup_noodle"]
         else:
             from src.api.video_detection_api import get_detector
-            detector = get_detector(model_type=model_type)
+            detector = get_detector(model_type="gpu")
             classes = ["hand", "noodle_rope", "noodle_bundle"]
 
         if detector.model is None:
@@ -1917,6 +1322,7 @@ try:
         if async_mode:
             job_id = str(uuid.uuid4())
             with _jobs_lock:
+                _prune_job_store(_score_jobs)
                 _score_jobs[job_id] = {"phase": "detect", "percent": 0, "current": 0, "total": 1, "message": "准备中", "result": None, "error": None}
 
             def run_score_job():
@@ -1977,7 +1383,7 @@ try:
                             video_score_result = scorer.score_video(video_detections, video_path=str(tmp_path))
                             model_path = getattr(detector, "model_path", None) or ""
                             avg = video_score_result.get('average_overall_score', 0)
-                            score_100, grade = _score_100_and_grade("stretch", avg)
+                            score_100, grade = score_100_and_grade(project_root, "stretch", avg)
                             out = {
                                 "success": True, "stage": stage, "total_frames": total_frames,
                                 "scored_frames": video_score_result.get('scored_frames', 0),
@@ -2015,7 +1421,7 @@ try:
                                 video_detections.append({'frame_index': frame_data.get('frame_index', 0), 'detections': frame_detections})
                             video_score_result = scorer.score_video(video_detections, video_path=str(tmp_path))
                             avg = video_score_result.get('average_overall_score', 0)
-                            score_100, grade = _score_100_and_grade("boiling", avg)
+                            score_100, grade = score_100_and_grade(project_root, "boiling", avg)
                             out = {
                                 "success": True, "stage": stage, "total_frames": total_frames,
                                 "scored_frames": video_score_result.get('scored_frames', 0),
@@ -2078,9 +1484,8 @@ try:
                             rules_used = "占位规则：覆盖率+目标密度线性加权"
                         out = {"success": True, "stage": stage, "total_frames": total_frames, "scores": scores,
                                "total_score": total_score, "details": details, "rules_used": rules_used}
-                    global _upload_score_result, _upload_score_stage
-                    _upload_score_result = out
-                    _upload_score_stage = stage
+                    _job_state._upload_score_result = out
+                    _job_state._upload_score_stage = stage
                     with _jobs_lock:
                         if jid in _score_jobs:
                             _score_jobs[jid].update(phase="done", percent=100, result=out, message="评分完成")
@@ -2164,7 +1569,7 @@ try:
                     video_score_result = scorer.score_video(video_detections, video_path=str(tmp_path))
                     model_path = getattr(detector, "model_path", None) or ""
                     avg = video_score_result.get('average_overall_score', 0)
-                    score_100, grade = _score_100_and_grade("stretch", avg)
+                    score_100, grade = score_100_and_grade(project_root, "stretch", avg)
                     return {
                         "success": True,
                         "stage": stage,
@@ -2212,7 +1617,7 @@ try:
                         video_detections.append({'frame_index': frame_data.get('frame_index', 0), 'detections': frame_detections})
                     video_score_result = scorer.score_video(video_detections, video_path=str(tmp_path))
                     avg = video_score_result.get('average_overall_score', 0)
-                    score_100, grade = _score_100_and_grade("boiling", avg)
+                    score_100, grade = score_100_and_grade(project_root, "boiling", avg)
                     return {
                         "success": True, "stage": stage, "total_frames": total_frames,
                         "scored_frames": video_score_result.get('scored_frames', 0),
@@ -2350,10 +1755,13 @@ try:
     @app.get("/api/upload_score_result")
     async def get_upload_score_result():
         """综合评分页 source=upload 时拉取本次上传视频的评分结果（与 stage 一致）"""
-        global _upload_score_result, _upload_score_stage
-        if _upload_score_result is None:
+        if _job_state._upload_score_result is None:
             return JSONResponse(status_code=404, content={"error": "暂无上传评分结果"})
-        return {"success": True, "stage": _upload_score_stage, "result": _upload_score_result}
+        return {
+            "success": True,
+            "stage": _job_state._upload_score_stage,
+            "result": _job_state._upload_score_result,
+        }
 
     def _make_score_result_html(stage: str, video_name: str, total: float, hand: float, rope: float, bundle: float, ai_analysis: str, save_time: str) -> str:
         """生成与界面一致的 HTML（文字+表格+柱状图），用于保存与在 Web 内展示。"""
@@ -2411,7 +1819,7 @@ th {{ background: #f8f9fa; }}
         """将当前评分结果与 AI 分析保存为 HTML（按用户分目录，便于学员/培训师查看与删除）"""
         import re
         from datetime import datetime
-        u = _auth_current_user(request)
+        u = auth_current_user(request)
         user_id = int(u["id"]) if u else 0
         try:
             try:
@@ -2462,26 +1870,30 @@ th {{ background: #f8f9fa; }}
 
     def _score_result_target_user(request: Request, student_id: Optional[int] = None):
         """确定要查看/操作的评分记录所属用户：学员看自己，培训师可传 student_id 看学员，管理员可看任意。"""
-        u = _auth_current_user(request)
+        u = auth_current_user(request)
         if not u:
             return None, "未登录"
         role = u.get("role")
         uid = u.get("id")
+        if uid is None:
+            return None, "未登录"
+        uid_int = int(uid)
         if student_id is not None:
+            sid = int(student_id)
+            # 列表/前端会在 URL 中带 user_id（目录所有者）。先看「是否查看自己的目录」：培训师本人保存的文件在 .../培训师id/ 下，若此处不优先放行，role=1 会因「自己的 id 不在学员名单」而误 403
+            if sid == uid_int:
+                return sid, None
             if role == 0:
-                return student_id, None
+                return sid, None
             if role == 1:
-                students = auth_db.get_students_by_trainer(int(uid))
-                if not any(s.get("id") == student_id for s in students):
+                students = auth_db.get_students_by_trainer(uid_int)
+                if not any(s.get("id") == sid for s in students):
                     return None, "只能查看所负责学员的记录"
-                return student_id, None
+                return sid, None
             if role == 2:
-                # 学员/厨师查看自己的记录时，前端会传 user_id（列表返回的记录所属人），仅允许与当前用户一致
-                if int(student_id) == int(uid):
-                    return student_id, None
                 return None, "无权限查看他人记录"
             return None, "无权限查看他人记录"
-        return uid, None
+        return uid_int, None
 
     @app.get("/api/list_saved_score_results")
     async def list_saved_score_results(request: Request, stage: str = "stretch", student_id: Optional[int] = None):
@@ -2509,7 +1921,7 @@ th {{ background: #f8f9fa; }}
         """获取已保存的评分结果 HTML 内容。user_id 为记录所属用户（列表返回）；不传则用当前用户。"""
         if not filename or ".." in filename or "/" in filename or "\\" in filename:
             return JSONResponse({"success": False, "error": "无效文件名"}, status_code=400)
-        u = _auth_current_user(request)
+        u = auth_current_user(request)
         if not u:
             return JSONResponse({"success": False, "error": "未登录"}, status_code=401)
         target_uid, err = _score_result_target_user(request, user_id)
@@ -3775,27 +3187,33 @@ DTW评分: {data.get('dtw_result', {}).get('score', 0):.2f}
         except Exception as e:
             print(f"[AI] 启动时检查配置异常: {e}")
 
-    # 检查可用端口（connect_ex 成功=端口已被占用，失败=端口可用）
+    # 监听地址：默认本机；Docker 等场景可设 RAMEN_BIND_HOST=0.0.0.0 与 RAMEN_PORT=8000
+    host = (os.environ.get("RAMEN_BIND_HOST") or "127.0.0.1").strip() or "127.0.0.1"
+    port_env = (os.environ.get("RAMEN_PORT") or "").strip()
     import socket
-    port = None
-    for p in [8000, 8001, 8002, 8003, 8004, 8005]:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            sock.settimeout(0.5)
-            result = sock.connect_ex(('127.0.0.1', p))
-        finally:
-            sock.close()
-        if result != 0:  # 连接失败说明端口未被占用，可用
-            port = p
-            break
-    if port is None:
-        print("\n[错误] 端口 8000~8005 均已被占用，请先关闭其他 Web 服务后再启动。")
-        sys.exit(1)
+    if port_env:
+        port = int(port_env)
+    else:
+        port = None
+        for p in [8000, 8001, 8002, 8003, 8004, 8005]:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                sock.settimeout(0.5)
+                result = sock.connect_ex(("127.0.0.1", p))
+            finally:
+                sock.close()
+            if result != 0:
+                port = p
+                break
+        if port is None:
+            print("\n[错误] 端口 8000~8005 均已被占用，请先关闭其他 Web 服务后再启动。")
+            sys.exit(1)
     
-    print(f"\n服务器地址: http://127.0.0.1:{port}")
-    print(f"Web界面: http://127.0.0.1:{port}/")
-    print(f"评分可视化: http://127.0.0.1:{port}/scoring-visualization")
-    print(f"API文档: http://127.0.0.1:{port}/docs")
+    display_host = "127.0.0.1" if host in ("0.0.0.0", "::") else host
+    print(f"\n服务器地址: http://{display_host}:{port}")
+    print(f"Web界面: http://{display_host}:{port}/")
+    print(f"评分可视化: http://{display_host}:{port}/scoring-visualization")
+    print(f"API文档: http://{display_host}:{port}/docs")
     print("\n按 Ctrl+C 停止服务器\n")
     print("="*60)
     
@@ -3803,12 +3221,12 @@ DTW评分: {data.get('dtw_result', {}).get('score', 0):.2f}
     print("[启动] 正在预加载检测模型...")
     try:
         from src.api.video_detection_api import get_detector, get_boiling_scooping_detector
-        d_stretch = get_detector()
+        d_stretch = get_detector(model_type="gpu")
         if d_stretch.model is not None:
             print("[启动] 抻面检测模型已就绪")
         else:
             print("[启动] 抻面检测模型未找到或加载失败，请运行: python src/training/train_detection_model.py")
-        d_boiling = get_boiling_scooping_detector()
+        d_boiling = get_boiling_scooping_detector(model_type="gpu")
         if d_boiling.model is not None:
             print("[启动] 下面及捞面检测模型已就绪")
         else:
@@ -3822,7 +3240,7 @@ DTW评分: {data.get('dtw_result', {}).get('score', 0):.2f}
     # 启动服务器（有限时优雅退出，避免视频流 206 等长连接导致 Ctrl+C 后无限卡在 Shutting down）
     uvicorn.run(
         app,
-        host="127.0.0.1",
+        host=host,
         port=port,
         log_level="info",
         timeout_graceful_shutdown=15,

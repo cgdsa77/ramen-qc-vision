@@ -6,59 +6,311 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <title>我的评分记录</title>
     <style>
+        :root {
+            --bg0: #e9eef8;
+            --bg1: #f4f2fb;
+            --card: #ffffff;
+            --text: #1c2333;
+            --muted: #5c6578;
+            --border: rgba(28, 35, 51, 0.08);
+            --accent: #4f6ae6;
+            --accent-soft: rgba(79, 106, 230, 0.12);
+            --accent-hover: #3d56c9;
+            --danger: #e85d6a;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow: 0 4px 24px rgba(28, 35, 51, 0.08);
+            --shadow-sm: 0 2px 12px rgba(28, 35, 51, 0.06);
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #f0f0f5; min-height: 100vh; padding: 20px; color: #333; }
-        .container { max-width: 960px; margin: 0 auto; }
-        .nav-home { display: inline-block; margin-bottom: 16px; color: #667eea; text-decoration: none; font-size: 14px; }
-        .nav-home:hover { text-decoration: underline; }
-        .header { background: #fff; padding: 20px 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-        .header h1 { font-size: 1.4em; margin-bottom: 6px; color: #333; }
-        .header .sub { font-size: 13px; color: #666; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-        .tab { padding: 10px 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 14px; }
-        .tab:hover { background: #f5f5f5; }
-        .tab.active { background: #667eea; color: #fff; border-color: #667eea; }
-        .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .card h2 { font-size: 1em; margin-bottom: 12px; color: #555; }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            min-height: 100vh;
+            padding: 24px 18px 40px;
+            color: var(--text);
+            background: linear-gradient(165deg, var(--bg0) 0%, var(--bg1) 45%, #eef1f9 100%);
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 920px; margin: 0 auto; }
+        .nav-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 18px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 2px;
+            border-radius: 8px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-home:hover { color: var(--accent-hover); background: var(--accent-soft); }
+        .header {
+            background: var(--card);
+            padding: 26px 28px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            border-radius: 4px 0 0 4px;
+            background: linear-gradient(180deg, #5b7cfa, #7c5fd4);
+        }
+        .header h1 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--text); }
+        .header .sub { font-size: 14px; color: var(--muted); line-height: 1.55; max-width: 52em; }
+        .tabs-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 6px;
+            background: rgba(255,255,255,0.65);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .tab {
+            flex: 1 1 auto;
+            min-width: 140px;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
+        }
+        .tab:hover { background: rgba(79, 106, 230, 0.08); color: var(--text); }
+        .tab.active {
+            background: linear-gradient(135deg, #5b7cfa 0%, #6b5fd8 100%);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(79, 106, 230, 0.35);
+        }
+        .card {
+            background: var(--card);
+            padding: 22px 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .card h2 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-bottom: 16px;
+            color: var(--muted);
+            text-transform: none;
+        }
+        .table-wrap {
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            background: #fafbfd;
+        }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; color: #555; font-weight: 600; }
-        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; margin-right: 6px; text-decoration: none; display: inline-block; }
-        .btn-view { background: #667eea; color: #fff; }
-        .btn-view:hover { opacity: 0.9; }
-        .btn-del { background: #e0e0e0; color: #333; }
-        .btn-del:hover { background: #f5576c; color: #fff; }
-        .empty { color: #888; padding: 24px; text-align: center; font-size: 14px; }
-        .viewer-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+        tbody tr { background: #fff; transition: background 0.15s; }
+        tbody tr:hover { background: #f6f8ff; }
+        tbody tr:last-child td { border-bottom: none; }
+        th {
+            background: linear-gradient(180deg, #f8f9fc 0%, #f0f2f8 100%);
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .btn-sm {
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            margin-right: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            transition: transform 0.12s, box-shadow 0.2s, background 0.2s;
+        }
+        .btn-sm:active { transform: scale(0.98); }
+        .btn-view {
+            background: linear-gradient(135deg, #5b7cfa, #5e6ae8);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(79, 106, 230, 0.25);
+        }
+        .btn-view:hover { filter: brightness(1.05); }
+        .btn-del { background: #eceef3; color: #4a5160; }
+        .btn-del:hover { background: var(--danger); color: #fff; }
+        .state-panel {
+            text-align: center;
+            padding: 36px 20px;
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        .state-panel .state-icon { font-size: 2rem; display: block; margin-bottom: 10px; opacity: 0.85; }
+        .state-panel.state-error {
+            background: linear-gradient(180deg, #fff5f5 0%, #fff 100%);
+            border: 1px solid rgba(232, 93, 106, 0.25);
+            border-radius: var(--radius-md);
+            color: #8a3d45;
+        }
+        .state-panel.state-error .state-icon { filter: grayscale(0.2); }
+        .state-panel.state-empty { padding: 40px 24px; }
+        .state-panel.state-loading { color: var(--muted); }
+        .viewer-modal { display: none; position: fixed; inset: 0; background: rgba(20, 24, 35, 0.55); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
         .viewer-modal.show { display: flex; }
-        .viewer-box { background: #fff; border-radius: 12px; width: 92%; max-width: 860px; min-width: 520px; max-height: 88vh; overflow: auto; padding: 20px; }
-        .viewer-box .close { float: right; cursor: pointer; font-size: 20px; color: #666; }
-        .viewer-content { margin-top: 12px; }
-        #viewerIframe { width: 100%; height: 72vh; max-height: 640px; border: none; display: block; }
+        .viewer-box {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            width: 92%;
+            max-width: 860px;
+            min-width: min(520px, 100%);
+            max-height: 88vh;
+            overflow: auto;
+            padding: 22px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.18);
+            border: 1px solid var(--border);
+        }
+        .viewer-box .close { float: right; cursor: pointer; font-size: 22px; color: var(--muted); line-height: 1; transition: color 0.2s; }
+        .viewer-box .close:hover { color: var(--text); }
+        .viewer-content { margin-top: 12px; clear: both; }
+        #viewerIframe { width: 100%; height: 72vh; max-height: 640px; border: none; display: block; border-radius: 8px; }
         .student-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 6px; font-size: 12px; margin-left: 8px; }
-        .suggestion-card { margin-top: 20px; }
-        .suggestion-card h2 { margin-bottom: 12px; }
-        .msg-list { max-height: 280px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
-        .msg-item { margin-bottom: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; }
-        .msg-item.trainer { background: #e3f2fd; margin-left: 0; margin-right: 24px; }
-        .msg-item.student { background: #e8f5e9; margin-left: 24px; margin-right: 0; }
-        .msg-item .meta { font-size: 11px; color: #666; margin-top: 4px; }
-        .suggestion-form { display: flex; flex-direction: column; gap: 10px; }
-        .suggestion-form .form-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
-        .suggestion-form textarea { flex: 1; min-width: 200px; min-height: 72px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .suggestion-card { margin-top: 4px; }
+        .suggestion-card h2 { margin-bottom: 14px; font-size: 1rem; color: var(--text); }
+        .msg-list {
+            max-height: min(320px, 45vh);
+            overflow-y: auto;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 14px;
+            background: linear-gradient(180deg, #f6f7fb 0%, #f0f2f8 100%);
+            border: 1px solid var(--border);
+            scrollbar-width: thin;
+        }
+        .msg-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            align-items: flex-end;
+        }
+        .msg-row:last-child { margin-bottom: 0; }
+        .msg-row.trainer { flex-direction: row; }
+        .msg-row.student { flex-direction: row-reverse; }
+        .msg-avatar {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .msg-row.trainer .msg-avatar { background: linear-gradient(135deg, #4f8ff7, #5b7cfa); }
+        .msg-row.student .msg-avatar { background: linear-gradient(135deg, #3dbb8c, #2ea574); }
+        .msg-bubble {
+            max-width: calc(100% - 48px);
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            line-height: 1.55;
+            box-shadow: var(--shadow-sm);
+        }
+        .msg-row.trainer .msg-bubble {
+            background: #fff;
+            border: 1px solid rgba(79, 106, 230, 0.15);
+            border-bottom-left-radius: 4px;
+        }
+        .msg-row.student .msg-bubble {
+            background: #e8faf2;
+            border: 1px solid rgba(46, 165, 116, 0.2);
+            border-bottom-right-radius: 4px;
+            text-align: left;
+        }
+        .msg-bubble .meta { font-size: 11px; color: var(--muted); margin-top: 8px; font-weight: 500; }
+        .msg-bubble img.msg-img {
+            max-width: 100%;
+            max-height: 220px;
+            border-radius: 10px;
+            margin-top: 4px;
+            display: block;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .msg-bubble img.msg-img:hover { opacity: 0.95; }
+        .suggestion-form { display: flex; flex-direction: column; gap: 12px; }
+        .suggestion-form .form-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch; }
+        .suggestion-form textarea {
+            flex: 1;
+            min-width: 200px;
+            min-height: 80px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            background: #fafbfd;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .suggestion-form textarea:focus {
+            outline: none;
+            border-color: rgba(79, 106, 230, 0.45);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+            background: #fff;
+        }
         .suggestion-form .btn-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .suggestion-form button { padding: 10px 20px; background: #667eea; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
-        .suggestion-form button:hover { opacity: 0.9; }
+        .suggestion-form button {
+            padding: 11px 22px;
+            background: linear-gradient(135deg, #5b7cfa, #6b5fd8);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(79, 106, 230, 0.3);
+            transition: transform 0.12s, filter 0.2s;
+        }
+        .suggestion-form button:hover { filter: brightness(1.06); }
+        .suggestion-form button:active { transform: scale(0.98); }
         .suggestion-form .btn-img { background: #5a6268; }
-        .suggestion-form .img-zone { border: 2px dashed #ccc; border-radius: 8px; padding: 16px; text-align: center; color: #666; font-size: 13px; cursor: pointer; background: #fafafa; }
-        .suggestion-form .img-zone:hover, .suggestion-form .img-zone.dragover { border-color: #667eea; background: #f0f4ff; color: #333; }
-        .suggestion-form .img-preview { max-width: 120px; max-height: 100px; border-radius: 6px; margin-top: 8px; display: block; margin-left: auto; margin-right: auto; }
-        .msg-item img.msg-img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 6px; display: block; cursor: pointer; }
-        .msg-item img.msg-img:hover { opacity: 0.9; }
-        .img-enlarge-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1100; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
+        .suggestion-form .img-zone {
+            border: 2px dashed rgba(79, 106, 230, 0.35);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.7);
+            transition: border-color 0.2s, background 0.2s, transform 0.15s;
+        }
+        .suggestion-form .img-zone:hover, .suggestion-form .img-zone.dragover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            color: var(--text);
+        }
+        .suggestion-form .img-preview { max-width: 140px; max-height: 110px; border-radius: 8px; margin-top: 8px; display: block; margin-left: auto; margin-right: auto; box-shadow: var(--shadow-sm); }
+        .img-enlarge-modal { display: none; position: fixed; inset: 0; background: rgba(12, 14, 22, 0.88); z-index: 1100; align-items: center; justify-content: center; padding: 20px; cursor: pointer; backdrop-filter: blur(6px); }
         .img-enlarge-modal.show { display: flex; }
-        .img-enlarge-modal img { max-width: 95vw; max-height: 90vh; object-fit: contain; border-radius: 8px; pointer-events: none; }
-        .img-enlarge-modal .close-hint { position: absolute; top: 16px; right: 20px; color: #fff; font-size: 28px; cursor: pointer; line-height: 1; }
+        .img-enlarge-modal img { max-width: 95vw; max-height: 90vh; object-fit: contain; border-radius: 10px; pointer-events: none; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .img-enlarge-modal .close-hint { position: absolute; top: 16px; right: 20px; color: #fff; font-size: 28px; cursor: pointer; line-height: 1; opacity: 0.9; }
+        .empty-inline { color: var(--muted); font-size: 14px; line-height: 1.6; padding: 8px 4px; }
     </style>
 </head>
 <body>
@@ -68,7 +320,7 @@
             <h1 id="pageTitle">我的评分记录</h1>
             <p class="sub" id="pageSub">按环节查看抻面、下面及捞面、成品检测后的评分历史，可查看或删除记录。</p>
         </div>
-        <div class="tabs">
+        <div class="tabs-bar">
             <button type="button" class="tab active" data-stage="stretch">抻面评分记录</button>
             <button type="button" class="tab" data-stage="boiling">下面及捞面评分记录</button>
             <button type="button" class="tab" data-stage="product">成品评分记录</button>
@@ -76,11 +328,13 @@
         <div class="card">
             <h2 id="sectionTitle">抻面评分记录</h2>
             <div id="listWrap">
-                <table id="recordTable" style="display:none;">
-                    <thead><tr><th>时间</th><th>名称/文件</th><th>操作</th></tr></thead>
-                    <tbody id="recordBody"></tbody>
-                </table>
-                <p id="listEmpty" class="empty">加载中…</p>
+                <div class="table-wrap" id="tableWrap" style="display:none;">
+                    <table id="recordTable">
+                        <thead><tr><th>时间</th><th>名称/文件</th><th>操作</th></tr></thead>
+                        <tbody id="recordBody"></tbody>
+                    </table>
+                </div>
+                <div id="listEmpty" class="state-panel state-loading"><span class="state-icon" aria-hidden="true">⏳</span>加载中…</div>
             </div>
         </div>
         <div class="card suggestion-card" id="suggestionCard" style="display:none;">
@@ -137,19 +391,28 @@
                 return url;
             }
 
+            function setListLoading() {
+                var empty = document.getElementById('listEmpty');
+                var tableWrap = document.getElementById('tableWrap');
+                empty.className = 'state-panel state-loading';
+                empty.innerHTML = '<span class="state-icon" aria-hidden="true">⏳</span>加载中…';
+                empty.style.display = 'block';
+                tableWrap.style.display = 'none';
+            }
+
             function loadList(stage) {
                 currentStage = stage;
                 var tbody = document.getElementById('recordBody');
-                var table = document.getElementById('recordTable');
+                var tableWrap = document.getElementById('tableWrap');
                 var empty = document.getElementById('listEmpty');
                 tbody.innerHTML = '';
-                empty.textContent = '加载中…';
-                empty.style.display = 'block';
-                table.style.display = 'none';
+                setListLoading();
 
                 if (stage === 'product') {
-                    empty.textContent = '成品评分记录功能即将开放，请先在「兰州拉面成品综合评分」中上传并评分。';
+                    empty.className = 'state-panel state-empty';
+                    empty.innerHTML = '<span class="state-icon" aria-hidden="true">📋</span><p>成品评分记录功能即将开放，请先在「兰州拉面成品综合评分」中上传并评分。</p>';
                     empty.style.display = 'block';
+                    tableWrap.style.display = 'none';
                     return;
                 }
 
@@ -157,19 +420,23 @@
                     .then(function(r) { return r.json(); })
                     .then(function(data) {
                         if (!data.success) {
-                            empty.textContent = data.error || '加载失败';
+                            empty.className = 'state-panel state-error';
+                            empty.innerHTML = '<span class="state-icon" aria-hidden="true">⚠️</span><p>' + escapeHtml(data.error || '加载失败') + '</p>';
                             empty.style.display = 'block';
+                            tableWrap.style.display = 'none';
                             return;
                         }
                         currentUserId = data.user_id;
                         var files = data.files || [];
                         if (files.length === 0) {
-                            empty.textContent = '暂无该环节的评分记录。请先在抻面/下面及捞面检测中完成检测并保存评分。';
+                            empty.className = 'state-panel state-empty';
+                            empty.innerHTML = '<span class="state-icon" aria-hidden="true">📭</span><p>暂无该环节的评分记录。请先在抻面/下面及捞面检测中完成检测并保存评分。</p>';
                             empty.style.display = 'block';
+                            tableWrap.style.display = 'none';
                             return;
                         }
                         empty.style.display = 'none';
-                        table.style.display = 'table';
+                        tableWrap.style.display = 'block';
                         files.forEach(function(f) {
                             var tr = document.createElement('tr');
                             var mtime = f.mtime ? new Date(f.mtime * 1000).toLocaleString('zh-CN') : '';
@@ -187,8 +454,10 @@
                         });
                     })
                     .catch(function() {
-                        empty.textContent = '网络错误，请稍后重试';
+                        empty.className = 'state-panel state-error';
+                        empty.innerHTML = '<span class="state-icon" aria-hidden="true">📡</span><p>网络错误，请稍后重试</p>';
                         empty.style.display = 'block';
+                        tableWrap.style.display = 'none';
                     });
             }
 
@@ -311,16 +580,20 @@
                 if (studentId) url += '?student_id=' + studentId;
                 fetch(url, { credentials: 'include' }).then(function(r) { return r.json(); }).then(function(d) {
                     var el = document.getElementById('suggestionThread');
-                    if (!d.success) { el.textContent = d.error || '加载失败'; return; }
+                    if (!d.success) {
+                        el.innerHTML = '<div class="state-panel state-error"><span class="state-icon" aria-hidden="true">⚠️</span><p>' + escapeHtml(d.error || '加载失败') + '</p></div>';
+                        return;
+                    }
                     var thread = d.thread || {};
                     var msgs = thread.messages || [];
                     if (msgs.length === 0) {
-                        el.innerHTML = '<p class="empty">暂无消息。' + (studentId ? '在下方输入建议发送给学员，可发送文字或图片。' : '培训师发送建议后您可在此回复。') + '</p>';
+                        el.innerHTML = '<div class="state-panel state-empty empty-inline"><span class="state-icon" aria-hidden="true">💬</span>暂无消息。' + (studentId ? '在下方输入建议发送给学员，可发送文字或图片。' : '培训师发送建议后您可在此回复。') + '</div>';
                         return;
                     }
                     el.innerHTML = msgs.map(function(m) {
                         var role = m.role === 'trainer' ? '培训师' : '我';
                         var cls = m.role === 'trainer' ? 'trainer' : 'student';
+                        var av = m.role === 'trainer' ? '师' : '我';
                         var at = (m.at || '').replace('T', ' ').substring(0, 19);
                         var body = '';
                         if (m.content_type === 'image') {
@@ -328,9 +601,12 @@
                         } else {
                             body = escapeHtml(m.content || '');
                         }
-                        return '<div class="msg-item ' + cls + '">' + body + '<div class="meta">' + role + ' · ' + at + '</div></div>';
+                        return '<div class="msg-row ' + cls + '"><div class="msg-avatar" aria-hidden="true">' + av + '</div><div class="msg-bubble">' + body + '<div class="meta">' + role + ' · ' + at + '</div></div></div>';
                     }).join('');
-                }).catch(function() { document.getElementById('suggestionThread').textContent = '加载失败'; });
+                }).catch(function() {
+                    var el = document.getElementById('suggestionThread');
+                    el.innerHTML = '<div class="state-panel state-error"><span class="state-icon" aria-hidden="true">📡</span><p>加载失败，请稍后重试</p></div>';
+                });
             }
 
             (function initImgEnlarge() {

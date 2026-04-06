@@ -1,0 +1,24 @@
+# 本地/答辩机快速起服务（模型与数据通过卷挂载，与仓库路径一致）
+#   docker compose up --build
+# 浏览器访问 http://127.0.0.1:8000
+#
+# GPU（需本机已装 NVIDIA Container Toolkit）可取消注释 deploy 段，并改用带 CUDA 的基础镜像自行安装 torch。
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      RAMEN_BIND_HOST: "0.0.0.0"
+      RAMEN_PORT: "8000"
+      # 默认异步检测/评分（长视频不阻塞 HTTP）；不需要可删或设 "0"
+      # RAMEN_DEFAULT_ASYNC_DETECT: "1"
+      # 若已导出 best.onnx 与 best.pt 同目录，可启用:
+      # RAMEN_PREFER_ONNX: "1"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./weights:/app/weights
+      - ./configs:/app/configs
+      - ./web:/app/web

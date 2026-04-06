@@ -5,73 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
-    <title>实时监测（检测+骨架线双画面）</title>
+    <title>实时监测</title>
     <style>
+        :root {
+            --page-bg: linear-gradient(165deg, #e9ecf3 0%, #ece9f0 45%, #e8edf4 100%);
+            --rm-accent: #6f7ca8;
+            --rm-accent2: #7f7698;
+            --rm-header: linear-gradient(135deg, #7c88b0 0%, #8879a0 50%, #9088a8 100%);
+        }
+        body.theme-trainer {
+            --rm-accent: #5a6788;
+            --rm-accent2: #6a7898;
+            --rm-header: linear-gradient(135deg, #6a7490 0%, #768098 50%, #7e8898 100%);
+        }
+        body.theme-student {
+            --rm-accent: #558a82;
+            --rm-accent2: #689a92;
+            --rm-header: linear-gradient(135deg, #6a968e 0%, #78a89e 50%, #82b0a6 100%);
+        }
+        body.theme-admin {
+            --rm-accent: #807698;
+            --rm-accent2: #8f86a5;
+            --rm-header: linear-gradient(135deg, #8a80a0 0%, #9688a8 50%, #9e94b0 100%);
+        }
+        body.theme-guest { --rm-header: linear-gradient(135deg, #7c88b0 0%, #8879a0 50%, #9088a8 100%); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: var(--page-bg);
             min-height: 100vh;
-            padding: 6px;
+            padding: 10px;
+            -webkit-font-smoothing: antialiased;
         }
         .container {
             max-width: 98%;
             width: 100%;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 16px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.22);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 98vh;
+            min-height: calc(100vh - 20px);
+            border: 1px solid rgba(255,255,255,0.35);
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 14px 20px;
+            background: var(--rm-header);
+            color: rgba(255, 255, 255, 0.96);
+            padding: 18px 22px 20px;
             text-align: center;
             flex-shrink: 0;
         }
-        .header h1 { font-size: 22px; margin-bottom: 2px; }
-        .header p { font-size: 13px; opacity: 0.95; }
-        .nav-home-wrap { padding: 6px 16px; background: rgba(0,0,0,0.06); text-align: left; flex-shrink: 0; }
-        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .header-inner { max-width: 640px; margin: 0 auto; }
+        .role-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.22);
+            border: 1px solid rgba(255,255,255,0.35);
+            margin-bottom: 8px;
+        }
+        .role-badge[hidden] { display: none !important; }
+        .header h1 { font-size: clamp(1.15rem, 2.5vw, 1.45rem); margin-bottom: 6px; font-weight: 700; letter-spacing: -0.02em; }
+        .header .header-tagline { font-size: 13px; opacity: 0.92; font-weight: 500; }
+        .nav-home-wrap { padding: 10px 18px; background: linear-gradient(180deg, #f8f9fc 0%, #fff 100%); text-align: left; flex-shrink: 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .nav-home { color: var(--rm-accent); text-decoration: none; font-size: 14px; font-weight: 500; }
         .nav-home:hover { text-decoration: underline; }
-        .content { padding: 10px 14px 14px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+        .content { padding: 12px 16px 16px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+        .tip-compact { font-size: 12px; color: #5c6578; margin-bottom: 10px; flex-shrink: 0; line-height: 1.45; }
         .controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px 16px;
+            gap: 10px 14px;
             align-items: center;
             margin-bottom: 10px;
             flex-shrink: 0;
+            padding: 12px 14px;
+            background: #f8f9fc;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.06);
         }
-        .controls label { font-weight: bold; color: #333; font-size: 14px; }
+        .controls label { font-weight: 600; color: #2c3350; font-size: 13px; }
         .controls select {
             padding: 8px 12px;
-            font-size: 14px;
-            border: 2px solid #ddd;
+            font-size: 13px;
+            border: 1px solid #d8dce6;
             border-radius: 8px;
-            min-width: 130px;
+            min-width: 120px;
+            background: #fff;
         }
         .btn-start, .btn-stop {
-            padding: 10px 22px;
-            font-size: 15px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
+            transition: filter 0.15s, transform 0.1s;
         }
-        .btn-start { background: #28a745; color: white; }
-        .btn-start:hover { background: #218838; }
-        .btn-stop { background: #dc3545; color: white; }
-        .btn-stop:hover { background: #c82333; }
-        .btn-stop:disabled { background: #ccc; cursor: not-allowed; }
-        .btn-detect { padding: 8px 14px; font-size: 13px; border: 1px solid #666; border-radius: 8px; background: #f5f5f5; cursor: pointer; }
-        .btn-detect:hover { background: #eee; }
+        .btn-start { background: linear-gradient(135deg, #6d9a78, #7daa88); color: white; box-shadow: 0 2px 10px rgba(80, 120, 95, 0.22); }
+        .btn-start:hover { filter: brightness(1.04); }
+        .btn-stop { background: linear-gradient(135deg, #b87a7a, #c98a88); color: white; box-shadow: 0 2px 10px rgba(150, 100, 100, 0.2); }
+        .btn-stop:hover:not(:disabled) { filter: brightness(1.06); }
+        .btn-stop:disabled { background: #cfd4dc; cursor: not-allowed; box-shadow: none; }
+        .btn-detect { padding: 8px 14px; font-size: 13px; border: 1px solid #c5cad6; border-radius: 8px; background: #fff; cursor: pointer; color: #3d465a; }
+        .btn-detect:hover { background: #eef1f8; border-color: var(--rm-accent); color: var(--rm-accent); }
         .video-row { display: flex; width: 100%; margin-bottom: 0; flex: 1; min-height: 0; gap: 10px; padding: 0 2px; }
         .video-box-outer { flex: 1; min-width: 0; min-height: 52vh; height: 100%; display: flex; flex-direction: column; background: #000; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
-        .video-box-outer .box-title { flex-shrink: 0; padding: 6px 10px; background: rgba(0,0,0,0.9); color: #fff; font-size: 14px; font-weight: 500; text-align: center; }
+        .video-box-outer .box-title { flex-shrink: 0; padding: 8px 10px; background: linear-gradient(180deg, #1a1d26 0%, #12141a 100%); color: #e8eaef; font-size: 13px; font-weight: 600; text-align: center; letter-spacing: 0.02em; }
         .video-box-outer .box-body { flex: 1; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
         .video-box-outer .box-body canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
         .video-box-outer .box-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #666; font-size: 13px; text-align: center; padding: 24px; pointer-events: none; }
@@ -83,15 +128,13 @@
         .video-wrapper img { max-width: 100%; max-height: 70vh; object-fit: contain; display: block; }
         .video-wrapper .placeholder { color: #888; padding: 40px; text-align: center; }
         .status { margin-top: 6px; color: #444; font-size: 14px; flex-shrink: 0; }
-        .tip-one { font-size: 11px; color: #666; margin-bottom: 8px; flex-shrink: 0; }
         .checkbox-wrap { font-weight: normal; display: inline-flex; align-items: center; gap: 5px; font-size: 14px; }
         .controls .checkbox-wrap input { margin: 0; }
-        .ivcam-section { margin-top: 12px; padding: 14px 18px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e0e0e0; flex-shrink: 0; }
-        .ivcam-section h3 { font-size: 15px; color: #333; margin-bottom: 8px; }
-        .ivcam-section .hint { font-size: 12px; color: #666; margin-bottom: 14px; }
-        .ivcam-btns-row { display: flex; flex-wrap: wrap; gap: 12px; }
-        .ivcam-btn { padding: 12px 24px; border-radius: 8px; font-size: 14px; border: none; cursor: pointer; background: #667eea; color: #fff; }
-        .ivcam-btn:hover { opacity: 0.9; }
+        .ivcam-section { margin-top: 12px; padding: 14px 16px; background: linear-gradient(180deg, #fafbfd 0%, #f3f5f9 100%); border-radius: 12px; border: 1px solid rgba(0,0,0,0.07); flex-shrink: 0; }
+        .ivcam-section h3 { font-size: 14px; color: #2c3350; margin-bottom: 10px; font-weight: 600; }
+        .ivcam-btns-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .ivcam-btn { padding: 10px 20px; border-radius: 999px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; background: linear-gradient(135deg, var(--rm-accent), var(--rm-accent2)); color: #fff; box-shadow: 0 2px 10px rgba(90, 100, 120, 0.16); text-decoration: none; display: inline-block; }
+        .ivcam-btn:hover { filter: brightness(1.06); }
         .ivcam-btn:disabled { background: #ccc; cursor: not-allowed; }
         .ivcam-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
         .ivcam-modal.show { display: flex; }
@@ -102,7 +145,7 @@
         .ivcam-list li:hover { background: rgba(102, 126, 234, 0.1); }
         .ivcam-list li.selected { background: rgba(102, 126, 234, 0.2); font-weight: bold; }
         .ivcam-modal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-        .ivcam-modal-actions a { padding: 10px 18px; border-radius: 8px; font-size: 14px; text-decoration: none; background: #667eea; color: #fff; }
+        .ivcam-modal-actions a { padding: 10px 16px; border-radius: 8px; font-size: 13px; text-decoration: none; background: linear-gradient(135deg, var(--rm-accent), var(--rm-accent2)); color: #fff; font-weight: 500; }
         .ivcam-modal-actions a:hover { opacity: 0.9; }
         .ivcam-modal-actions a.disabled { pointer-events: none; opacity: 0.5; }
         .ivcam-empty { font-size: 13px; color: #888; padding: 12px; }
@@ -113,12 +156,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>实时监测</h1>
-            <p>摄像头视频流 · 检测画面 + 骨架线画面双框展示 · 手部/身体骨架与阶段目标检测</p>
+            <div class="header-inner">
+                <span class="role-badge" id="roleBadge" hidden>角色</span>
+                <h1>实时监测</h1>
+                <p class="header-tagline" id="headerTagline">双画面实时检测</p>
+            </div>
         </div>
         <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
         <div class="content">
-            <p class="tip-one">离开前请点「停止」释放摄像头；手部与头部使用 MediaPipe 外源模型。使用 ivCam 等虚拟摄像头时，请先最小化 ivCam 窗口再点「开始」；若选「外接 1」无画面，点「检测摄像头」后按提示改选外接 2。</p>
+            <p class="tip-compact" id="tipCompact">离开页面请先点「停止」，以释放摄像头。</p>
             <div class="controls">
                 <label>摄像头</label>
                 <select id="device">
@@ -142,27 +188,26 @@
                     <div class="box-title">检测画面</div>
                     <div class="box-body" id="bodyDetect">
                         <canvas id="canvasDetect"></canvas>
-                        <div class="box-placeholder" id="phDetect">点击「开始」后在此区域显示</div>
+                        <div class="box-placeholder" id="phDetect">点击「开始」后显示画面</div>
                     </div>
                 </div>
                 <div class="video-box-outer" id="boxSkeleton">
                     <div class="box-title">骨架线画面</div>
                     <div class="box-body" id="bodySkeleton">
                         <canvas id="canvasSkeleton"></canvas>
-                        <div class="box-placeholder" id="phSkeleton">点击「开始」后在此区域显示</div>
+                        <div class="box-placeholder" id="phSkeleton">点击「开始」后显示画面</div>
                     </div>
                 </div>
             </div>
             <img id="streamImg" class="stream-img-hidden" src="" alt="" />
             <div class="video-foot" id="videoFoot">
-                <span>手部/头部框与阶段目标</span>
-                <span>手部+身体骨架线</span>
+                <span>目标检测</span>
+                <span>骨架线</span>
             </div>
             <div class="status" id="status"></div>
 
             <div class="ivcam-section">
-                <h3>选择本地视频或图片进行检测（使用 ivcam）</h3>
-                <p class="hint">从 data\ivcam\检测框 或 data\ivcam\骨架线 选择已录制的视频或图片，跳转到对应检测模块（跳转后将提示确认是否开始检测）。</p>
+                <h3>本地录制文件</h3>
                 <div class="ivcam-btns-row">
                     <button type="button" class="ivcam-btn" id="ivcamBtnVideo">选择视频文件</button>
                     <button type="button" class="ivcam-btn" id="ivcamBtnImage">选择图片文件</button>
@@ -173,7 +218,7 @@
                     <button type="button" class="ivcam-modal-close" id="ivcamModalClose">关闭</button>
                     <div class="ivcam-modal-title" id="ivcamModalTitle">选择文件</div>
                     <ul id="ivcamModalList" class="ivcam-list"></ul>
-                    <div id="ivcamModalEmpty" class="ivcam-empty" style="display:none;">暂无文件，请将文件放入 data\ivcam</div>
+                    <div id="ivcamModalEmpty" class="ivcam-empty" style="display:none;">暂无可用文件</div>
                     <div id="ivcamModalActions" class="ivcam-modal-actions" style="display:none;">
                         <a href="#" id="ivcamModalBtnStretch">1. 抻面部分</a>
                         <a href="#" id="ivcamModalBtnBoiling">2. 下面及捞面部分</a>
@@ -183,8 +228,7 @@
                 </div>
             </div>
             <div class="ivcam-section">
-                <h3>示范视频（data\raw\抻面）</h3>
-                <p class="hint">cm13～cm17 固定入口；将 <code>cmXX.mp4</code> 放入 <code>data\raw\抻面</code> 后点击，在新标签打开逐帧骨架（与上方摄像头流独立）。</p>
+                <h3>抻面示范视频</h3>
                 <div class="ivcam-btns-row" id="stretchRawDemoRow" style="flex-wrap: wrap; align-items: center;"></div>
                 <p id="stretchRawDemoEmpty" class="ivcam-empty" style="display: none;"></p>
             </div>
@@ -352,7 +396,7 @@
                         if (items.length === 0) {
                             modalList.style.display = 'none';
                             modalEmpty.style.display = 'block';
-                            modalEmpty.textContent = '暂无文件，请将视频或图片放入 data\\ivcam\\检测框 或 data\\ivcam\\骨架线';
+                            modalEmpty.textContent = '暂无文件，请将素材放入 data\\ivcam 下「检测框」或「骨架线」文件夹';
                             return;
                         }
                         modalList.innerHTML = items.map(function (o) {
@@ -436,15 +480,47 @@
                     });
                     if (empty && videos.length <= 5) {
                         empty.style.display = 'block';
-                        empty.textContent = '若目录内暂无其他 cm，仅使用上方 cm13～17 即可。';
+                        empty.textContent = '';
                     }
                 }).catch(function () {
                     if (empty) {
                         empty.style.display = 'block';
-                        empty.textContent = '目录扫描失败；cm13～17 仍可点击。';
+                        empty.textContent = '列表加载失败';
                     }
                 });
             })();
+        })();
+    </script>
+    <script>
+        (function applyRoleTheme() {
+            var badge = document.getElementById('roleBadge');
+            var tag = document.getElementById('headerTagline');
+            var tip = document.getElementById('tipCompact');
+            fetch('/api/auth/session', { credentials: 'include' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var role = (d.success && d.user) ? d.user.role : null;
+                    var b = document.body;
+                    var map = {
+                        0: { cls: 'theme-admin', badge: '管理员', text: '系统管理视图' },
+                        1: { cls: 'theme-trainer', badge: '培训师', text: '现场监管 · 双画面' },
+                        2: { cls: 'theme-student', badge: '学员', text: '实时练习 · 动作对照' }
+                    };
+                    if (role !== null && role !== undefined && map[role] !== undefined) {
+                        b.classList.add(map[role].cls);
+                        if (badge) { badge.textContent = map[role].badge; badge.hidden = false; }
+                        if (tag) tag.textContent = map[role].text;
+                    } else {
+                        b.classList.add('theme-guest');
+                        if (tag) tag.textContent = '双画面实时检测';
+                    }
+                    if (tip) tip.textContent = '离开页面请先点「停止」，以释放摄像头。';
+                })
+                .catch(function () {
+                    document.body.classList.add('theme-guest');
+                    if (tag) tag.textContent = '双画面实时检测';
+                    if (tip) tip.textContent = '离开页面请先点「停止」，以释放摄像头。';
+                });
         })();
     </script>
 </body>

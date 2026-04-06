@@ -7,30 +7,64 @@
     <title>下面及捞面综合评分可视化系统</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --pg-bg: linear-gradient(165deg, #e9ecf3 0%, #e8edf4 100%);
+            --ac: #5a9a90;
+            --ac2: #4a8580;
+            --ac-on: #c45c6a;
+            --hd-text: #2c3350;
+        }
+        body.theme-r0 {
+            --pg-bg: linear-gradient(165deg, #faf8f5 0%, #f3eee8 100%);
+            --ac: #5a7868;
+            --ac2: #4d6b5e;
+            --ac-on: #8b6914;
+            --hd-text: #4a3d32;
+        }
+        body.theme-r1 {
+            --pg-bg: linear-gradient(165deg, #f0f5fa 0%, #e6eef6 100%);
+            --ac: #4a8a9a;
+            --ac2: #3d7a8a;
+            --ac-on: #b85c6a;
+            --hd-text: #2c5282;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #f0f0f5; min-height: 100vh; padding: 20px; color: #333; }
+        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: var(--pg-bg); min-height: 100vh; padding: 20px; color: #333; -webkit-font-smoothing: antialiased; }
         .container { max-width: 1280px; margin: 0 auto; }
-        .header { background: #fff; padding: 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-        .header h1 { color: #333; font-size: 1.75em; margin-bottom: 8px; }
-        .header .subtitle { color: #666; font-size: 14px; margin-bottom: 16px; }
+        .header { background: rgba(255,255,255,0.92); padding: 22px 24px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.05); }
+        .header h1 { color: var(--hd-text); font-size: clamp(1.2rem, 2.8vw, 1.65em); margin-bottom: 6px; font-weight: 700; }
+        .header .subtitle { color: #5c6578; font-size: 14px; margin-bottom: 14px; line-height: 1.5; }
         .video-selector { display: flex; flex-wrap: wrap; gap: 8px; }
-        .video-btn { padding: 8px 16px; background: #0d9488; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
-        .video-btn:hover { opacity: 0.9; }
-        .video-btn.active { background: #dc2626; }
+        .video-btn { padding: 8px 16px; background: var(--ac); color: #fff; border: none; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 500; transition: filter 0.15s; }
+        .video-btn:hover { filter: brightness(1.06); }
+        .video-btn.active { background: var(--ac-on); }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
         .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-        .card h2 { color: #333; margin-bottom: 12px; font-size: 1.05em; }
+        .card h2 { color: #333; margin-bottom: 12px; font-size: 1.05em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .card h2 .tag { font-size: 11px; font-weight: 600; color: var(--ac); background: rgba(74,138,154,0.12); padding: 2px 8px; border-radius: 6px; }
+        body.theme-r0 .card h2 .tag { background: rgba(90,120,104,0.15); }
+        body.theme-r1 .card h2 .tag { background: rgba(74,138,154,0.15); }
         .score-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-        .score-item { text-align: center; padding: 10px 14px; background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color: #fff; border-radius: 8px; min-width: 80px; }
+        .score-item { text-align: center; padding: 10px 14px; background: linear-gradient(135deg, var(--ac) 0%, var(--ac2) 100%); color: #fff; border-radius: 10px; min-width: 80px; }
         .score-item .label { font-size: 11px; opacity: 0.9; }
         .score-item .value { font-size: 1.2em; font-weight: bold; margin-top: 2px; }
-        .chart-wrap { height: 220px; }
+        .chart-wrap { height: 260px; position: relative; }
+        .chart-wrap.tall { height: 320px; }
+        .chart-hint { font-size: 12px; color: #6b7280; margin: -4px 0 10px; line-height: 1.45; }
+        .chart-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .pill-toggle {
+            padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(0,0,0,0.12);
+            background: #f3f4f6; color: #374151; font-size: 12px; cursor: pointer;
+            transition: background 0.15s;
+        }
+        .pill-toggle:hover { background: #e5e7eb; }
+        .pill-toggle.off { opacity: 0.45; text-decoration: line-through; }
         .info-panel { font-size: 13px; line-height: 1.7; }
         .info-panel .info-item { margin-bottom: 4px; }
         .load-err { color: #c00; padding: 12px; }
-        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); text-align: left; }
-        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .nav-home-wrap { padding: 10px 20px; background: rgba(255,255,255,0.55); text-align: left; border-radius: 10px; margin-bottom: 12px; }
+        .nav-home { color: var(--ac); text-decoration: none; font-size: 14px; font-weight: 500; }
         .nav-home:hover { text-decoration: underline; }
         .no-dtw { color: #666; font-size: 13px; padding: 20px; text-align: center; }
         .ai-card { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 20px; }
@@ -40,16 +74,16 @@
         .ai-input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .ai-input-row input { flex: 1; min-width: 200px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
         .ai-input-row .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
-        .ai-input-row .btn-send { background: #0d9488; color: #fff; }
-        .ai-input-row .btn-start { background: #dc2626; color: #fff; }
+        .ai-input-row .btn-send { background: var(--ac); color: #fff; }
+        .ai-input-row .btn-start { background: var(--ac-on); color: #fff; }
     </style>
 </head>
 <body>
     <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
     <div class="container">
         <div class="header">
-            <h1>下面及捞面综合评分可视化系统</h1>
-            <p class="subtitle">骨架线与标注融合 · 多维度图表 · 手部/面条/操作规范得分</p>
+            <h1>下面及捞面综合评分可视化</h1>
+            <p class="subtitle" id="headerSub">选择视频查看环节得分与图表；可使用下方 AI 分析。</p>
             <div id="videoSelector" class="video-selector"></div>
         </div>
         <div id="loadErr" class="card load-err" style="display:none;"></div>
@@ -60,31 +94,39 @@
                     <div id="scoreDisplay" class="score-row"></div>
                 </div>
                 <div class="card">
-                    <h2>检测质量分析</h2>
+                    <h2>检测质量 <span class="tag">雷达</span></h2>
+                    <p class="chart-hint">检测率、双手率、质量等综合指标；点击图例可隐藏。</p>
                     <div class="chart-wrap"><canvas id="qualityRadarChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h2>评分分布</h2>
+                    <h2>三环节极区 <span class="tag">0～5 分</span></h2>
+                    <p class="chart-hint">手部、面条/汤面、操作规范三项得分形状对比。</p>
                     <div class="chart-wrap"><canvas id="scorePieChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h2>类别得分对比</h2>
+                    <h2>类别得分 <span class="tag">横向</span></h2>
+                    <p class="chart-hint">横条长度对应得分高低。</p>
                     <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h2>面条/汤面属性</h2>
-                    <div class="chart-wrap"><canvas id="noodleDonutChart"></canvas></div>
+                    <h2>面条/汤面属性 <span class="tag">多维</span></h2>
+                    <p class="chart-hint">七项属性均值（帧聚合）；可横向滚动理解。</p>
+                    <div class="chart-wrap tall"><canvas id="noodleDonutChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h2>说明</h2>
-                    <div class="no-dtw">下面及捞面无标准序列，不计算 DTW；手部得分由骨架与标注融合，面条/操作由标注得分聚合。</div>
+                    <h2>得分构成 <span class="tag">占比</span></h2>
+                    <p class="chart-hint">三项得分在合计中的相对比例（非 DTW）。</p>
+                    <div class="chart-wrap"><canvas id="shareDonutChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h2>手部与趋势</h2>
-                    <div class="chart-wrap"><canvas id="angleTrendChart"></canvas></div>
+                    <h2>手部维度随帧变化 <span class="tag">交互</span></h2>
+                    <p class="chart-hint">图例或下方按钮开关曲线；面积填充便于看趋势。</p>
+                    <div class="chart-wrap tall"><canvas id="angleTrendChart"></canvas></div>
+                    <div class="chart-toolbar" id="trendToolbarBoiling" aria-label="切换曲线"></div>
                 </div>
                 <div class="card">
-                    <h2>总分分布（雷达）</h2>
+                    <h2>总分雷达 <span class="tag">对照满分</span></h2>
+                    <p class="chart-hint">浅色为满分参考线。</p>
                     <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
                 </div>
             </div>
@@ -94,11 +136,8 @@
             </div>
         </div>
         <div class="ai-card">
-            <h2>🤖 AI智能分析</h2>
-            <p class="hint">
-                <strong>开始分析</strong>：不输入问题即可点击，AI 会基于当前视频的评分数据自动生成一份完整分析报告（整体评估、各维度分析、改进建议）。<br>
-                <strong>发送</strong>：在输入框中输入具体问题（如「为什么手部得分低？」「如何提高操作规范得分？」）后点击，AI 会针对您的问题结合当前数据作答，支持多轮对话。
-            </p>
+            <h2>AI 智能分析</h2>
+            <p class="hint">「开始分析」生成整段报告；「发送」先输入具体问题再获取针对性回答。</p>
             <div id="aiResult" class="ai-result"></div>
             <div class="ai-input-row">
                 <input type="text" id="aiInput" placeholder="输入您的问题，例如：为什么这个视频分较低？如何改进？" />
@@ -112,6 +151,37 @@
         let currentData = null;
         let aiChatHistory = [];
         const charts = {};
+
+        function chartColors() {
+            if (document.body.classList.contains('theme-r0')) {
+                return { c1: 'rgba(90,103,136,0.85)', c2: 'rgba(139,105,20,0.8)', c3: 'rgba(196,168,130,0.85)', c4: 'rgba(180,120,100,0.8)', c5: 'rgba(120,100,90,0.75)', grid: 'rgba(92,64,51,0.12)', fill: 'rgba(90,103,136,0.18)', border: 'rgba(90,103,136,0.95)' };
+            }
+            if (document.body.classList.contains('theme-r1')) {
+                return { c1: 'rgba(74,107,148,0.9)', c2: 'rgba(49,130,206,0.85)', c3: 'rgba(99,179,237,0.8)', c4: 'rgba(128,90,140,0.75)', c5: 'rgba(56,161,105,0.75)', grid: 'rgba(44,82,130,0.12)', fill: 'rgba(74,107,148,0.15)', border: 'rgba(74,107,148,0.95)' };
+            }
+            return { c1: 'rgba(13,148,136,0.88)', c2: 'rgba(54,162,235,0.85)', c3: 'rgba(245,87,108,0.82)', c4: 'rgba(153,102,255,0.78)', c5: 'rgba(75,192,192,0.8)', grid: 'rgba(0,0,0,0.07)', fill: 'rgba(13,148,136,0.16)', border: 'rgba(13,148,136,0.95)' };
+        }
+        function chartCommon(extra) {
+            const Pal = chartColors();
+            return Object.assign({
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 850, easing: 'easeOutQuart' },
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10, padding: 14, font: { size: 11 }, usePointStyle: true } },
+                    tooltip: {
+                        backgroundColor: 'rgba(28,32,44,0.92)',
+                        padding: 12,
+                        cornerRadius: 10,
+                        titleFont: { size: 13, weight: '600' },
+                        bodyFont: { size: 12 },
+                        callbacks: {}
+                    }
+                },
+                interaction: { intersect: false, mode: 'nearest' }
+            }, extra || {});
+        }
+
         const SUMMARY_URL = '/reports/comprehensive_scores_boiling/summary.json';
         const DETAIL_PREFIX = '/reports/comprehensive_scores_boiling/comprehensive_score_';
         const AI_STAGE = 'boiling';
@@ -147,6 +217,7 @@
                 updateScorePieChart();
                 updateCategoryChart();
                 updateNoodleDonutChart();
+                updateShareDonutChart();
                 updateAngleTrendChart();
                 updateRadarChart();
             } catch (e) {
@@ -200,6 +271,7 @@
                 updateScorePieChart();
                 updateCategoryChart();
                 updateNoodleDonutChart();
+                updateShareDonutChart();
                 updateAngleTrendChart();
                 updateRadarChart();
             } catch (e) {
@@ -254,66 +326,131 @@
         function updateQualityRadarChart() {
             const d = currentData;
             if (!d || !d.detection_quality) return;
+            const Pal = chartColors();
             const q = d.detection_quality;
             const ctx = document.getElementById('qualityRadarChart').getContext('2d');
             if (charts.qualityRadar) charts.qualityRadar.destroy();
             const v = (x) => Math.round((x != null ? x : 0) * 100);
+            const stab = Math.round(((v(q.quality_score) + v(q.detection_rate)) / 2));
             charts.qualityRadar = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['检测率', '双手检测率', '质量评分', '稳定性', '综合'],
+                    labels: ['检测率', '双手率', '质量', '稳定性', '综合'],
                     datasets: [{
-                        label: '检测质量',
-                        data: [v(q.detection_rate), v(q.both_hands_rate), v(q.quality_score), v(q.quality_score), v(q.quality_score)],
-                        backgroundColor: 'rgba(13,148,136,0.2)',
-                        borderColor: 'rgba(13,148,136,1)',
-                        pointBackgroundColor: 'rgba(13,148,136,1)'
+                        label: '当前视频',
+                        data: [v(q.detection_rate), v(q.both_hands_rate), v(q.quality_score), stab, v(q.quality_score)],
+                        backgroundColor: Pal.fill,
+                        borderColor: Pal.border,
+                        borderWidth: 2,
+                        pointBackgroundColor: [Pal.c1, Pal.c2, Pal.c3, Pal.c4, Pal.c5],
+                        pointRadius: 5,
+                        pointHoverRadius: 7
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 100 } } }
+                options: chartCommon({
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { stepSize: 20, backdropColor: 'transparent' },
+                            grid: { color: Pal.grid },
+                            angleLines: { color: Pal.grid },
+                            pointLabels: { font: { size: 11 } }
+                        }
+                    }
+                })
             });
         }
 
         function updateScorePieChart() {
             const d = currentData;
             if (!d) return;
-            const total = scoreVal(d.total_score);
-            const poor = total < 2.5 ? 1 : 0;
-            const mid = total >= 2.5 && total < 3.5 ? 1 : 0;
-            const good = total >= 3.5 ? 1 : 0;
-            const sum = poor + mid + good || 1;
+            const Pal = chartColors();
             const ctx = document.getElementById('scorePieChart').getContext('2d');
             if (charts.scorePie) charts.scorePie.destroy();
+            const vals = [scoreVal(d.hand_score), scoreVal(d.noodle_rope_score), scoreVal(d.noodle_bundle_score)];
             charts.scorePie = new Chart(ctx, {
-                type: 'pie',
+                type: 'polarArea',
                 data: {
-                    labels: ['待改进', '合格', '优秀'],
+                    labels: ['手部', '面条/汤面', '操作规范'],
                     datasets: [{
-                        data: [poor ? (1/sum)*100 : 33.33, mid ? (1/sum)*100 : 33.33, good ? (1/sum)*100 : 33.34],
-                        backgroundColor: ['rgba(255,99,132,0.8)', 'rgba(54,162,235,0.8)', 'rgba(75,192,192,0.8)']
+                        data: vals,
+                        backgroundColor: [
+                            'rgba(111,124,168,0.42)',
+                            'rgba(127,118,152,0.42)',
+                            'rgba(148,168,200,0.42)'
+                        ]
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                options: chartCommon({
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 5,
+                            ticks: { stepSize: 1, showLabelBackdrop: false, font: { size: 10 } },
+                            grid: { color: Pal.grid },
+                            angleLines: { color: Pal.grid }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    var v = ctx.parsed.r != null ? ctx.parsed.r : ctx.raw;
+                                    return ' ' + ctx.label + ': ' + (v != null ? Number(v).toFixed(2) : '—') + ' / 5';
+                                }
+                            }
+                        }
+                    }
+                })
             });
         }
 
         function updateCategoryChart() {
             const d = currentData;
             if (!d) return;
+            const Pal = chartColors();
             const ctx = document.getElementById('categoryChart').getContext('2d');
             if (charts.category) charts.category.destroy();
             const labels = ['手部', '面条/汤面', '操作规范'];
             const values = [scoreVal(d.hand_score), scoreVal(d.noodle_rope_score), scoreVal(d.noodle_bundle_score)];
             charts.category = new Chart(ctx, {
                 type: 'bar',
-                data: { labels, datasets: [{ label: '得分', data: values, backgroundColor: ['rgba(13,148,136,0.8)', 'rgba(54,162,235,0.8)', 'rgba(245,87,108,0.8)'] }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 5 } } }
+                data: {
+                    labels,
+                    datasets: [{
+                        label: '得分',
+                        data: values,
+                        backgroundColor: [Pal.c1, Pal.c2, Pal.c3],
+                        borderRadius: 10,
+                        borderSkipped: false,
+                        barThickness: 28
+                    }]
+                },
+                options: chartCommon({
+                    indexAxis: 'y',
+                    scales: {
+                        x: { min: 0, max: 5, grid: { color: Pal.grid }, ticks: { stepSize: 0.5 } },
+                        y: { grid: { display: false } }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    var x = ctx.parsed.x;
+                                    return x != null ? ctx.dataset.label + ': ' + Number(x).toFixed(2) : '';
+                                }
+                            }
+                        }
+                    }
+                })
             });
         }
 
         function updateNoodleDonutChart() {
             const d = currentData;
             if (!d) return;
+            const Pal = chartColors();
             const fs = d.frame_scores || [];
             const attrs = ['thickness', 'elasticity', 'integrity', 'ripeness', 'soup_adhesion', 'noodle_soup_ratio', 'distribution_state'];
             const sums = {};
@@ -323,23 +460,90 @@
                 attrs.forEach(a => { if (r[a] != null) sums[a].push(r[a]); });
             });
             const labels = ['粗细', '弹性', '完整性', '熟度', '汤粘附', '面汤比', '分布'];
-            const values = attrs.map(a => sums[a].length ? sums[a].reduce((x,y)=>x+y,0)/sums[a].length : scoreVal(d.noodle_rope_score) || 3);
+            const values = attrs.map(a => sums[a].length ? sums[a].reduce((x, y) => x + y, 0) / sums[a].length : scoreVal(d.noodle_rope_score) || 3);
+            const bg = [Pal.c1, Pal.c2, Pal.c3, Pal.c4, Pal.c5, 'rgba(200,160,120,0.78)', 'rgba(100,140,180,0.78)'];
             const ctx = document.getElementById('noodleDonutChart').getContext('2d');
             if (charts.noodleDonut) charts.noodleDonut.destroy();
             charts.noodleDonut = new Chart(ctx, {
-                type: 'doughnut',
+                type: 'bar',
                 data: {
                     labels,
-                    datasets: [{ data: values, backgroundColor: ['rgba(255,99,132,0.8)', 'rgba(75,192,192,0.8)', 'rgba(255,206,86,0.8)', 'rgba(153,102,255,0.8)', 'rgba(13,148,136,0.8)', 'rgba(54,162,235,0.8)', 'rgba(245,87,108,0.8)'] }]
+                    datasets: [{
+                        label: '均值',
+                        data: values,
+                        backgroundColor: labels.map((_, i) => bg[i % bg.length]),
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                options: chartCommon({
+                    indexAxis: 'y',
+                    scales: {
+                        x: { min: 0, max: 5, grid: { color: Pal.grid } },
+                        y: { grid: { display: false } }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    var x = ctx.parsed.x;
+                                    return x != null ? ctx.dataset.label + ': ' + Number(x).toFixed(2) + ' / 5' : '';
+                                }
+                            }
+                        }
+                    }
+                })
+            });
+        }
+
+        function updateShareDonutChart() {
+            const d = currentData;
+            if (!d) return;
+            const Pal = chartColors();
+            const h = scoreVal(d.hand_score);
+            const r = scoreVal(d.noodle_rope_score);
+            const b = scoreVal(d.noodle_bundle_score);
+            let w = [h, r, b];
+            const sum = w.reduce((a, x) => a + Math.max(0, x), 0);
+            if (sum <= 0) w = [1, 1, 1];
+            const ctx = document.getElementById('shareDonutChart').getContext('2d');
+            if (charts.shareDonut) charts.shareDonut.destroy();
+            charts.shareDonut = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['手部', '面条/汤面', '操作规范'],
+                    datasets: [{
+                        data: w,
+                        backgroundColor: [Pal.c1, Pal.c2, Pal.c3],
+                        borderWidth: 2,
+                        borderColor: '#fff',
+                        hoverOffset: 8
+                    }]
+                },
+                options: chartCommon({
+                    cutout: '52%',
+                    plugins: {
+                        legend: { position: 'right' },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    var val = ctx.parsed;
+                                    var total = ctx.dataset.data.reduce(function (s, n) { return s + Math.max(0, n); }, 0) || 1;
+                                    var pct = (val / total * 100).toFixed(1);
+                                    return ' ' + ctx.label + ': ' + pct + '%（原始分 ' + (ctx.label === '手部' ? h.toFixed(2) : ctx.label === '面条/汤面' ? r.toFixed(2) : b.toFixed(2)) + '）';
+                                }
+                            }
+                        }
+                    }
+                })
             });
         }
 
         function updateAngleTrendChart() {
             const d = currentData;
             if (!d) return;
-            const fs = (d.frame_scores || []).slice(0, 100);
+            const Pal = chartColors();
+            const fs = (d.frame_scores || []).slice(0, 120);
             const labels = fs.map(f => f.frame_index);
             const pos = fs.map(f => (f.hand && f.hand.position != null) ? f.hand.position : null);
             const ang = fs.map(f => (f.hand && f.hand.angle != null) ? f.hand.angle : null);
@@ -347,24 +551,71 @@
             const coord = fs.map(f => (f.hand && f.hand.coordination != null) ? f.hand.coordination : null);
             const ctx = document.getElementById('angleTrendChart').getContext('2d');
             if (charts.angleTrend) charts.angleTrend.destroy();
+            var lineCols = [
+                { b: 'rgba(220,100,120,1)', f: 'rgba(220,100,120,0.14)' },
+                { b: 'rgba(70,130,200,1)', f: 'rgba(70,130,200,0.12)' },
+                { b: 'rgba(60,170,150,1)', f: 'rgba(60,170,150,0.12)' },
+                { b: 'rgba(150,100,190,1)', f: 'rgba(150,100,190,0.12)' }
+            ];
+            var mk = function (label, data, i) {
+                var lc = lineCols[i] || lineCols[0];
+                return {
+                    label: label,
+                    data: data,
+                    borderColor: lc.b,
+                    backgroundColor: lc.f,
+                    fill: true,
+                    tension: 0.35,
+                    spanGaps: true,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    borderWidth: 2
+                };
+            };
             charts.angleTrend = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels,
                     datasets: [
-                        { label: '位置', data: pos, borderColor: 'rgba(255,99,132,1)', fill: false, tension: 0.1 },
-                        { label: '角度', data: ang, borderColor: 'rgba(54,162,235,1)', fill: false, tension: 0.1 },
-                        { label: '动作', data: act, borderColor: 'rgba(75,192,192,1)', fill: false, tension: 0.1 },
-                        { label: '协调', data: coord, borderColor: 'rgba(153,102,255,1)', fill: false, tension: 0.1 }
+                        mk('位置', pos, 0),
+                        mk('角度', ang, 1),
+                        mk('动作', act, 2),
+                        mk('协调', coord, 3)
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 5 } } }
+                options: chartCommon({
+                    scales: {
+                        x: { grid: { color: Pal.grid }, ticks: { maxTicksLimit: 12 } },
+                        y: { beginAtZero: true, max: 5, grid: { color: Pal.grid } }
+                    },
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: { mode: 'index', intersect: false }
+                    }
+                })
             });
+            var tb = document.getElementById('trendToolbarBoiling');
+            if (tb) {
+                var names = ['位置', '角度', '动作', '协调'];
+                tb.innerHTML = names.map(function (n, i) {
+                    return '<button type="button" class="pill-toggle" data-i="' + i + '">' + n + '</button>';
+                }).join('');
+                tb.querySelectorAll('.pill-toggle').forEach(function (btn) {
+                    btn.onclick = function () {
+                        var i = parseInt(btn.getAttribute('data-i'), 10);
+                        var vis = charts.angleTrend.isDatasetVisible(i);
+                        charts.angleTrend.setDatasetVisibility(i, !vis);
+                        btn.classList.toggle('off', vis);
+                        charts.angleTrend.update();
+                    };
+                });
+            }
         }
 
         function updateRadarChart() {
             const d = currentData;
             if (!d) return;
+            const Pal = chartColors();
             const ctx = document.getElementById('radarChart').getContext('2d');
             if (charts.radar) charts.radar.destroy();
             const labels = ['手部', '面条/汤面', '操作规范'];
@@ -373,9 +624,38 @@
                 type: 'radar',
                 data: {
                     labels,
-                    datasets: [{ label: '得分', data: values, backgroundColor: 'rgba(13,148,136,0.2)', borderColor: 'rgba(13,148,136,1)', pointBackgroundColor: 'rgba(13,148,136,1)' }]
+                    datasets: [
+                        {
+                            label: '当前得分',
+                            data: values,
+                            backgroundColor: Pal.fill,
+                            borderColor: Pal.border,
+                            borderWidth: 2,
+                            pointRadius: 4
+                        },
+                        {
+                            label: '满分参考',
+                            data: [5, 5, 5],
+                            backgroundColor: 'rgba(160,160,170,0.08)',
+                            borderColor: 'rgba(160,160,170,0.45)',
+                            borderDash: [6, 4],
+                            borderWidth: 1.5,
+                            pointRadius: 0,
+                            fill: true
+                        }
+                    ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 5 } } }
+                options: chartCommon({
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 5,
+                            ticks: { stepSize: 1, backdropColor: 'transparent' },
+                            grid: { color: Pal.grid },
+                            angleLines: { color: Pal.grid }
+                        }
+                    }
+                })
             });
         }
 
@@ -428,6 +708,24 @@
         } else {
             loadVideoList();
         }
+    </script>
+    <script>
+        (function () {
+            var sub = document.getElementById('headerSub');
+            fetch('/api/auth/session', { credentials: 'include' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var role = d.success && d.user ? d.user.role : null;
+                    if (role === 0) {
+                        document.body.classList.add('theme-r0');
+                        if (sub) sub.textContent = '监管与决策用：选择视频查看环节得分与 AI 报告。';
+                    } else if (role === 1) {
+                        document.body.classList.add('theme-r1');
+                        if (sub) sub.textContent = '教学用：选择视频对照细则解读学员得分。';
+                    }
+                })
+                .catch(function () {});
+        })();
     </script>
 </body>
 </html>

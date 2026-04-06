@@ -1,6 +1,13 @@
 """
 视频检测API
 处理视频上传和检测
+
+推理后端（环境变量，可选）:
+  RAMEN_PREFER_ONNX=1     若同路径存在与 best.pt 同名的 best.onnx，则优先加载（Ultralytics → onnxruntime）
+  RAMEN_PREFER_ENGINE=1   若存在同名的 .engine（TensorRT），优先加载；需与本机 CUDA/TensorRT 匹配
+  RAMEN_ONNX_PATH=...     显式指定 .onnx 绝对路径
+  RAMEN_ENGINE_PATH=...   显式指定 .engine 绝对路径
+导出 ONNX: python scripts/export_yolo_to_onnx.py --stretch / --boiling
 """
 import os
 import cv2
@@ -226,17 +233,17 @@ def get_mediapipe_face_boxes(frame_bgr: np.ndarray) -> List[Dict]:
 class VideoDetectionAPI:
     """视频检测API类"""
     
-    def __init__(self, model_path: str = None, model_type: str = "cpu"):
+    def __init__(self, model_path: str = None, model_type: str = "gpu"):
         """
         初始化检测器
         
         Args:
             model_path: 模型路径，如果为None则尝试加载默认模型
-            model_type: 'cpu' 时强制在 CPU 上加载与推理，避免 CUDA 报错；'gpu' 时使用 CUDA（若有）
+            model_type: 默认 'gpu'（CUDA 不可用时内部回退 CPU）；传 'cpu' 可强制仅用 CPU
         """
         self.model = None
         self.model_path = model_path
-        self.model_type = model_type if model_type in ("cpu", "gpu") else "cpu"
+        self.model_type = model_type if model_type in ("cpu", "gpu") else "gpu"
         self._load_error = None  # 加载失败时的错误信息，便于接口返回给前端
         
         if YOLO_AVAILABLE:
@@ -273,13 +280,46 @@ class VideoDetectionAPI:
             else:
                 device = "cpu"
             self.device = device
-            self.model = YOLO(model_file)
-            if hasattr(self.model, "to"):
+
+            def _resolve_exported_path(pt_path: str) -> tuple[str, str]:
+                """返回 (实际加载路径, 后端标签 pytorch|onnx|tensorrt)。"""
+                ep = os.environ.get("RAMEN_ENGINE_PATH", "").strip()
+                if ep and Path(ep).is_file():
+                    return ep, "tensorrt"
+                op = os.environ.get("RAMEN_ONNX_PATH", "").strip()
+                if op and Path(op).is_file():
+                    return op, "onnx"
+                p = Path(pt_path)
+                if not str(pt_path).lower().endswith(".pt"):
+                    return pt_path, "pytorch"
+                prefer_eng = os.environ.get("RAMEN_PREFER_ENGINE", "").lower() in ("1", "true", "yes")
+                prefer_onnx = os.environ.get("RAMEN_PREFER_ONNX", "").lower() in ("1", "true", "yes")
+                eng = p.with_suffix(".engine")
+                if prefer_eng and eng.is_file():
+                    return str(eng), "tensorrt"
+                ox = p.with_suffix(".onnx")
+                if prefer_onnx and ox.is_file():
+                    return str(ox), "onnx"
+                return pt_path, "pytorch"
+
+            load_path, backend_tag = _resolve_exported_path(model_file)
+            self._inference_backend = backend_tag
+            try:
+                self.model = YOLO(load_path)
+            except Exception as e:
+                if load_path != model_file:
+                    print(f"[WARN] 无法加载 {load_path}（{e}），回退 PyTorch: {model_file}")
+                    self.model = YOLO(model_file)
+                    self._inference_backend = "pytorch"
+                else:
+                    raise
+            if hasattr(self.model, "to") and backend_tag == "pytorch":
                 self.model.to(device)
+            # ONNX/TensorRT 由各自运行时选 GPU；Ultralytics 对导出模型不再 .to(cuda)
             n_cls = len(getattr(self.model, 'names', [])) if hasattr(self.model, 'names') else 0
             if n_cls != 3:
                 print(f"[WARN] 抻面模型应为 3 类 (hand/noodle_rope/noodle_bundle)，当前模型有 {n_cls} 类，hand/面条束可能为 0。请使用 datasets/stretch_detection 训练的 best.pt")
-            print(f"[OK] 模型加载成功: {model_file} (使用 {device})")
+            print(f"[OK] 模型加载成功: {load_path} (后端={getattr(self, '_inference_backend', 'pytorch')}, 设备配置={device})")
         except Exception as e:
             err = str(e)
             self._load_error = err
@@ -287,7 +327,9 @@ class VideoDetectionAPI:
                 self._load_error = (
                     "模型与当前 ultralytics 版本不兼容（Conv.bn 结构变更）。"
                     "请尝试：pip install ultralytics==8.0.200 后重启服务；"
-                    "或使用当前环境重新训练得到新的 best.pt。详见 docs/模型与ultralytics版本兼容说明.md"
+                    "或使用当前环境重新训练得到新的 best.pt。"
+                    "若曾放置过旧的 models/stretch_detection/weights/best_gpu.pt，可删除后重启，改与最新 best.pt 一致。"
+                    "详见 docs/模型与ultralytics版本兼容说明.md"
                 )
             print(f"[ERROR] 模型加载失败: {e}")
             self.model = None
@@ -321,7 +363,7 @@ class VideoDetectionAPI:
         frame_index = 0
         
         print(f"开始处理视频: {video_path}")
-        print(f"  FPS: {fps}, 总帧数: {total_frames}")
+        print(f"  FPS: {fps}, 总帧数: {total_frames}, YOLO 推理设备: {getattr(self, 'device', 'cpu')}")
         
         # 固定推理尺寸，避免取消后换视频（如 cm1→cm10）因分辨率不同导致张量 5040/4620 不匹配
         INFER_SIZE = 640
@@ -333,11 +375,12 @@ class VideoDetectionAPI:
             h, w = frame.shape[:2]
             # 先缩放到固定尺寸再推理，保证模型输入始终一致
             frame_infer = cv2.resize(frame, (INFER_SIZE, INFER_SIZE))
+            infer_dev = getattr(self, "device", "cpu")
             results = self.model.predict(
                 source=frame_infer,
                 verbose=False,
                 conf=conf_threshold,
-                device='cpu',
+                device=infer_dev,
                 imgsz=INFER_SIZE
             )
             
@@ -539,12 +582,13 @@ class VideoDetectionAPI:
         frame_infer = cv2.resize(frame_bgr, (INFER_SIZE, INFER_SIZE))
         scale_x, scale_y = w / INFER_SIZE, h / INFER_SIZE
         try:
+            infer_dev = getattr(self, "device", "cpu")
             results = self.model.predict(
                 source=frame_infer,
                 verbose=False,
                 conf=conf_threshold,
                 iou=iou_threshold,
-                device='cpu',
+                device=infer_dev,
                 imgsz=INFER_SIZE
             )
         except Exception:
@@ -674,29 +718,20 @@ def _latest_stretch_best_pt(project_root: Path) -> Optional[Path]:
     return candidates[0][1]
 
 
-def _resolve_stretch_model_path(model_type: str) -> str:
-    """解析抻面模型路径：优先使用最新训练的 best.pt（按修改时间），model_type 为 'cpu' 或 'gpu'（预留）。"""
+def _resolve_stretch_model_path(_model_type: str = "cpu") -> str:
+    """解析抻面模型路径。CPU / GPU 共用同一套权重文件，仅推理设备不同。
+    优先最新 stretch_detection*/weights/best.pt；勿让旧的 best_gpu.pt 覆盖最新权重（易触发 Conv.bn 与 ultralytics 版本不兼容）。"""
     project_root = Path(__file__).parent.parent.parent
     latest = _latest_stretch_best_pt(project_root)
     w = project_root / "models" / "stretch_detection" / "weights"
-    if model_type == "gpu":
-        if (w / "best_gpu.pt").exists():
-            return str(w / "best_gpu.pt")
-        if latest:
-            print("[INFO] 未找到抻面 GPU 权重(best_gpu.pt)，使用最新 best.pt")
-            return str(latest)
-        if (w / "best_cpu.pt").exists():
-            return str(w / "best_cpu.pt")
-        if (w / "best.pt").exists():
-            return str(w / "best.pt")
-        return str(w / "best_gpu.pt")
-    # cpu：优先最新 best.pt，再 fallback 到固定路径
     if latest:
         return str(latest)
     if (w / "best_cpu.pt").exists():
         return str(w / "best_cpu.pt")
     if (w / "best.pt").exists():
         return str(w / "best.pt")
+    if (w / "best_gpu.pt").exists():
+        return str(w / "best_gpu.pt")
     alt = project_root / "models" / "stretch_detection_model.pt"
     if alt.exists():
         return str(alt)
@@ -721,41 +756,32 @@ def _latest_boiling_best_pt(project_root: Path) -> Optional[Path]:
     return candidates[0][1]
 
 
-def _resolve_boiling_model_path(model_type: str) -> str:
-    """解析下面及捞面模型路径：优先使用最新训练的 best.pt（按修改时间），model_type 为 'cpu' 或 'gpu'（预留）。"""
+def _resolve_boiling_model_path(_model_type: str = "cpu") -> str:
+    """下面及捞面：CPU/GPU 共用权重路径，优先最新训练的 best.pt。"""
     project_root = Path(__file__).parent.parent.parent
     latest = _latest_boiling_best_pt(project_root)
     w = project_root / "models" / "boiling_scooping_detection" / "weights"
-    if model_type == "gpu":
-        if (w / "best_gpu.pt").exists():
-            return str(w / "best_gpu.pt")
-        if latest:
-            print("[INFO] 未找到下面及捞面 GPU 权重(best_gpu.pt)，使用最新 best.pt")
-            return str(latest)
-        if (w / "best_cpu.pt").exists():
-            return str(w / "best_cpu.pt")
-        if (w / "best.pt").exists():
-            return str(w / "best.pt")
-        return str(w / "best_gpu.pt")
     if latest:
         return str(latest)
     if (w / "best_cpu.pt").exists():
         return str(w / "best_cpu.pt")
     if (w / "best.pt").exists():
         return str(w / "best.pt")
+    if (w / "best_gpu.pt").exists():
+        return str(w / "best_gpu.pt")
     alt = project_root / "models" / "boiling_scooping_detection_model.pt"
     if alt.exists():
         return str(alt)
     return "yolov8n.pt"
 
 
-def get_detector(model_path: str = None, model_type: str = "cpu") -> VideoDetectionAPI:
-    """获取抻面检测器。model_type: 'cpu' 时强制 CPU 加载与推理；路径变化时自动换用最新 best.pt。"""
+def get_detector(model_path: str = None, model_type: str = "gpu") -> VideoDetectionAPI:
+    """获取抻面检测器。默认 GPU；model_type='cpu' 时强制 CPU。路径变化时自动换用最新 best.pt。"""
     global _detector_cpu, _detector_gpu
     path = model_path
     if path is None:
-        path = _resolve_stretch_model_path(model_type if model_type in ("cpu", "gpu") else "cpu")
-    mt = model_type if model_type in ("cpu", "gpu") else "cpu"
+        path = _resolve_stretch_model_path(model_type if model_type in ("cpu", "gpu") else "gpu")
+    mt = model_type if model_type in ("cpu", "gpu") else "gpu"
     if mt == "gpu":
         if _detector_gpu is None:
             _detector_gpu = VideoDetectionAPI(path, model_type="gpu")
@@ -771,13 +797,13 @@ def get_detector(model_path: str = None, model_type: str = "cpu") -> VideoDetect
     return _detector_cpu
 
 
-def get_boiling_scooping_detector(model_path: str = None, model_type: str = "cpu") -> VideoDetectionAPI:
-    """获取下面及捞面检测器。model_type: 'cpu' 时强制 CPU；优先最新 best.pt，路径变化时自动换用。"""
+def get_boiling_scooping_detector(model_path: str = None, model_type: str = "gpu") -> VideoDetectionAPI:
+    """获取下面及捞面检测器。默认 GPU；model_type='cpu' 时强制 CPU。优先最新 best.pt。"""
     global _boiling_detector_cpu, _boiling_detector_gpu
     path = model_path
     if path is None:
-        path = _resolve_boiling_model_path(model_type if model_type in ("cpu", "gpu") else "cpu")
-    mt = model_type if model_type in ("cpu", "gpu") else "cpu"
+        path = _resolve_boiling_model_path(model_type if model_type in ("cpu", "gpu") else "gpu")
+    mt = model_type if model_type in ("cpu", "gpu") else "gpu"
     if mt == "gpu":
         if _boiling_detector_gpu is None:
             _boiling_detector_gpu = VideoDetectionAPI(path, model_type="gpu")

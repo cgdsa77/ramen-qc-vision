@@ -1,0 +1,19 @@
+# Ramen QC Vision — Web + 检测/评分（CPU/GPU 通用基线）
+# PyTorch：请按显卡从官网安装，例如:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# ONNX 推理加速（可选）: pip install onnxruntime 或 GPU 用 onnxruntime-gpu
+
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+numpy>=1.24.0
+opencv-python-headless>=4.8.0
+Pillow>=10.0.0
+PyYAML>=6.0
+requests>=2.31.0
+ultralytics>=8.0.196
+onnxruntime>=1.16.0
+pymysql>=1.1.0
+
+# 可选：实时手部 MediaPipe（见 requirements-realtime.txt）
+# mediapipe>=0.10.0

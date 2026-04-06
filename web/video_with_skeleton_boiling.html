@@ -128,7 +128,8 @@
                     <h3>说明</h3>
                     <p>此视频已预处理，手部骨架线已直接绘制在视频上。</p>
                     <p>优点：无同步问题，无错位，播放流畅。视频比例已适配界面，横竖屏均正常显示。</p>
-                    <p>注意：若视频不存在，请先运行预处理脚本生成：<code>python scripts/generate_video_with_skeleton.py</code></p>
+                    <p>注意：若提示文件不存在，先提取关键点再生成：<code>python scripts/extract_hand_keypoints_from_video.py --video xlN</code>，再 <code>python scripts/generate_video_with_skeleton.py --video xlN</code>。</p>
+                    <p>若已生成但浏览器黑屏或无法播放，可转码为 H.264：<code>python scripts/transcode_processed_videos_h264.py --stretch xlN</code>（脚本会扫描下面及捞面目录）。</p>
                 </div>
             </div>
         </div>
@@ -149,7 +150,7 @@
         function hideStatus() { status.style.display = 'none'; }
 
         async function loadVideoList() {
-            const fallback = ['xl1', 'xl2', 'xl3', 'xl4', 'xl5', 'xl6', 'xl7', 'xl8', 'xl9', 'xl10'];
+            const fallback = Array.from({ length: 20 }, (_, i) => 'xl' + (i + 1));
             try {
                 const r = await fetch('/api/get_scoring_videos?stage=boiling_scooping');
                 const data = await r.json();
@@ -187,7 +188,16 @@
                 const checkResponse = await fetch('/api/check_processed_video/' + encodeURIComponent(videoName) + '?stage=' + STAGE);
                 const checkResult = await checkResponse.json();
                 if (!checkResult.exists) {
-                    throw new Error('视频文件不存在。请先运行: python scripts/generate_video_with_skeleton.py');
+                    let msg = '预处理带骨架视频不存在。';
+                    if (checkResult.generate_hint) {
+                        msg += ' ' + checkResult.generate_hint;
+                    } else {
+                        msg += ' 请先运行: python scripts/extract_hand_keypoints_from_video.py --video ' + videoName + '，再 python scripts/generate_video_with_skeleton.py --video ' + videoName;
+                    }
+                    if (checkResult.raw_available === false && checkResult.keypoints_available === false) {
+                        msg += ' （当前未检测到原片与关键点 JSON，请确认 data/raw/下面及捞面 与提取脚本已执行。）';
+                    }
+                    throw new Error(msg);
                 }
                 showStatus('正在加载视频...', 'info');
                 const videoPath = checkResult.path || checkResult.path_alt || '/data/processed_videos/下面及捞面/' + videoName + '_with_skeleton.mp4';
@@ -197,7 +207,8 @@
                     videoPlayer.addEventListener('loadeddata', () => { clearTimeout(timeout); resolve(); }, { once: true });
                     videoPlayer.addEventListener('error', () => {
                         clearTimeout(timeout);
-                        reject(new Error('视频加载失败'));
+                        const hint = ' 若文件已存在仍无法播放，请转码: python scripts/transcode_processed_videos_h264.py --stretch ' + videoName;
+                        reject(new Error('视频加载或解码失败（可能编码不兼容）。' + hint));
                     }, { once: true });
                 });
                 videoSection.style.display = 'block';

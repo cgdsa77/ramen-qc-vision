@@ -52,8 +52,8 @@ def build_annotation_from_detection(
     from src.api.video_detection_api import get_detector, _resolve_stretch_model_path
     from src.scoring.stretch_scorer import StretchScorer
 
-    detector = get_detector(model_type="cpu")
-    model_source = _resolve_stretch_model_path("cpu") or getattr(detector, "model_path", None) or "当前最佳抻面模型(latest best.pt)"
+    detector = get_detector()
+    model_source = _resolve_stretch_model_path("gpu") or getattr(detector, "model_path", None) or "当前最佳抻面模型(latest best.pt)"
     if not detector.model:
         raise RuntimeError("抻面检测模型未加载，无法生成检测标注分")
 

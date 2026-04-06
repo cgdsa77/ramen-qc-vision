@@ -33,6 +33,18 @@
           "content": "bc958b13-9d89-4fb5-a824-256efb442011.jpg",
           "content_type": "image",
           "at": "2026-03-07T23:11:49.417353"
+        },
+        {
+          "role": "trainer",
+          "content": "你最近可以再练一下",
+          "content_type": "text",
+          "at": "2026-04-05T19:43:43.902511"
+        },
+        {
+          "role": "student",
+          "content": "好的老师",
+          "content_type": "text",
+          "at": "2026-04-05T19:44:27.467473"
         }
       ]
     }

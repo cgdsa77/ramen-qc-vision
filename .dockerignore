@@ -1,0 +1,16 @@
+.git
+.cursor
+**/__pycache__
+**/*.pyc
+.venv
+venv
+env
+*.egg-info
+.pytest_cache
+.ruff_cache
+reports
+popmotion-master
+# 大资源由运行时挂载；若需打进镜像可删下列行
+data/raw
+data/processed_videos
+data/scores

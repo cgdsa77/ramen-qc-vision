@@ -1,0 +1,4 @@
+# 开发与测试（可选）
+-r requirements.txt
+pytest>=7.4.0
+httpx>=0.25.0

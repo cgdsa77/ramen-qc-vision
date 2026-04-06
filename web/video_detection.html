@@ -12,41 +12,83 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --page-bg: linear-gradient(165deg, #e9ecf3 0%, #ece9f0 45%, #e8edf4 100%);
+            --page-accent: #6f7ca8;
+            --page-accent2: #7f7698;
+            --header-grad: linear-gradient(135deg, #7c88b0 0%, #8879a0 50%, #9088a8 100%);
+        }
+        body.theme-trainer {
+            --page-accent: #5a6788;
+            --page-accent2: #6a7898;
+            --header-grad: linear-gradient(135deg, #6a7490 0%, #768098 50%, #7e8898 100%);
+        }
+        body.theme-student {
+            --page-accent: #558a82;
+            --page-accent2: #689a92;
+            --header-grad: linear-gradient(135deg, #6a968e 0%, #78a89e 50%, #82b0a6 100%);
+        }
+        body.theme-admin {
+            --page-accent: #807698;
+            --page-accent2: #8f86a5;
+            --header-grad: linear-gradient(135deg, #8a80a0 0%, #9688a8 50%, #9e94b0 100%);
+        }
+        body.theme-guest { --header-grad: linear-gradient(135deg, #7c88b0 0%, #8879a0 50%, #9088a8 100%); }
         body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: var(--page-bg);
             min-height: 100vh;
             padding: 20px;
+            -webkit-font-smoothing: antialiased;
         }
         
         .container {
             max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 18px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.22);
             overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.35);
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
+            background: var(--header-grad);
+            color: rgba(255, 255, 255, 0.96);
+            padding: 28px 32px 32px;
             text-align: center;
+            position: relative;
         }
+        .header-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+        .role-badge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.22);
+            border: 1px solid rgba(255,255,255,0.35);
+            margin-bottom: 12px;
+        }
+        .role-badge[hidden] { display: none !important; }
         
         .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
+            font-size: clamp(1.35rem, 3vw, 1.75rem);
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
         
-        .header p {
-            font-size: 16px;
-            opacity: 0.9;
+        .header .header-tagline {
+            font-size: 14px;
+            opacity: 0.92;
+            font-weight: 500;
+            line-height: 1.5;
         }
         
-        .nav-home-wrap { padding: 10px 20px; background: rgba(0,0,0,0.06); text-align: left; }
-        .nav-home { color: #333; text-decoration: none; font-size: 14px; }
+        .nav-home-wrap { padding: 12px 22px; background: linear-gradient(180deg, #f8f9fc 0%, #fff 100%); text-align: left; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .nav-home { color: var(--page-accent); text-decoration: none; font-size: 14px; font-weight: 500; }
         .nav-home:hover { text-decoration: underline; }
         
         .content {
@@ -54,23 +96,26 @@
         }
         
         .upload-section {
-            background: #f8f9fa;
-            border: 3px dashed #667eea;
-            border-radius: 10px;
-            padding: 40px;
+            background: linear-gradient(180deg, #fafbfd 0%, #f3f5fa 100%);
+            border: 2px dashed rgba(79, 106, 230, 0.45);
+            border-radius: 16px;
+            padding: 36px 28px;
             text-align: center;
-            margin-bottom: 30px;
-            transition: all 0.3s;
+            margin-bottom: 28px;
+            transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
         }
+        .upload-section h2 { font-size: 1.1rem; font-weight: 600; color: #2c3350; }
+        .upload-hint { margin: 14px 0 0; color: #7a8499; font-size: 13px; }
         
         .upload-section:hover {
-            border-color: #764ba2;
-            background: #f0f2f5;
+            border-color: var(--page-accent2);
+            background: #f0f4ff;
+            box-shadow: 0 6px 22px rgba(90, 100, 130, 0.07);
         }
         
         .upload-section.dragover {
-            border-color: #764ba2;
-            background: #e8ebf0;
+            border-color: var(--page-accent);
+            background: #e8f0fe;
         }
         
         #fileInput {
@@ -78,15 +123,18 @@
         }
         
         .upload-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--page-accent) 0%, var(--page-accent2) 100%);
             color: white;
-            padding: 15px 40px;
+            padding: 14px 36px;
             border: none;
-            border-radius: 25px;
-            font-size: 16px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
             display: inline-block;
+            box-shadow: 0 3px 14px rgba(90, 100, 130, 0.18);
+            margin-top: 8px;
         }
         
         .upload-btn:hover {
@@ -99,7 +147,7 @@
         .confirm-box p { margin-bottom: 20px; font-size: 16px; color: #333; }
         .confirm-box .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
         .confirm-box .btns button { padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; }
-        .confirm-box .btns .btn-ok { background: #667eea; color: #fff; }
+        .confirm-box .btns .btn-ok { background: var(--page-accent); color: #fff; }
         .confirm-box .btns .btn-cancel { background: #e9ecef; color: #333; }
         
         .video-section {
@@ -152,12 +200,12 @@
         }
         
         .btn-primary {
-            background: #667eea;
+            background: var(--page-accent);
             color: white;
         }
         
         .btn-primary:hover {
-            background: #5568d3;
+            filter: brightness(1.06);
         }
         
         .btn-secondary {
@@ -186,7 +234,7 @@
         
         .detection-info h3 {
             margin-bottom: 15px;
-            color: #667eea;
+            color: var(--page-accent);
         }
         
         .detection-stats {
@@ -212,7 +260,7 @@
         .stat-value {
             font-size: 24px;
             font-weight: bold;
-            color: #667eea;
+            color: var(--page-accent);
         }
         
         .loading {
@@ -227,7 +275,7 @@
         
         .spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            border-top: 4px solid var(--page-accent);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -282,7 +330,7 @@
         .score-result-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
         .score-result-modal-box { position: relative; background: #fff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-width: 560px; width: 100%; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; }
         .score-result-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #eee; }
-        .score-result-modal-header h4 { margin: 0; color: #667eea; font-size: 1.1em; }
+        .score-result-modal-header h4 { margin: 0; color: var(--page-accent); font-size: 1.1em; }
         .score-result-modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; line-height: 1; padding: 0 4px; }
         .score-result-modal-close:hover { color: #333; }
         .score-result-modal-body { padding: 20px; overflow-y: auto; }
@@ -305,25 +353,21 @@
     <div class="nav-home-wrap"><a href="/" class="nav-home">← 返回首页</a></div>
     <div class="container">
         <div class="header">
-            <h1>🍜 抻面动作检测系统</h1>
-            <p>上传视频进行实时检测 - 识别手部、面条等目标。后端自动选用 <strong>models/stretch_detection*/weights/</strong> 中<strong>最新修改的 best.pt</strong>（训练完成后请<strong>重启 Web 服务</strong>以加载新权重）。</p>
+            <div class="header-inner">
+                <span class="role-badge" id="roleBadge" hidden>角色</span>
+                <h1>抻面动作检测</h1>
+                <p class="header-tagline" id="headerTagline">上传视频开始检测</p>
+            </div>
         </div>
         
         <div class="content">
             <!-- 上传区域 -->
             <div class="upload-section" id="uploadSection">
-                <h2>📤 上传视频文件</h2>
-                <p style="margin: 20px 0; color: #6c757d;">支持 MP4, AVI, MOV 格式</p>
-                <div style="margin-bottom: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                    <label for="modelTypeSelect" style="color: #495057;">检测使用模型：</label>
-                    <select id="modelTypeSelect" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #dee2e6; background: #fff;">
-                        <option value="cpu">CPU 训练模型</option>
-                        <option value="gpu">GPU 训练模型（预留）</option>
-                    </select>
-                </div>
+                <h2>上传视频</h2>
+                <p class="upload-hint">拖拽到此处或点击下方按钮选择文件</p>
                 <input type="file" id="fileInput" accept="video/*">
                 <label for="fileInput" class="upload-btn">选择视频文件</label>
-                <p id="fileName" style="margin-top: 15px; color: #667eea; font-weight: bold;"></p>
+                <p id="fileName" style="margin-top: 15px; color: var(--page-accent); font-weight: bold;"></p>
             </div>
             
             <!-- 加载提示与进度 -->
@@ -332,11 +376,11 @@
                 <p style="margin-top: 15px;" id="loadingText">正在处理视频，请稍候...</p>
                 <div id="progressWrap" style="display:none; margin-top: 15px; max-width: 400px; margin-left: auto; margin-right: auto;">
                     <div style="background:#e9ecef; border-radius: 8px; height: 24px; overflow: hidden;">
-                        <div id="progressBar" style="height:100%; width:0%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.2s;"></div>
+                        <div id="progressBar" style="height:100%; width:0%; background: linear-gradient(90deg, var(--page-accent), var(--page-accent2)); transition: width 0.2s;"></div>
                     </div>
                     <p id="progressText" style="margin-top: 8px; font-size: 14px; color: #666;"></p>
                 </div>
-                <p style="margin-top: 20px; font-size: 14px; color: #333; font-weight: bold;">可随时停止检测：</p>
+                <p style="margin-top: 18px; font-size: 13px; color: #5c6578;">检测过程中可随时停止</p>
                 <div style="margin-top: 10px;">
                     <button type="button" class="btn btn-danger" id="stopDetectionBtn">停止检测</button>
                 </div>
@@ -581,8 +625,7 @@
             try {
                 const formData = new FormData();
                 formData.append('file', file);
-                const modelType = (document.getElementById('modelTypeSelect') || {}).value || 'cpu';
-                const response = await fetch('/api/detect_video?async_mode=1&model_type=' + encodeURIComponent(modelType), { method: 'POST', body: formData, signal });
+                const response = await fetch('/api/detect_video?async_mode=1', { method: 'POST', body: formData, signal });
                 const first = await response.json();
                 
                 if (signal.aborted) throw new DOMException('', 'AbortError');
@@ -751,8 +794,7 @@
         formData.append('file', file);
         formData.append('stage', 'stretch');
         try {
-            const modelType = (document.getElementById('modelTypeSelect') || {}).value || 'cpu';
-            const resp = await fetch('/api/score_video?async_mode=1&stage=stretch&model_type=' + encodeURIComponent(modelType), { method: 'POST', body: formData });
+            const resp = await fetch('/api/score_video?async_mode=1&stage=stretch', { method: 'POST', body: formData });
             const text = await resp.text();
             let first;
             try { first = JSON.parse(text); } catch (_) {
@@ -874,7 +916,13 @@
             try {
                 const r = await fetch('/api/list_saved_score_results?stage=stretch', { credentials: 'include' });
                 const res = await r.json().catch(() => ({}));
-                if (!res.success || !res.files || !res.files.length) {
+                if (!res.success) {
+                    empty.textContent = res.error || '加载列表失败';
+                    empty.style.display = 'block';
+                    return;
+                }
+                if (!res.files || !res.files.length) {
+                    empty.textContent = '暂无已保存结果';
                     empty.style.display = 'block';
                     return;
                 }
@@ -897,10 +945,19 @@
                         .then(function (resp) { return resp.json(); })
                         .then(function (data) {
                             if (data.success && data.content) {
+                                iframe.style.display = 'block';
+                                empty.style.display = 'none';
                                 iframe.srcdoc = data.content;
+                            } else {
+                                iframe.style.display = 'none';
+                                empty.textContent = data.error || ('加载失败' + (data.detail ? '：' + JSON.stringify(data.detail) : ''));
+                                empty.style.display = 'block';
                             }
                         })
-                        .catch(function () {});
+                        .catch(function () {
+                            empty.textContent = '网络错误，无法加载内容';
+                            empty.style.display = 'block';
+                        });
                 };
                 loadContent();
                 sel.onchange = loadContent;
@@ -926,6 +983,7 @@
                 const r = await fetch('/api/save_score_result', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({ stage: 'stretch', video_name: videoName, score_data: scoreData, ai_analysis: aiAnalysis })
                 });
                 let res;
@@ -1050,6 +1108,36 @@
                     uploadSection.style.display = 'block';
                 }
             };
+        })();
+    </script>
+    <script>
+        (function applyRoleTheme() {
+            fetch('/api/auth/session', { credentials: 'include' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var role = (d.success && d.user) ? d.user.role : null;
+                    var b = document.body;
+                    var badge = document.getElementById('roleBadge');
+                    var tag = document.getElementById('headerTagline');
+                    var map = {
+                        0: { cls: 'theme-admin', badge: '管理员', text: '系统管理视图' },
+                        1: { cls: 'theme-trainer', badge: '培训师', text: '培训监管 · 质量把控' },
+                        2: { cls: 'theme-student', badge: '学员', text: '练习与反馈' }
+                    };
+                    if (role !== null && role !== undefined && map[role] !== undefined) {
+                        b.classList.add(map[role].cls);
+                        if (badge) { badge.textContent = map[role].badge; badge.hidden = false; }
+                        if (tag) tag.textContent = map[role].text;
+                    } else {
+                        b.classList.add('theme-guest');
+                        if (tag) tag.textContent = '上传视频开始检测';
+                    }
+                })
+                .catch(function () {
+                    document.body.classList.add('theme-guest');
+                    var tag = document.getElementById('headerTagline');
+                    if (tag) tag.textContent = '上传视频开始检测';
+                });
         })();
     </script>
 </body>

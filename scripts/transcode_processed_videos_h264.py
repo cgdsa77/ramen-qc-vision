@@ -4,7 +4,8 @@
 
 用法（项目根目录）:
   python scripts/transcode_processed_videos_h264.py --stretch cm13 cm14 cm15 cm16 cm17
-  python scripts/transcode_processed_videos_h264.py --stretch-all   # 抻面目录下全部 *_with_skeleton.mp4
+  python scripts/transcode_processed_videos_h264.py --stretch xl11 xl12 xl13   # 下面及捞面（同上参数名，会扫描各子目录）
+  python scripts/transcode_processed_videos_h264.py --stretch-all   # processed_videos 下各阶段目录全部 *_with_skeleton.mp4
 """
 import argparse
 import subprocess
